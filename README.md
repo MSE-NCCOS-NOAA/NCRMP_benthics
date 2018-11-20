@@ -10,9 +10,9 @@ This package currently uses Atlantic benthic data only. See https://github.com/j
 
 Where indicated in file names by NCRMP_FRRP or NCRMP_DRM, NCRMP and Distrubrance Response Monitoring (DRM; formerly known as Florida Reef Resilience Program or FRRP) data from 2014 to present have been combined. We are in the process of changing the naming convention from FRRP to DRM but at present DRM and FRRP are used interchageably. Please be patient while we complete this transition. 
 
-This package assumes some familiarity with NCRMP sampling methods and analysis ready (AR) data formats. NCEI and CoRIS archived AR data, data dictionaries and sampling protocols can be found on the NCRMP project page, https://coastalscience.noaa.gov/project/national-coral-reef-monitoring-program-biological-socioeconomic/ under "Products, Datasets and Reports". See also, https://www.coris.noaa.gov/monitoring/.
+This package assumes some familiarity with NCRMP sampling methods and analysis ready (AR) data formats. NCEI and CoRIS archived AR data, data dictionaries and sampling protocols can be found on the NCRMP project page, https://coastalscience.noaa.gov/project/national-coral-reef-monitoring-program-biological-socioeconomic/ under "Products, Datasets and Reports". See also: https://www.coris.noaa.gov/monitoring/.
 
-For more information on the specific functions within the package, please see the vingette. 
+For more information on the specific functions within the package, please see the vignette. 
 
 For questions, please contact the repository owner, Sarah Groves, sarah.groves@noaa.gov 
 
