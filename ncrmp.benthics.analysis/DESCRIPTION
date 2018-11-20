@@ -1,0 +1,20 @@
+Package: ncrmp.benthics.analysis
+Type: Package
+Title: External data analysis
+Version: 1.0.0.0000
+Authors@R: c(person("Sarah", "Groves", email = "sarah.groves@noaa.gov", role = c("cre", "cur")),
+             person("Shay", "Viehman", email = "shay.viehman@noaa.gov", role = "wal"),
+             person("Laurie", "Bauer", email = "laurie.bauer@noaa.gov", role = "prg"))
+Description: Analysis ready CSV files, data summarization functions, and maps
+Depends: R (>= 3.4.1)
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.1
+Imports: dplyr,
+         magrittr,
+         ggplot2,
+         vegan
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
