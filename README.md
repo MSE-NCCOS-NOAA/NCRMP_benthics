@@ -1,17 +1,23 @@
+
+# Introduction
+
 The ncrmp.benthic.analysis package is designed to use benthic data collected from the Atlantic regions of the National Coral Reef Monitoring Program (NCRMP) to complete the following:
 
 1. Compute summary statistics such as coral density, percent cover, species richness, old and recent mortality, disease prevalence, diadema density, and presence/absence of ESA species from the site to the regional level.
 
 2. House all current NCRMP benthic data ranging from analysis ready data to regional domain estimates in a standardized format. This includes all metrics listed in item #1 calculated at the site, strata and regional level as well as most recent sampling grids and NTOT files. 
 
-Installation using devtools 
+# Installation using devtools: 
 
 Type the following into R:
 
+```
 install.packages('devtools')
-devtools::install_github('shgroves/NCRMP_benthics')
 
-Note: 
+devtools::install_github('shgroves/NCRMP_benthics')
+```
+
+## Note: 
 
 This package currently uses Atlantic benthic data only. See https://github.com/jeremiaheb/rvc#reef-visual-census-statistical-package-in-r for Atlantic fish R package.
 
