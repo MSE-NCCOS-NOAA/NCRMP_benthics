@@ -479,7 +479,8 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype){
         dplyr::mutate(whavspr = wh * avspr,
                       whsvar = wh^2 * svar,
                       whstd = wh * std,
-                      n = tidyr::replace_na(n, 0))
+                      n = tidyr::replace_na(n, 0))  %>%
+    dplyr::ungroup()
 
     }
 
@@ -511,7 +512,8 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype){
                       n = tidyr::replace_na(n, 0),
                       # Add the following to match FL format temporarily
                       PROT = NA,
-                      RUG_CD = NA)
+                      RUG_CD = NA)  %>%
+    dplyr::ungroup()
 
     }
 
@@ -523,7 +525,8 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype){
       dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, NTOT, ngrtot, wh, n, avspr, svar, std, whavspr, whsvar, whstd)
 
     unwh_richness_strata <-  richness_est %>%
-      dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, NTOT, ngrtot, wh, n, avspr, svar, std)
+      dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, NTOT, ngrtot, wh, n, avspr, svar, std) %>%
+    dplyr::mutate(RUG_CD = as.factor(RUG_CD))
 
     ## Domain Estimates
     Domain_est <- richness_est %>%
@@ -531,7 +534,8 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype){
       dplyr::summarise(avSpR = sum(whavspr),
                        var = sum(whsvar, na.rm = T),
                        std = sqrt(var),
-                       ngrtot = sum(NTOT) )
+                       ngrtot = sum(NTOT) )  %>%
+    dplyr::ungroup()
 
 
 
@@ -577,7 +581,8 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype){
         dplyr::mutate(whavden = wh * avden,
                       whsvar = wh^2 * svar,
                       whstd = wh * std,
-                      n = tidyr::replace_na(n, 0))
+                      n = tidyr::replace_na(n, 0))  %>%
+    dplyr::ungroup()
 
     }
 
@@ -611,7 +616,8 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype){
                       n = tidyr::replace_na(n, 0),
                       # Add the following to match FL format
                       PROT = NA,
-                      RUG_CD = NA)
+                      RUG_CD = NA)  %>%
+    dplyr::ungroup()
 
     }
 
@@ -622,7 +628,8 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype){
       dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, NTOT, ngrtot, wh, n, avden, svar, std, whavden, whsvar, whstd)
 
     unwh_density_strata <-  density_est %>%
-      dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, NTOT, ngrtot, wh, n, avden, svar, std)
+      dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, NTOT, ngrtot, wh, n, avden, svar, std) %>%
+    dplyr::mutate(RUG_CD = as.factor(RUG_CD))
 
     ## Domain Estimates
     Domain_est <- density_est %>%
@@ -630,7 +637,8 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype){
       dplyr::summarise(avDen = sum(whavden, na.rm = T), # This accounts for strata with 0 species of interest present
                        var = sum(whsvar, na.rm = T),    # This accounts for strata with N = 1
                        std = sqrt(var),
-                       ngrtot = sum(NTOT) )
+                       ngrtot = sum(NTOT) )  %>%
+    dplyr::ungroup()
 
     ################
     # Export
@@ -674,7 +682,8 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype){
         dplyr::mutate(whavmort = wh * avmort,
                       whsvar = wh^2 * svar,
                       whstd = wh * std,
-                      n = tidyr::replace_na(n, 0))
+                      n = tidyr::replace_na(n, 0)) %>%
+    dplyr::ungroup()
 
     }
 
@@ -706,7 +715,8 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype){
                       whstd = wh * std,
                       n = tidyr::replace_na(n, 0),
                       PROT = NA,           # Add the following to match FL format temporarily
-                      RUG_CD = NA)
+                      RUG_CD = NA)  %>%
+    dplyr::ungroup()
 
     }
 
@@ -717,7 +727,8 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype){
       dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, NTOT, ngrtot, wh, n, avmort, svar, std, whavmort, whsvar, whstd)
 
     unwh_mortality_strata <-  mortality_est %>%
-      dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, NTOT, ngrtot, wh, n, avmort, svar, std)
+      dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, NTOT, ngrtot, wh, n, avmort, svar, std) %>%
+    dplyr::mutate(RUG_CD = as.factor(RUG_CD))
 
     ## Domain Estimates
     Domain_est <- mortality_est %>%
@@ -725,7 +736,8 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype){
       dplyr::summarise(avMort = sum(whavmort, na.rm = T),
                        var = sum(whsvar, na.rm = T),
                        std = sqrt(var),
-                       ngrtot = sum(NTOT) )
+                       ngrtot = sum(NTOT) )  %>%
+    dplyr::ungroup()
 
     ################
     # Export
@@ -784,7 +796,8 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype){
                       whstd_Simp = wh * std_Simp,
                       whstd_InvSimp = wh * std_InvSimp,
                       whstd_Shan = wh * std_Shan,
-                      n = tidyr::replace_na(n, 0))
+                      n = tidyr::replace_na(n, 0))  %>%
+    dplyr::ungroup()
 
     }
 
@@ -834,7 +847,8 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype){
                       n = tidyr::replace_na(n, 0),
                       # Add the following to match FL
                       PROT = NA,
-                      RUG_CD = NA)
+                      RUG_CD = NA)  %>%
+    dplyr::ungroup()
 
     }
 
@@ -850,7 +864,8 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype){
     unwh_diversity_strata <-  diversity_est %>%
       dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, NTOT, ngrtot, wh, n,
                     avSimp, avInvSimp, avShannon, svar_Simp, svar_InvSimp, svar_Shan,
-                    std_Simp, std_InvSimp, std_Shan)
+                    std_Simp, std_InvSimp, std_Shan) %>%
+    dplyr::mutate(RUG_CD = as.factor(RUG_CD))
 
     ## Domain Estimates
     Domain_est <- diversity_est %>%
@@ -864,7 +879,8 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype){
                        std_Simp = sqrt(var_Simp),
                        std_InvSimp = sqrt(var_InvSimp),
                        std_Shan = sqrt(var_Shan),
-                       ngrtot = sum(NTOT) )
+                       ngrtot = sum(NTOT) )  %>%
+    dplyr::ungroup()
 
     ################
     # Export
@@ -906,7 +922,8 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype){
         dplyr::mutate(whavprev = wh * avprev,
                       whsvar = wh^2 * svar,
                       whstd = wh * std,
-                      n = tidyr::replace_na(n, 0))
+                      n = tidyr::replace_na(n, 0))  %>%
+    dplyr::ungroup()
 
     }
 
@@ -941,7 +958,8 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype){
                       n = tidyr::replace_na(n, 0),
                       # Add the following to match FL format
                       PROT = NA,
-                      RUG_CD = NA)
+                      RUG_CD = NA)  %>%
+    dplyr::ungroup()
 
     }
 
@@ -961,7 +979,8 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype){
       dplyr::summarise(avPrev = sum(whavprev, na.rm = T), # This accounts for strata with 0 species of interest present
                        var = sum(whsvar, na.rm = T),    # This accounts for strata with N = 1
                        std = sqrt(var),
-                       ngrtot = sum(NTOT) )
+                       ngrtot = sum(NTOT) )  %>%
+    dplyr::ungroup()
 
     ################
     # Export

@@ -328,7 +328,8 @@ NCRMP_make_weighted_LPI_data <- function(inputdata, region, year)
                     n = tidyr::replace_na(n, 0),
                     # Add the following to match FL format
                     PROT = NA,
-                    RUG_CD = NA)
+                    RUG_CD = NA)  %>%
+    dplyr::ungroup()
   }
 
   # Reformat output
@@ -338,7 +339,8 @@ NCRMP_make_weighted_LPI_data <- function(inputdata, region, year)
   # cover, unweighted by strata
   unwh_cover_strata <- cover_est %>%
     dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, DEPTH_M, NTOT, ngrtot, wh, cover_group, n, avcvr, svar, std) %>%
-    dplyr::mutate(n = tidyr::replace_na(n, 0))
+    dplyr::mutate(n = tidyr::replace_na(n, 0)) %>%
+    dplyr::mutate(RUG_CD = as.factor(RUG_CD))
 
 
   ## Domain Estimates
@@ -347,7 +349,8 @@ NCRMP_make_weighted_LPI_data <- function(inputdata, region, year)
     dplyr::summarise(avCvr = sum(whavcvr),
                      var = sum(whsvar, na.rm = T),
                      std = sqrt(var),
-                     ngrtot = sum(NTOT) )
+                     ngrtot = sum(NTOT) ) %>%
+    dplyr::ungroup()
 
 
   ################

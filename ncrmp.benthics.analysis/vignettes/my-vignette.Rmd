@@ -98,29 +98,32 @@ __Export a dataframe__
 
 __Use a dataframe in a ggplot__
 ```{r}
-# require(ncrmp.benthics.analysis)
-#
-# # Load weighted strata means
-# Hardcoral <- NCRMP_STTSTJ_2013_17_wh_cover_region %>% 
-#   dplyr::ungroup() %>%
-#   # filter to just hardcoral
-#   dplyr::filter(cover_group == "HARD CORALS") %>%
-#   # Change Year to factor so R sees it as a grouping variable and not a number 
-#   dplyr::mutate(YEAR = as.factor(YEAR))
-# 
-# # Create your plot
-# ggplot(Hardcoral, aes(x = YEAR, y = avCvr, group = YEAR)) +
-#   geom_bar(aes(fill = YEAR), stat="identity", colour="black",
-#            position=position_dodge(),
-#            size=.3) +
-# # Add error bars
-#   geom_errorbar(aes(ymax = avCvr+std, ymin = avCvr-std), width = .5, position=position_dodge(1)) +
-# # Set the y axis scale 
-#   scale_y_continuous(limits = c(0,25), expand = c(0, 0)) +
-# # Add axis labels
-#   xlab("") +
-#   ylab("Cover (%)") + 
-#   labs(title = "Hard coral cover") 
+require(ncrmp.benthics.analysis)
+require(ggplot2)
+
+# Load weighted strata means
+Hardcoral <- NCRMP_STTSTJ_2013_17_wh_cover_region %>%
+  dplyr::ungroup() %>%
+  # filter to just hardcoral
+  dplyr::filter(cover_group == "HARD CORALS") %>%
+  # Change Year to factor so R sees it as a grouping variable and not a number
+  dplyr::mutate(YEAR = as.factor(YEAR))
+
+# Create your plot
+ggplot(Hardcoral, aes(x = YEAR, y = avCvr, group = YEAR)) +
+  geom_bar(aes(fill = YEAR), stat="identity", colour="black",
+           position=position_dodge(),
+           size=.3) +
+# Add error bars
+  geom_errorbar(aes(ymax = avCvr+std, ymin = avCvr-std), width = .5, position=position_dodge(1)) +
+# Set the y axis scale
+  scale_y_continuous(limits = c(0,25), expand = c(0, 0)) +
+# Add axis labels
+  xlab("") +
+  ylab("Cover (%)") +
+  labs(title = "Hard coral cover - St. Thomas & St. John") + 
+# Remove legend 
+  theme(legend.position="none")
 
 ```
 
@@ -170,14 +173,14 @@ Analysis ready NCRMP datasets for all regions and years are contained within thi
   
 * Examples: 
     * FLK_2016_coral_demographics,
-    * SEFCRI_2014_2stage_benthic_cover,                     
+    * SEFCRI_2014_2stage_benthic_cover                    
     * FGBNMS_2013_inverts_ESAcorals
   
    
 In addition, the following AR Florida DRM and Sanctuary Coral Reef Ecosystem Assessment Monitoring (SCREAM) datasets in NCRMP format are stored in the package. Combined DRM and SCREAM data is from 1999 to 2013 (not all regions are sampled each year) and individual DRM regions are 2014 to the most recent year of sampling.
 
 * preNCRMP_SCREAM_DRM_coral_demographics  
-* FRRP_SEFCRI_2017_2stage_demo_data 
+* FRRP_SEFCRI_2017_2stage_demo_data - includes data from 2014 - 2017 
 * FRRP_FLK_2017_2stage_demo_data 
 * FRRP_Tort_2017_2stage_demo_data 
 
@@ -185,7 +188,12 @@ In addition, the following AR Florida DRM and Sanctuary Coral Reef Ecosystem Ass
 
 Summary dataframes are provided for site, strata and weighted regional means. Every function listed below can produce several dataframes. Although there are too many to list individually, all provided dataframes follow a standard naming convention. Summary dataframes can be identified because they begin with the project or projects (NCRMP or NCRMP_DRM), followed by the region, year(s) and data type and level (site, strata, region). See associated functions used to create these dataframes (below) for more information. To view all of the data contained within this package you can 1. download the package from GitHub and view the 'data' folder or 2. use the following code to view all of the datasets in R.
 
-data(package='ncrmp.benthics.analysis')
+```{r}
+
+# data(package='ncrmp.benthics.analysis')
+
+```
+
 
 * Data format: 
     * PROJECT_REGION_YEAR_datatype_level
@@ -230,7 +238,7 @@ The most recent sampling grid shapefiles used for site allocation and associated
 
 # To use the functions in this package
 
-If you would like to run your own data, apply present species filters to certain functions or just know more about how NCRMP metrics are calculated, please feel free to use these functions or check out the code. Comments or suggestions on how to approve the package are welcome. 
+If you would like to run the AR data through the functions, apply preset species filters to certain functions or just know more about how NCRMP metrics are calculated, please feel free to use these functions or check out the code. Comments or suggestions on how to approve the package are welcome. 
 
 # Functions for specific regions
 
@@ -239,7 +247,7 @@ If you would like to run your own data, apply present species filters to certain
 
 ## Benthic cover
 
-###1. NCRMP_calculate_cover
+### 1. NCRMP_calculate_cover
 
 __Calculates percent cover from species to regional level for individual years__
 
@@ -287,7 +295,7 @@ NCRMP_SEFCRI_2014_Domain_check <- tmp$Domain_check
 
 ```
 
-###2. NCRMP_make_weighted_LPI_data
+### 2. NCRMP_make_weighted_LPI_data
 
 __Applies weighting scheme to benthic cover data__ 
 
@@ -408,7 +416,7 @@ Example of weighting application for Florida:
 ```
 
 
-###3. NCRMP_make_weighted_LPI_data_RC
+### 3. NCRMP_make_weighted_LPI_data_RC
 
 __Applies weighting scheme to benthic cover data__
 
@@ -957,7 +965,7 @@ Regional *Diadema* density is calculated using the same weighting scheme as cora
 
 ### 10. NCRMP_FRRP_calculate_disease_prevalence
 
-__Calculates disease prevalence at the site (% colonies per site), strata (% colonies per strata), and regional (% colonies per region) level for all sampling years__
+__Calculates disease prevalence at the site (% colonies per site), strata (mean of % colonies per site), and regional (weighted mean of % colonies per site) level for all sampling years__
 
 * parameters:
     * project: "NCRMP_FRRP" (Florida regions only), "NCRMP" (All regions)

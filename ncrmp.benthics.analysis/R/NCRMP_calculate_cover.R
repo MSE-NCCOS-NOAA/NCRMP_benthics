@@ -291,7 +291,8 @@ NCRMP_calculate_cover <- function(region, year, analysis_strat = "NULL"){
   }
 
   dat2 <- PA %>%
-    dplyr::mutate(n = dplyr::case_when(Percent_Cvr > 0 ~ 1, TRUE ~ 0))
+    dplyr::mutate(n = dplyr::case_when(Percent_Cvr > 0 ~ 1, TRUE ~ 0)) %>%
+    dplyr::ungroup()
 
   percent_cover_site <- dat2
 
