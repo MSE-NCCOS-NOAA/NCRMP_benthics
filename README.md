@@ -25,9 +25,11 @@ Where indicated in file names by NCRMP_FRRP or NCRMP_DRM, NCRMP and Distrubrance
 
 This package assumes some familiarity with NCRMP sampling methods and analysis ready (AR) data formats. NCEI and CoRIS archived AR data, data dictionaries and sampling protocols can be found on the NCRMP project page, https://coastalscience.noaa.gov/project/national-coral-reef-monitoring-program-biological-socioeconomic/ under "Products, Datasets and Reports". See also: https://www.coris.noaa.gov/monitoring/.
 
+Use of this data requires citation, please see https://coastalscience.noaa.gov/project/national-coral-reef-monitoring-program-biological-socioeconomic/ for the correct citation for individual archive packages. 
+
 For more information on the specific functions within the package, please see the vignette. 
 
-For questions, please contact the repository owner, Sarah Groves, sarah.groves@noaa.gov 
+For questions or collaborations, please contact the repository owner, Sarah Groves, sarah.groves@noaa.gov 
 
 
 
