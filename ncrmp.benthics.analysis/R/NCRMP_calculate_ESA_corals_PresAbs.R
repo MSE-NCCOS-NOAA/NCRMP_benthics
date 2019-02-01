@@ -104,8 +104,11 @@ NCRMP_calculate_ESA_corals_PresAbs <- function()
   tmp7 <- FGBNMS_2015_inverts_ESAcorals %>%
     dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS")
 
+  tmp8 <- FGBNMS_2018_inverts_ESAcorals %>%
+    dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS")
+
   #Combine Carib and GOM
-  Carib_GOM <- rbind(tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7) %>%
+  Carib_GOM <- rbind(tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7, tmp8) %>%
     # Remove METERS_COMPLETED as it is missing from the FL data
     dplyr::select(-METERS_COMPLETED)
 

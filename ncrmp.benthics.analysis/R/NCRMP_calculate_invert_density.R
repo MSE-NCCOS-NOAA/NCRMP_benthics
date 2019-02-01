@@ -147,8 +147,12 @@ NCRMP_calculate_invert_density <- function(region) {
                     STRAT = "FGBNMS",
                     REGION = "GOM")
 
+     tmp3 <- FGBNMS_2018_inverts_ESAcorals %>%
+      dplyr::mutate(SURVEY = "NCRMP",
+                    ANALYSIS_STRATUM = "FGBNMS")
+
     #Combine data
-    dat_1stage <- rbind(tmp1, tmp2)
+    dat_1stage <- rbind(tmp1, tmp2, tmp3)
 
   }
 

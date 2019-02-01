@@ -242,10 +242,13 @@ NCRMP_FRRP_calculate_species_richness_diversity <- function(project, region, ana
                       STRAT = "FGBNMS",
                       REGION = "GOM")
 
-      dat <- rbind(tmp1, tmp2)
+       tmp3 <- FGBNMS_2018_coral_demographics %>%
+        dplyr::mutate(SURVEY = "NCRMP")
+
+      dat <- rbind(tmp1, tmp2, tmp3)
 
       #Combine 1 stage or 2 stage data
-      dat_1stage <- rbind(tmp1, tmp2)
+      dat_1stage <- rbind(tmp1, tmp2, tmp3)
 
     }
 

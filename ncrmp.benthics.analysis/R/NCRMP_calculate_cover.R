@@ -175,12 +175,21 @@ NCRMP_calculate_cover <- function(region, year, analysis_strat = "NULL"){
 
     }
 
-    if(year == 2015)
+    if(year == 2015) {
 
       dat <- FGBNMS_2015_benthic_cover %>%
         dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS")
 
   }
+
+     if(year == 2018) {
+
+      dat <- FGBNMS_2018_benthic_cover  %>%
+        dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS")
+
+     }
+  }
+
 
   # Load species list
 

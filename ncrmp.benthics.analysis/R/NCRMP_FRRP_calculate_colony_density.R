@@ -338,11 +338,13 @@ NCRMP_FRRP_calculate_colony_density <- function(project, region, species_filter 
 
       tmp2 <- FGBNMS_2015_coral_demographics
 
+      tmp3 <- FGBNMS_2018_coral_demographics
+
       if(species_filter == "FALSE" ||
          species_filter == "NULL"){
 
         #Combine 1 stage or 2 stage data
-        dat_1stage <- rbind(tmp1, tmp2) %>%
+        dat_1stage <- rbind(tmp1, tmp2, tmp3) %>%
           dplyr::mutate(SURVEY = "NCRMP",
                         STRAT = "FGBNMS",
                         REGION = "GOM")
@@ -350,7 +352,7 @@ NCRMP_FRRP_calculate_colony_density <- function(project, region, species_filter 
 
       if(species_filter == "TRUE"){
         #Combine 1 stage or 2 stage data
-        dat_1stage <- rbind(tmp1, tmp2) %>%
+        dat_1stage <- rbind(tmp1, tmp2, tmp3) %>%
           dplyr::mutate(SURVEY = "NCRMP",
                         STRAT = "FGBNMS",
                         REGION = "GOM") %>%

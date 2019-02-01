@@ -224,10 +224,9 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
 
   if(region == "GOM"){
 
-    ntot13 <- FGBNMS_2015_NTOT %>%
+    ntot13 <- FGBNMS_2018_NTOT %>%
       dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS",
                     PROT = NA_character_,
-                    REGION = "GOM",
                     YEAR = 2013) %>%
       dplyr::group_by(REGION, YEAR, ANALYSIS_STRATUM, DEPTH, PROT) %>%
       dplyr::summarise(NTOT = sum(NTOT),
@@ -236,17 +235,24 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
 
 
 
-    ntot15 <- FGBNMS_2015_NTOT %>%
+    ntot15 <- FGBNMS_2018_NTOT %>%
       dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS",
                     PROT = NA_character_,
-                    REGION = "GOM",
                     YEAR = 2015) %>%
       dplyr::group_by(REGION, YEAR, ANALYSIS_STRATUM, DEPTH, PROT) %>%
       dplyr::summarise(NTOT = sum(NTOT),
                        ngrtot = sum(NTOT)) %>%
       dplyr::ungroup()
 
-    ntot <- rbind(ntot13, ntot15)
+     ntot18 <- FGBNMS_2018_NTOT %>%
+      dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS",
+                    PROT = NA_character_) %>%
+      dplyr::group_by(REGION, YEAR, ANALYSIS_STRATUM, DEPTH, PROT) %>%
+      dplyr::summarise(NTOT = sum(NTOT),
+                       ngrtot = sum(NTOT)) %>%
+      dplyr::ungroup()
+
+    ntot <- rbind(ntot13, ntot15, ntot18)
 
   }
 

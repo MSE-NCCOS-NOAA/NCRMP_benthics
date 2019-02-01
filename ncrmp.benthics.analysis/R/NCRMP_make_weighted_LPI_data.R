@@ -231,10 +231,9 @@ NCRMP_make_weighted_LPI_data <- function(inputdata, region, year)
 
     if(year == 2013){
 
-      ntot <- FGBNMS_2015_NTOT %>%
+      ntot <- FGBNMS_2018_NTOT %>%
         dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS",
                       PROT = NA_character_,
-                      REGION = "GOM",
                       YEAR = 2013) %>%
         dplyr::group_by(REGION, YEAR, ANALYSIS_STRATUM, DEPTH, PROT) %>%
         dplyr::summarise(NTOT = sum(NTOT)) %>%
@@ -242,14 +241,24 @@ NCRMP_make_weighted_LPI_data <- function(inputdata, region, year)
     }
 
     if(year == 2015){
-      ntot <- FGBNMS_2015_NTOT %>%
+      ntot <- FGBNMS_2018_NTOT %>%
         dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS",
                       PROT = NA_character_,
-                      REGION = "GOM") %>%
+                      YEAR = 2015) %>%
         dplyr::group_by(REGION, YEAR, ANALYSIS_STRATUM, DEPTH, PROT) %>%
         dplyr::summarise(NTOT = sum(NTOT)) %>%
         dplyr::ungroup()
     }
+
+    if(year == 2018){
+      ntot <- FGBNMS_2018_NTOT %>%
+        dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS",
+                      PROT = NA_character_) %>%
+        dplyr::group_by(REGION, YEAR, ANALYSIS_STRATUM, DEPTH, PROT) %>%
+        dplyr::summarise(NTOT = sum(NTOT)) %>%
+        dplyr::ungroup()
+    }
+
 
   }
 
@@ -329,7 +338,7 @@ NCRMP_make_weighted_LPI_data <- function(inputdata, region, year)
                     # Add the following to match FL format
                     PROT = NA,
                     RUG_CD = NA)  %>%
-    dplyr::ungroup()
+      dplyr::ungroup()
   }
 
   # Reformat output
