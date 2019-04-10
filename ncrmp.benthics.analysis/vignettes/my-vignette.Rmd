@@ -51,7 +51,7 @@ For questions, please contact the repository owner, Sarah Groves, sarah.groves@n
 * Florida:  
     * Southeast Florida (SEFCRI; 2014, 2016)
     * Florida Keys (FLK; 2014, 2016)
-    * Dry Tortugas (Tortugas; 2014, 2016) 
+    * Dry Tortugas (Tortugas; 2014, 2016, 2018) 
 
 * Caribbean:
     * St. Thomas & St. John (STTSTJ; 2013, 2015, 2017)
@@ -59,9 +59,9 @@ For questions, please contact the repository owner, Sarah Groves, sarah.groves@n
     * Puerto Rico (PRICO; 2014, 2016)
 
 * Gulf of Mexico:
-    * Flower Garden Banks National Marine Sanctuary (GOM; 2013, 2015)
+    * Flower Garden Banks National Marine Sanctuary (GOM; 2013, 2015, 2018)
     
-Upcoming data additions: Florida & Gulf of Mexico 2018 (in 2019), Caribbean 2019 (in 2020)
+Upcoming data additions: Florida 2018 (in 2019), Caribbean 2019 (in 2020)
 
 
 ## Installation 
@@ -166,7 +166,7 @@ Datasets contained within the package at the strata and regional level are creat
   
 ### Analysis Ready (AR) data 
 
-Analysis ready NCRMP datasets for all regions and years are contained within this package in the most recent NCRMP Atlantic archive format. AR datasets can be identified because they begin with the region code followed by the year and then the data type; benthic_cover, coral_demographics or inverts_ESAcorals. Two stage (2 transect) data is identified in the file name, all other datasets are single transect. 
+Analysis ready NCRMP datasets for all regions and years are contained within this package in the most recent NCRMP Atlantic archive format. AR datasets can be identified because they begin with the region code followed by the year and then the data type; benthic_cover, coral_demographics or inverts_ESAcorals. Two stage (2 transect) data is identified in the file name except for the Tortugas 2018 data. All Tortugas 2018 data has two transects. Tortugas 2018 coral demographics surveys were a joint mission between NCRMP and DRM - this data is combined and indistinguishable. All other datasets are single transect. 
 
 * Data format: 
     * REGION_YEAR_datatype
@@ -216,7 +216,7 @@ The most recent sampling grid shapefiles used for site allocation and associated
 
 * Sampling grids:
     * SEFCRI_2016_sample_frame
-    * FLK_TORT_2016_sample_frame
+    * FLK_TORT_2018_sample_frame
     * STTSTJ_2017_sample_frame_WGS1984
     * STX_2017_sample_frame_WGS1984
     * PRICO_2016_sample_frame_WGS1984
@@ -224,12 +224,13 @@ The most recent sampling grid shapefiles used for site allocation and associated
 
 * NTOT files:
     * USVI_2017_NTOT (STTSTJ & STX)
-    * FL_2016_NTOT (SEFCRI, FLK & Tortugas)
+    * FL_2018_NTOT (SEFCRI, FLK & Tortugas)
     * PRICO_2016_NTOT
-    * FGBNMS_2015_NTOT
+    * FGBNMS_2018_NTOT
 
 * Boundaries
-    * FKNMS_boundary
+    * FKNMS_boundary 
+    * FGBNMS_boundary
 
 
 ### Additional files
@@ -255,7 +256,7 @@ __Calculates percent cover from species to regional level for individual years__
 * parameters:
     * region: "SEFCRI", "FLK", "Tortugas", "STTSTJ", "STX", "PRICO", "GOM" 
 
-    * year: 2013, 2014, 2015, 2016, 2017 Note - for each region, only years where sampling was conducted will run
+    * year: 2013, 2014, 2015, 2016, 2017, 2018 Note - for each region, only years where sampling was conducted will run
 
     * analysis_strat: "STRAT_PROT" (Florida regions only; default), "HABITAT_DEPTH" (Carib regions only; default), "STRAT" (Florida regions only ), "HABITAT" (Carib regions only)
 
@@ -299,7 +300,7 @@ NCRMP_SEFCRI_2014_Domain_check <- tmp$Domain_check
 
 __Applies weighting scheme to benthic cover data__ 
 
-Analysis level strata = STRAT + PROT for Florida regions and HABITAT CODE + DEPTH STRAT for the     Caribbean and GOM regions. These are the recommended and default settings. 
+Analysis level strata = STRAT + PROT for Florida regions and HABITAT CODE + DEPTH STRAT for the Caribbean and GOM regions. These are the recommended and default settings. 
 
 This function is called within NCRMP_calculate_cover so the initial parameters you provide for region and year. will be passed on. 
 
@@ -539,7 +540,7 @@ Example of weighting application for Florida:
 
 ## Coral density
 
-### 4. NCRMP_FRRP_calculate_colony_density
+### 4. NCRMP_DRM_calculate_colony_density
 
 __Calculates colony density from site to regional level for all sampling years__
 
@@ -570,7 +571,7 @@ Example:
 require(ncrmp.benthics.analysis)
 
 # Run function 
-tmp <- NCRMP_FRRP_calculate_colony_density(project = "NCRMP_FRRP", 
+tmp <- NCRMP_DRM_calculate_colony_density(project = "NCRMP_FRRP", 
                                            region = "FLK",
                                            species_filter = "FALSE",
                                            analysis_strat = "STRAT_PROT")
@@ -591,7 +592,7 @@ __Applies weighting scheme to coral demographic data (coral density, species ric
 
 Analysis level strata = STRAT + PROT for Florida regions and HABITAT CODE + DEPTH STRAT for the Caribbean and GOM regions. These are the recommended and default settings.
 
-This function is called within NCRMP_FRRP_calculate_colony_density so the initial parameters you provide for region and year will be passed on. 
+This function is called within NCRMP_DRM_calculate_colony_density so the initial parameters you provide for region and year will be passed on. 
 
 Example of weighting application for Florida:
 
@@ -699,7 +700,7 @@ __Applies weighting scheme to coral demographic data (coral density, species ric
 
 Analysis level strata = STRAT for Florida regions and HABITAT CODE for the Caribbean and GOM regions. 
 
-This function is called within NCRMP_FRRP_calculate_colony_density so the initial parameters you provide for region and year will be passed on. 
+This function is called within NCRMP_DRM_calculate_colony_density so the initial parameters you provide for region and year will be passed on. 
 
 Example of weighting application for Florida:
 
@@ -803,7 +804,7 @@ Example of weighting application for Caribbean:
 
 ## Species richness and diversity
 
-### 7. NCRMP_FRRP_calculate_species_richness_diversity
+### 7. NCRMP_DRM_calculate_species_richness_diversity
 
 __Calculates species richness from site to regional level for all sampling years. Calculates Simpson, Inverse Simpson and Shannon–Wiener diversity indices from site to regional level for all sampling years using the R package vegan.__
 
@@ -840,7 +841,7 @@ Example:
 require(ncrmp.benthics.analysis)
 
 # Run function 
-tmp <- NCRMP_FRRP_calculate_species_richness_diversity(project = "NCRMP",
+tmp <- NCRMP_DRM_calculate_species_richness_diversity(project = "NCRMP",
                                                        region= "Tortugas",
                                                        analysis_strat = "STRAT_PROT")
 
@@ -863,7 +864,7 @@ Regional species richness and diversity are calculated using the same weighting 
 
 ## Mortality
 
-### 8. NCRMP_FRRP_calculate_mortality
+### 8. NCRMP_DRM_calculate_mortality
 
 __Calculates old and recent mortality (percent of colony surface)   from species to regional level for all sampling years__
 
@@ -893,7 +894,7 @@ Example:
 require(ncrmp.benthics.analysis)
 
 # Run function
-tmp <- NCRMP_FRRP_calculate_mortality(project = "NCRMP",
+tmp <- NCRMP_DRM_calculate_mortality(project = "NCRMP",
                                       region = "GOM",
                                       species_filter = "TRUE",
                                       analysis_strat = "HABITAT_DEPTH")
@@ -963,7 +964,7 @@ Regional *Diadema* density is calculated using the same weighting scheme as cora
 
 ## Disease prevalence
 
-### 10. NCRMP_FRRP_calculate_disease_prevalence
+### 10. NCRMP_DRM_calculate_disease_prevalence
 
 __Calculates disease prevalence at the site (% colonies per site), strata (mean of % colonies per site), and regional (weighted mean of % colonies per site) level for all sampling years__
 
@@ -992,7 +993,7 @@ require(ncrmp.benthics.analysis)
 
 # Run function 
 
-tmp <- NCRMP_FRRP_calculate_disease_prevalence(project = "NCRMP_FRRP",
+tmp <- NCRMP_DRM_calculate_disease_prevalence(project = "NCRMP_FRRP",
                                         region = "SEFCRI",
                                         species_filter = "FALSE")
 
@@ -1088,37 +1089,13 @@ ________________________________________________________________________________
 
 # Frequently asked questions:
 
-### 1. What species are used when you filter the species in NCRMP_FRRP_calculate_colony_density, NCRMP_FRRP_calculate_disease_prevalence or NCRMP_FRRP_calculate_mortality?
+### 1. What species are used when you filter the species in NCRMP_DRM_calculate_colony_density, NCRMP_DRM_calculate_disease_prevalence or NCRMP_DRM_calculate_mortality?
 
-__First 6 species are from sample allocation, remainder are ESA listed species__
+# NCRMP species filter developed in status report meetings
 
-
-* FLK_filter <- c("COL NATA", "MON CAVE", "ORB FAVE", "POR PORI", "SID SIDE", "SOL BOUR", "ACR CERV", "ACR PALM", "ORB ANNU", "ORB FRAN", "DEN CYLI", "MYC FERO")
-
-* Tort_filter <- c("COL NATA", "MON CAVE", "ORB FAVE", "POR PORI", "ORB FRAN", "STE INTE", "ACR CERV", "ACR PALM",
-"ORB ANNU", "DEN CYLI", "MYC FERO")
-
-* SEFCRI_filter <- c("ACR CERV", "DIC STOK", "MON CAVE", "POR ASTR", "PSE STRI", "SID SIDE","ACR CERV", "ACR PALM",
-"ORB ANNU", "ORB FRAN", "ORB FAVE", "DEN CYLI", "MYC FERO")
-
-* STX_filter <- c("COL NATA", "ORB ANNU", "MEA MEAN", "MAD DECA", "ORB FRAN", "ORB FAVE", "ACR CERV", "ACR PALM",
-"ORB ANNU", "DEN CYLI", "MYC FERO")
-
-__First 5 species are from sample allocation, remainder are ESA listed species__
-
-
-* STTSTJ_filter <- c("COL NATA", "ORB ANNU", "DIP LABY", "MAD DECA", "ORB FAVE", "ACR CERV", "ACR PALM",
-"ORB FRAN", "DEN CYLI", "MYC FERO")
-
-* PR_filter <- c("COL NATA", "ORB ANNU", "DIP LABY", "MAD DECA", "ORB FAVE", "ACR CERV", "ACR PALM",
-"ORB FRAN", "DEN CYLI", "MYC FERO")
-
-__Top 10 most abundant species - minus POR ASTR__
-
-
-* GOM_filter <- c("ORB FRAN", "PSE STRI", "AGA AGAR", "MON CAVE", "STE INTE", "COL NATA", "MAD DECA",
-"ORB FAVE", "MAD AURE")
-
+   Report_card_filter <- c("ACR CERV", "ACR PALM", "COL NATA", "DIP LABY", "MON CAVE", "ORB ANNU", "ORB FRAN", "ORB FAVE",
+                           "POR PORI", "PSE STRI", "PSE CLIV", "SID SIDE", "STE INTE")
+                           
 ### 2. Which benthic categories are combined into "OTHER" in NCRMP_calculate_cover?
 
 The following major benthic categories are currently classified as OTHER in the benthic cover metrics: SUBSTRATE, HYDROCORALS, OTHER INVERTEBRATES, CYANOBACTERIA, and SEAGRASS. Please see ncrmp_frrp_sppcodes, which is contained in the package, for information on how taxa are categorized into major benthic categories.  

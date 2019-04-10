@@ -22,8 +22,7 @@
 #
 
 # NCRMP Caribbean Benthic analytics team: Viehman, Bauer, Groves
-# Last update: May 2018
-# Current status: Needs review
+# Last update: Apr 2019
 
 
 ##############################################################################################################################
@@ -74,7 +73,11 @@ NCRMP_calculate_invert_density <- function(region) {
 
     tmp2 <- TortugasMarq_2016_inverts_ESAcorals
 
+    tmp3 <- Tortugas_2018_inverts_ESAcorals
+
     dat_1stage <- rbind(tmp1, tmp2)
+
+    dat_2stage <- rbind(tmp3)
 
   }
 
@@ -159,7 +162,8 @@ NCRMP_calculate_invert_density <- function(region) {
   ### Account for SEFCRI/FLK 2014 2 stage data - take the transect means
 
   if(region == "SEFCRI" ||
-     region == "FLK") {
+     region == "FLK" ||
+     region == "Tortugas") {
 
     dat1_1stage <- dat_1stage %>%
       # Remove Marquesas
@@ -180,8 +184,8 @@ NCRMP_calculate_invert_density <- function(region) {
                                                     REGION == "FGBNMS" & YEAR > 2014 ~ DIADEMA_NUM/(15 * 2),
                                                     TRUE ~ DIADEMA_NUM/(25 * 2) )) %>%
       # select columns
-      dplyr::select(YEAR, REGION, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES,
-                      MIN_DEPTH, MAX_DEPTH, STRAT, HABITAT_CD, PROT, LOBSTER_NUM, CONCH_NUM, DIADEMA_NUM, Diadema_dens)
+      dplyr::select(YEAR, MONTH, DAY, REGION, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES,
+                      MIN_DEPTH, MAX_DEPTH, STRAT, PROT, LOBSTER_NUM, CONCH_NUM, DIADEMA_NUM, Diadema_dens)
 
     dat1_2stage <- dat_2stage %>%
       # Remove Marquesas
@@ -195,12 +199,15 @@ NCRMP_calculate_invert_density <- function(region) {
       # convert counts DIADEMA_NUM to density DIADEMA_DENS per transect
       dplyr::mutate(Diadema_dens = dplyr::case_when(REGION == "FLK" ~ DIADEMA_NUM/(15 * 2),
                                                     REGION == "SEFCRI" ~ DIADEMA_NUM/(15 * 2),
+                                                    REGION == "Tortugas" ~ DIADEMA_NUM/(15 * 2),
                                                     TRUE ~ DIADEMA_NUM/(25 * 2) )) %>%
 
       # Calculate site density by taking the mean of 2 transects
-      dplyr::group_by(YEAR, REGION, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES,
-                      MIN_DEPTH, MAX_DEPTH, STRAT, HABITAT_CD, PROT) %>%
-      dplyr::summarise(LOBSTER_NUM = mean(LOBSTER_NUM),
+      dplyr::group_by(YEAR, MONTH, DAY, REGION, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES,
+                      STRAT, PROT) %>%
+      dplyr::summarise(MIN_DEPTH = mean(MIN_DEPTH),
+                       MAX_DEPTH = mean(MAX_DEPTH),
+                       LOBSTER_NUM = mean(LOBSTER_NUM),
                        CONCH_NUM = mean(CONCH_NUM),
                        DIADEMA_NUM = mean(DIADEMA_NUM),
                        Diadema_dens = mean(Diadema_dens))
@@ -231,8 +238,8 @@ NCRMP_calculate_invert_density <- function(region) {
                                                     REGION == "FGBNMS" & YEAR > 2014 ~ DIADEMA_NUM/(15 * 2),
                                                     TRUE ~ DIADEMA_NUM/(25 * 2) )) %>%
       # drop columns
-      dplyr::select(YEAR, REGION, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES,
-                      MIN_DEPTH, MAX_DEPTH, STRAT, HABITAT_CD, PROT, LOBSTER_NUM, CONCH_NUM, DIADEMA_NUM, Diadema_dens)
+      dplyr::select(YEAR, MONTH, DAY, REGION, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES,
+                      MIN_DEPTH, MAX_DEPTH, STRAT, PROT, LOBSTER_NUM, CONCH_NUM, DIADEMA_NUM, Diadema_dens)
   }
 
   # call function for weighting

@@ -22,9 +22,8 @@
 # NCRMP_calculate_cover.R
 #
 
-# NCRMP Caribbean Benthic analytics team: Viehman, Groves, Bauer
-# Last update: May 2018
-# Current status: In prep
+# NCRMP Caribbean Benthic analytics team: Groves and viehman
+# Last update: Apr 2019
 
 
 ##############################################################################################################################
@@ -61,7 +60,7 @@ NCRMP_make_weighted_LPI_data <- function(inputdata, region, year)
 
     if(year == 2014)
     {
-      ntot <- FL_2016_NTOT %>%
+      ntot <- FL_2018_NTOT %>%
         dplyr::filter(REGION == "SEFCRI") %>%
         dplyr::mutate(STRAT = paste(STRAT, RUG_CD, sep = "")) %>%
         dplyr::filter(STRAT == "MIDR1" | STRAT == "MIDR0") %>%
@@ -71,10 +70,11 @@ NCRMP_make_weighted_LPI_data <- function(inputdata, region, year)
 
     if(year == 2016)
     {
-      ntot <- FL_2016_NTOT %>%
+      ntot <- FL_2018_NTOT %>%
         dplyr::filter(REGION == "SEFCRI") %>%
         dplyr::mutate(STRAT = paste(STRAT, RUG_CD, sep = "")) %>%
-        dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
+        dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "),
+                      YEAR = 2016)
     }
   }
 
@@ -83,20 +83,19 @@ NCRMP_make_weighted_LPI_data <- function(inputdata, region, year)
   {
     if(year == 2014)
     {
-      ntot <- FL_2016_NTOT %>%
-        dplyr::filter(REGION == "FL KEYS",
+      ntot <- FL_2018_NTOT %>%
+        dplyr::filter(REGION == "FLK",
                       STRAT != "FDLR") %>% #Remove strat that were not sampled from ntot so they are not counted in ngrtot
-        dplyr::mutate(REGION = "FLK",
-                      ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "),
+        dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "),
                       YEAR = 2014)
 
     }
 
     if(year == 2016)
     {
-      ntot <- FL_2016_NTOT %>%
-        dplyr::filter(REGION == "FL KEYS") %>%
-        dplyr::mutate(REGION = "FLK",
+      ntot <- FL_2018_NTOT %>%
+        dplyr::filter(REGION == "FLK") %>%
+        dplyr::mutate(YEAR = 2016,
                       ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
     }
   }
@@ -106,21 +105,31 @@ NCRMP_make_weighted_LPI_data <- function(inputdata, region, year)
   {
     if(year == 2014)
     {
-      ntot <- FL_2016_NTOT %>%
-        dplyr::filter(REGION == "TORT",
+      ntot <- FL_2018_NTOT %>%
+        dplyr::filter(REGION == "Tortugas",
                       STRAT != "SPGR_LR") %>% # Not sampled in 2014
-        dplyr::mutate(REGION = "Tortugas",
-                      ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "),
+        dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "),
                       YEAR = 2014)
     }
 
     if(year == 2016)
     {
-      ntot <- FL_2016_NTOT %>%
-        dplyr::filter(REGION == "TORT") %>%
+      ntot <- FL_2018_NTOT %>%
+        dplyr::filter(REGION == "Tortugas") %>%
         dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "),
-                      REGION = "Tortugas") %>%
+                      YEAR = 2016) %>%
         dplyr::filter(ANALYSIS_STRATUM != "ISOL_LR / PROT = 0")
+    }
+
+
+    if(year == 2018)
+    {
+      ntot <- FL_2018_NTOT %>%
+        dplyr::filter(REGION == "Tortugas",
+                      STRAT != "SPGR_LR") %>% # Not sampled in 2018
+        dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
+        dplyr::filter(ANALYSIS_STRATUM != "ISOL_LR / PROT = 0",
+                      ANALYSIS_STRATUM != "ISOL_LR / PROT = 1")  # Not sampled in 2018
     }
   }
 

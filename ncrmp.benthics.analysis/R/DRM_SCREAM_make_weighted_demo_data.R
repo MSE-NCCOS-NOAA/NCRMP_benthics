@@ -24,8 +24,7 @@
 #
 
 # NCRMP Caribbean Benthic analytics team: Viehman, Bauer, Groves
-# Last update: May 2018
-# Current status: In prep
+# Last update: Apr 2019
 
 
 ##############################################################################################################################
@@ -49,12 +48,10 @@ DRM_SCREAM_make_weighted_demo_data <- function(inputdata, datatype){
 
   #### Read in ntot ####
 
-  FL_NTOT <- FL_2016_NTOT %>%
+  FL_NTOT <- FL_2018_NTOT %>%
     # Combine rugosity cd and strat for SEFCRI
     dplyr::mutate(STRAT = dplyr::case_when(REGION == "SEFCRI" ~ paste(STRAT, RUG_CD, sep = ""), TRUE ~
-                                             as.character(STRAT)),
-                  REGION = dplyr::case_when(REGION == "FL KEYS" ~ "FLK", TRUE ~ as.character(REGION)),
-                  REGION = dplyr::case_when(REGION == "TORT" ~ "Tortugas", TRUE ~ as.character((REGION)))) %>%
+                                             as.character(STRAT))) %>%
     dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
 
   # Filter NTOT to only strata sampled that year

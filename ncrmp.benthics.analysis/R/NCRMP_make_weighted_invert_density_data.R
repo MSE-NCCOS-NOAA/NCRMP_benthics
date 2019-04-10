@@ -24,7 +24,7 @@
 #
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman
-# Last update: Nov 2018
+# Last update: Apr 2019
 
 
 ##############################################################################################################################
@@ -87,19 +87,18 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
 
     # Filter NTOT to only strata sampled that year - this is done manually for NCRMP only for now
 
-    ntot16 <- FL_2016_NTOT %>%
-      dplyr::filter(REGION == "FL KEYS") %>%
-      dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
-      dplyr::mutate(REGION = "FLK",
-                    ngrtot = sum(NTOT))
+    ntot16 <- FL_2018_NTOT %>%
+      dplyr::filter(REGION == "FLK") %>%
+      dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "),
+                    YEAR = 2016) %>%
+      dplyr::mutate(ngrtot = sum(NTOT))
 
-    ntot14 <- FL_2016_NTOT %>%
+    ntot14 <- FL_2018_NTOT %>%
       # Subset by region of interest, filter out strata not sampled
-      dplyr::filter(REGION == "FL KEYS",
+      dplyr::filter(REGION == "FLK",
                     STRAT != "FDLR") %>%
       # Rename region to current NCRMP code, add Rugosity code and create ANALYSIS STRATUM column
       dplyr::mutate(YEAR = 2014,
-                    REGION = "FLK",
                     ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
       # Calculate total grid (cell) n, based on strata sampled
       dplyr::mutate(ngrtot = sum(NTOT))
@@ -111,22 +110,29 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
 
   if(region == "Tortugas") {
 
-  ntot16 <- FL_2016_NTOT %>%
-        dplyr::filter(REGION == "TORT") %>%
-        dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
-        dplyr::filter(ANALYSIS_STRATUM != "ISOL_LR / PROT = 0")%>%  # Not sampled in 2016
-        dplyr::mutate(ngrtot = sum(NTOT),
-                      REGION = "Tortugas")
+    ntot18 <- FL_2018_NTOT %>%
+      dplyr::filter(REGION == "Tortugas",
+                    STRAT != "SPGR_LR") %>% # Not sampled in 2018
+      dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
+      dplyr::filter(ANALYSIS_STRATUM != "ISOL_LR / PROT = 0",
+                    ANALYSIS_STRATUM != "ISOL_LR / PROT = 1") %>% # Not sampled in 2018
+      dplyr::mutate(ngrtot = sum(NTOT))
 
-      ntot14 <- FL_2016_NTOT %>%
-        dplyr::filter(REGION == "TORT",
-                      STRAT != "SPGR_LR") %>% # Not sampled in 2014
-        dplyr::mutate(YEAR = 2014,
-                      REGION = "Tortugas") %>%
-        dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
-        dplyr::mutate(ngrtot = sum(NTOT))
+    ntot16 <- FL_2018_NTOT %>%
+      dplyr::filter(REGION == "Tortugas") %>%
+      dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "),
+                    YEAR = 2016) %>%
+      dplyr::filter(ANALYSIS_STRATUM != "ISOL_LR / PROT = 0")%>%  # Not sampled in 2016
+      dplyr::mutate(ngrtot = sum(NTOT))
 
-      ntot <- rbind(ntot16, ntot14)
+    ntot14 <- FL_2018_NTOT %>%
+      dplyr::filter(REGION == "Tortugas",
+                    STRAT != "SPGR_LR") %>% # Not sampled in 2014
+      dplyr::mutate(YEAR = 2014,
+                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
+      dplyr::mutate(ngrtot = sum(NTOT))
+
+    ntot <- rbind(ntot18, ntot16, ntot14)
 
   }
 
@@ -244,7 +250,7 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
                        ngrtot = sum(NTOT)) %>%
       dplyr::ungroup()
 
-     ntot18 <- FGBNMS_2018_NTOT %>%
+    ntot18 <- FGBNMS_2018_NTOT %>%
       dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS",
                     PROT = NA_character_) %>%
       dplyr::group_by(REGION, YEAR, ANALYSIS_STRATUM, DEPTH, PROT) %>%

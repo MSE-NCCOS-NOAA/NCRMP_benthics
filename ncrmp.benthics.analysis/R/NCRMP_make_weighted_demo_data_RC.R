@@ -20,13 +20,12 @@
 # analysis ready data
 
 # output gets called by:
-# NCRMP_calculate_species_richness_diversity.R
-# NCRMP_FRRP_calculate_colony_density.R
-# NCRMP_FRRP_calculate_mortality.R
+# NCRMP_DRM_calculate_species_richness_diversity.R
+# NCRMP_DRM_calculate_colony_density.R
+# NCRMP_DRM_calculate_mortality.R
 
-# NCRMP Caribbean Benthic analytics team: Viehman, Bauer, Groves
-# Last update: Oct 2018
-# Current status: In prep
+# NCRMP Caribbean Benthic analytics team: Groves and Viehman
+# Last update: Apr 2019
 
 
 ##############################################################################################################################
@@ -60,7 +59,7 @@ NCRMP_make_weighted_demo_data_RC <- function(project, inputdata, region, datatyp
 
     if(project == "NCRMP"){
 
-      ntot14 <- FL_2016_NTOT %>%
+      ntot14 <- FL_2018_NTOT %>%
         # Filter to region
         dplyr::filter(REGION == "SEFCRI") %>%
         # Add rugosity code to strat
@@ -74,10 +73,11 @@ NCRMP_make_weighted_demo_data_RC <- function(project, inputdata, region, datatyp
         dplyr::mutate(ngrtot = sum(NTOT))
 
 
-      ntot16 <- FL_2016_NTOT %>%
+      ntot16 <- FL_2018_NTOT %>%
         dplyr::filter(REGION == "SEFCRI") %>%
         dplyr::mutate(STRAT = paste(STRAT, RUG_CD, sep = "")) %>%
-        dplyr::mutate(ANALYSIS_STRATUM = STRAT) %>%
+        dplyr::mutate(ANALYSIS_STRATUM = STRAT,
+                      YEAR = 2016) %>%
         dplyr::mutate(ngrtot = sum(NTOT))
 
       ntot <- rbind(ntot16, ntot14)
@@ -105,7 +105,7 @@ NCRMP_make_weighted_demo_data_RC <- function(project, inputdata, region, datatyp
         assign(paste("Filter", i, sep = "_"), Filter[[i]])
       }
 
-      ntot17 <- FL_2016_NTOT %>%
+      ntot17 <- FL_2018_NTOT %>%
         # Subet to region of interest
         dplyr::filter(REGION == "SEFCRI") %>%
         # Add rugosity code to strat, YEAR to sampling year and create ANALYSIS STRATUM column
@@ -117,14 +117,15 @@ NCRMP_make_weighted_demo_data_RC <- function(project, inputdata, region, datatyp
         # Calculate total grid (cell) size, based on strata sampled
         dplyr::mutate(ngrtot = sum(NTOT))
 
-      ntot16 <- FL_2016_NTOT %>%
+      ntot16 <- FL_2018_NTOT %>%
         dplyr::filter(REGION == "SEFCRI") %>%
         dplyr::mutate(STRAT = paste(STRAT, RUG_CD, sep = ""),
-                      ANALYSIS_STRATUM = STRAT) %>%
+                      ANALYSIS_STRATUM = STRAT,
+                      YEAR = 2016) %>%
         dplyr::filter(ANALYSIS_STRATUM %in% Filter_2016) %>%
         dplyr::mutate(ngrtot = sum(NTOT))
 
-      ntot15 <- FL_2016_NTOT %>%
+      ntot15 <- FL_2018_NTOT %>%
         dplyr::filter(REGION == "SEFCRI") %>%
         dplyr::mutate(STRAT = paste(STRAT, RUG_CD, sep = ""),
                       YEAR = 2015,
@@ -132,7 +133,7 @@ NCRMP_make_weighted_demo_data_RC <- function(project, inputdata, region, datatyp
         dplyr::filter(ANALYSIS_STRATUM %in% Filter_2015) %>%
         dplyr::mutate(ngrtot = sum(NTOT))
 
-      ntot14 <- FL_2016_NTOT %>%
+      ntot14 <- FL_2018_NTOT %>%
         dplyr::filter(REGION == "SEFCRI") %>%
         dplyr::mutate(YEAR = 2014,
                       STRAT = paste(STRAT, RUG_CD, sep = ""),
@@ -151,12 +152,12 @@ NCRMP_make_weighted_demo_data_RC <- function(project, inputdata, region, datatyp
 
     if(project == "NCRMP"){
 
-      ntot16 <- FL_2016_NTOT %>%
+      ntot16 <- FL_2018_NTOT %>%
         # Filter to region
-        dplyr::filter(REGION == "FL KEYS") %>%
+        dplyr::filter(REGION == "FLK") %>%
         # Rename region to current NCRMP code. Rename the Strat column
-        dplyr::mutate(REGION = "FLK",
-                      ANALYSIS_STRATUM = STRAT) %>%
+        dplyr::mutate(ANALYSIS_STRATUM = STRAT,
+                      YEAR = 2016) %>%
         # Roll up PROT - group by strat only and calculate new NTOT
         dplyr::group_by(REGION, YEAR, RUG_CD, STRAT, GRID_SIZE, ANALYSIS_STRATUM) %>%
         dplyr::summarise(NTOT = sum(NTOT)) %>%
@@ -164,12 +165,11 @@ NCRMP_make_weighted_demo_data_RC <- function(project, inputdata, region, datatyp
         # Calculate total grid (cell) size, based on strata sampled
         dplyr::mutate(ngrtot = sum(NTOT))
 
-      ntot14 <- FL_2016_NTOT %>%
-        dplyr::filter(REGION == "FL KEYS",
+      ntot14 <- FL_2018_NTOT %>%
+        dplyr::filter(REGION == "FLK",
                       # Remove strata not sampled
                       STRAT != "FDLR") %>%
-        dplyr::mutate(REGION = "FLK",
-                      YEAR = 2014,
+        dplyr::mutate(YEAR = 2014,
                       ANALYSIS_STRATUM = STRAT) %>%# Roll up PROT - group by strat only and calculate new NTOT
         dplyr::group_by(REGION, YEAR, RUG_CD, STRAT, GRID_SIZE, ANALYSIS_STRATUM) %>%
         dplyr::summarise(NTOT = sum(NTOT)) %>%
@@ -202,12 +202,11 @@ NCRMP_make_weighted_demo_data_RC <- function(project, inputdata, region, datatyp
       }
 
 
-      ntot17 <- FL_2016_NTOT %>%
+      ntot17 <- FL_2018_NTOT %>%
         # Subet to region of interest
-        dplyr::filter(REGION == "FL KEYS") %>%
+        dplyr::filter(REGION == "FLK") %>%
         # Rename region to current NCRMP code, change YEAR to sampling year and create ANALYSIS STRATUM column
-        dplyr::mutate(REGION = "FLK",
-                      YEAR = 2017,
+        dplyr::mutate(YEAR = 2017,
                       ANALYSIS_STRATUM = STRAT)  %>%
         # Filter to just strata sampled
         dplyr::filter(ANALYSIS_STRATUM %in% Filter_2017) %>%
@@ -218,9 +217,9 @@ NCRMP_make_weighted_demo_data_RC <- function(project, inputdata, region, datatyp
         # Calculate total grid (cell) size, based on strata sampled
         dplyr::mutate(ngrtot = sum(NTOT))
 
-      ntot16 <- FL_2016_NTOT %>%
-        dplyr::filter(REGION == "FL KEYS") %>%
-        dplyr::mutate(REGION = "FLK",
+      ntot16 <- FL_2018_NTOT %>%
+        dplyr::filter(REGION == "FLK") %>%
+        dplyr::mutate(YEAR = 2016,
                       ANALYSIS_STRATUM = STRAT) %>%
         dplyr::filter(ANALYSIS_STRATUM %in% Filter_2016) %>%
         dplyr::group_by(REGION, YEAR, RUG_CD, STRAT, GRID_SIZE, ANALYSIS_STRATUM) %>%
@@ -228,22 +227,20 @@ NCRMP_make_weighted_demo_data_RC <- function(project, inputdata, region, datatyp
         dplyr::ungroup() %>%
         dplyr::mutate(ngrtot = sum(NTOT))
 
-      ntot15 <- FL_2016_NTOT %>%
-        dplyr::filter(REGION == "FL KEYS") %>%
-        dplyr::mutate(REGION = "FLK",
-                      YEAR = 2015) %>%
-        dplyr::mutate(ANALYSIS_STRATUM = STRAT) %>%
+      ntot15 <- FL_2018_NTOT %>%
+        dplyr::filter(REGION == "FLK") %>%
+        dplyr::mutate(YEAR = 2015,
+                      ANALYSIS_STRATUM = STRAT) %>%
         dplyr::filter(ANALYSIS_STRATUM %in% Filter_2015) %>%
         dplyr::group_by(REGION, YEAR, RUG_CD, STRAT, GRID_SIZE, ANALYSIS_STRATUM) %>%
         dplyr::summarise(NTOT = sum(NTOT)) %>%
         dplyr::ungroup() %>%
         dplyr::mutate(ngrtot = sum(NTOT))
 
-      ntot14 <- FL_2016_NTOT %>%
-        dplyr::filter(REGION == "FL KEYS") %>%
-        dplyr::mutate(REGION = "FLK",
-                      YEAR = 2014) %>%
-        dplyr::mutate(ANALYSIS_STRATUM = STRAT) %>%
+      ntot14 <- FL_2018_NTOT %>%
+        dplyr::filter(REGION == "FLK") %>%
+        dplyr::mutate(YEAR = 2014,
+                      ANALYSIS_STRATUM = STRAT) %>%
         dplyr::filter(ANALYSIS_STRATUM %in% Filter_2014) %>%
         dplyr::group_by(REGION, YEAR, RUG_CD, STRAT, GRID_SIZE, ANALYSIS_STRATUM) %>%
         dplyr::summarise(NTOT = sum(NTOT)) %>%
@@ -261,27 +258,29 @@ NCRMP_make_weighted_demo_data_RC <- function(project, inputdata, region, datatyp
 
     if(project == "NCRMP"){
 
-      ntot16 <- FL_2016_NTOT %>%
-        dplyr::filter(REGION == "TORT") %>%
-        dplyr::mutate(REGION = "Tortugas",
-                      ANALYSIS_STRATUM = STRAT) %>%
-        dplyr::group_by(REGION, YEAR, RUG_CD, STRAT, GRID_SIZE, ANALYSIS_STRATUM) %>%
-        dplyr::summarise(NTOT = sum(NTOT)) %>%
-        dplyr::ungroup() %>%
+    ntot18 <- FL_2018_NTOT %>%
+        dplyr::filter(REGION == "Tortugas",
+                      STRAT != "SPGR_LR") %>% # Not sampled in 2018
+        dplyr::mutate(ANALYSIS_STRATUM = STRAT) %>%
+        dplyr::filter(ANALYSIS_STRATUM != "ISOL_LR / PROT = 0",
+                      ANALYSIS_STRATUM != "ISOL_LR / PROT = 1") %>%  # Not sampled in 2018
         dplyr::mutate(ngrtot = sum(NTOT))
 
-      ntot14 <- FL_2016_NTOT %>%
-        dplyr::filter(REGION == "TORT",
+      ntot16 <- FL_2018_NTOT %>%
+        dplyr::filter(REGION == "Tortugas") %>%
+        dplyr::mutate(ANALYSIS_STRATUM = STRAT,
+                      YEAR = 2016) %>%
+        dplyr::filter(ANALYSIS_STRATUM != "ISOL_LR / PROT = 0") %>%  # Not sampled in 2016
+        dplyr::mutate(ngrtot = sum(NTOT))
+
+      ntot14 <- FL_2018_NTOT %>%
+        dplyr::filter(REGION == "Tortugas",
                       STRAT != "SPGR_LR") %>% # Not sampled in 2014
         dplyr::mutate(YEAR = 2014,
-                      REGION = "Tortugas") %>%
-        dplyr::mutate(ANALYSIS_STRATUM = STRAT) %>%
-        dplyr::group_by(REGION, YEAR, RUG_CD, STRAT, GRID_SIZE, ANALYSIS_STRATUM) %>%
-        dplyr::summarise(NTOT = sum(NTOT)) %>%
-        dplyr::ungroup() %>%
+                      ANALYSIS_STRATUM = STRAT) %>%
         dplyr::mutate(ngrtot = sum(NTOT))
 
-      ntot <- rbind(ntot16, ntot14)
+      ntot <- rbind(ntot18, ntot16, ntot14)
 
     }
 
@@ -307,56 +306,45 @@ NCRMP_make_weighted_demo_data_RC <- function(project, inputdata, region, datatyp
       }
 
 
-      ntot17 <- FL_2016_NTOT %>%
-        # Subet to region of interest
-        dplyr::filter(REGION == "TORT") %>%
-        # Rename region to current NCRMP code, change YEAR to sampling year and create ANALYSIS STRATUM column
-        dplyr::mutate(REGION = "Tortugas",
-                      YEAR = 2017,
-                      ANALYSIS_STRATUM = STRAT)  %>%
+    ntot18 <- FL_2018_NTOT %>%
+        # Subset to region of interest
+        dplyr::filter(REGION == "Tortugas") %>%
+        # Rename YEAR to sampling year and create ANALYSIS STRATUM column
+        dplyr::mutate(ANALYSIS_STRATUM = STRAT) %>%
         # Filter to just strata sampled
+        dplyr::filter(ANALYSIS_STRATUM %in% Filter_2018) %>%
+        # Calculate total grid (cell) n, based on strata sampled
+        dplyr::mutate(ngrtot = sum(NTOT))
+
+      ntot17 <- FL_2018_NTOT %>%
+        dplyr::filter(REGION == "Tortugas") %>%
+        dplyr::mutate(YEAR = 2017,
+                      ANALYSIS_STRATUM = STRAT)  %>%
         dplyr::filter(ANALYSIS_STRATUM %in% Filter_2017) %>%
-        # Roll up PROT - group by strat only and calculate new NTOT
-        dplyr::group_by(REGION, YEAR, RUG_CD, STRAT, GRID_SIZE, ANALYSIS_STRATUM) %>%
-        dplyr::summarise(NTOT = sum(NTOT)) %>%
-        dplyr::ungroup() %>%
-        # Calculate total grid (cell) size, based on strata sampled
         dplyr::mutate(ngrtot = sum(NTOT))
 
-      ntot16 <- FL_2016_NTOT %>%
-        dplyr::filter(REGION == "TORT") %>%
-        dplyr::mutate(REGION = "Tortugas",
-                      ANALYSIS_STRATUM = STRAT) %>%
+      ntot16 <- FL_2018_NTOT %>%
+        dplyr::filter(REGION == "Tortugas") %>%
+        dplyr::mutate(YEAR = 2016,
+                     ANALYSIS_STRATUM = STRAT) %>%
         dplyr::filter(ANALYSIS_STRATUM %in% Filter_2016) %>%
-        dplyr::group_by(REGION, YEAR, RUG_CD, STRAT, GRID_SIZE, ANALYSIS_STRATUM) %>%
-        dplyr::summarise(NTOT = sum(NTOT)) %>%
-        dplyr::ungroup() %>%
         dplyr::mutate(ngrtot = sum(NTOT))
 
-      ntot15 <- FL_2016_NTOT %>%
-        dplyr::filter(REGION == "TORT") %>%
-        dplyr::mutate(REGION = "Tortugas",
-                      RUG_CD = NA_character_,
-                      YEAR = 2015) %>%
-        dplyr::mutate(ANALYSIS_STRATUM = STRAT) %>%
+      ntot15 <- FL_2018_NTOT %>%
+        dplyr::filter(REGION == "Tortugas") %>%
+        dplyr::mutate(YEAR = 2015,
+                      ANALYSIS_STRATUM = STRAT) %>%
         dplyr::filter(ANALYSIS_STRATUM %in% Filter_2015) %>%
-        dplyr::group_by(REGION, YEAR, RUG_CD, STRAT, GRID_SIZE, ANALYSIS_STRATUM) %>%
-        dplyr::summarise(NTOT = sum(NTOT)) %>%
-        dplyr::ungroup() %>%
         dplyr::mutate(ngrtot = sum(NTOT))
 
-      ntot14 <- FL_2016_NTOT %>%
-        dplyr::filter(REGION == "TORT") %>%
-        dplyr::mutate(REGION = "Tortugas",
-                      YEAR = 2014) %>%
-        dplyr::mutate(ANALYSIS_STRATUM = STRAT) %>%
+      ntot14 <- FL_2018_NTOT %>%
+        dplyr::filter(REGION == "Tortugas") %>%
+        dplyr::mutate(YEAR = 2014,
+                      ANALYSIS_STRATUM = STRAT) %>%
         dplyr::filter(ANALYSIS_STRATUM %in% Filter_2014) %>%
-        dplyr::group_by(REGION, YEAR, RUG_CD, STRAT, GRID_SIZE, ANALYSIS_STRATUM) %>%
-        dplyr::summarise(NTOT = sum(NTOT)) %>%
-        dplyr::ungroup() %>%
         dplyr::mutate(ngrtot = sum(NTOT))
 
-      ntot <- rbind(ntot17, ntot16, ntot15, ntot14)
+      ntot <- rbind(ntot18, ntot17, ntot16, ntot15, ntot14)
 
     }
 
@@ -447,27 +435,33 @@ NCRMP_make_weighted_demo_data_RC <- function(project, inputdata, region, datatyp
 
   if(region == "GOM"){
 
-    ntot13 <- FGBNMS_2015_NTOT %>%
-      dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS",
-                    REGION = "GOM",
+  ntot13 <- FGBNMS_2018_NTOT %>%
+      dplyr::mutate(ANALYSIS_STRATUM = HABITAT_CD,
+                    PROT = NA_character_,
                     YEAR = 2013) %>%
-      dplyr::group_by(REGION, YEAR, ANALYSIS_STRATUM, DEPTH) %>%
+      dplyr::group_by(REGION, YEAR, ANALYSIS_STRATUM, DEPTH, PROT) %>%
       dplyr::summarise(NTOT = sum(NTOT),
                        ngrtot = sum(NTOT)) %>%
       dplyr::ungroup()
 
-
-
-    ntot15 <- FGBNMS_2015_NTOT %>%
-      dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS",
-                    REGION = "GOM",
+    ntot15 <- FGBNMS_2018_NTOT %>%
+      dplyr::mutate(ANALYSIS_STRATUM = HABITAT_CD,
+                    PROT = NA_character_,
                     YEAR = 2015) %>%
-      dplyr::group_by(REGION, YEAR, ANALYSIS_STRATUM, DEPTH) %>%
+      dplyr::group_by(REGION, YEAR, ANALYSIS_STRATUM, DEPTH, PROT) %>%
       dplyr::summarise(NTOT = sum(NTOT),
                        ngrtot = sum(NTOT)) %>%
       dplyr::ungroup()
 
-    ntot <- rbind(ntot13, ntot15)
+     ntot18 <- FGBNMS_2018_NTOT %>%
+      dplyr::mutate(ANALYSIS_STRATUM = HABITAT_CD,
+                    PROT = NA_character_) %>%
+      dplyr::group_by(REGION, YEAR, ANALYSIS_STRATUM, DEPTH, PROT) %>%
+      dplyr::summarise(NTOT = sum(NTOT),
+                       ngrtot = sum(NTOT)) %>%
+      dplyr::ungroup()
+
+    ntot <- rbind(ntot13, ntot15, ntot18)
 
   }
 

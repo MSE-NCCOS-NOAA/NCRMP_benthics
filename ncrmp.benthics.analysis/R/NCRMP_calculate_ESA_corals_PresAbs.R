@@ -24,8 +24,7 @@
 #
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman
-# Last update: Nov 2018
-
+# Last update: Apr 2019
 
 ##############################################################################################################################
 
@@ -73,8 +72,13 @@ NCRMP_calculate_ESA_corals_PresAbs <- function()
     dplyr::filter(SUB_REGION_NAME != "Marquesas",
                   SUB_REGION_NAME != "Marquesas-Tortugas Trans")
 
+  tmp7 <- Tortugas_2018_inverts_ESAcorals %>%
+    dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
+    # Remove METERS_COMPLETED as it is missing from the other FL data
+    dplyr::select(-METERS_COMPLETED)
+
   #Combine FL
-  FL <- rbind(tmp1, tmp2, tmp3, tmp4, tmp5, tmp6)
+  FL <- rbind(tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7)
 
   # Carib / GOM
   # St. Thomas, St. John, & St. Croix

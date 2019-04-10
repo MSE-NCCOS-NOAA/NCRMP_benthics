@@ -24,7 +24,7 @@
 #
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman
-# Last update: Oct 2018
+# Last update: Apr 2019
 
 
 ##############################################################################################################################
@@ -97,6 +97,13 @@ NCRMP_calculate_cover <- function(region, year, analysis_strat = "NULL"){
                       SUB_REGION_NAME != "Marquesas-Tortugas Trans") %>%
         dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
     }
+
+    if(year == 2018){
+
+      dat <- Tortugas_2018_benthic_cover %>%
+        dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
+    }
+
   }
 
   # GOM / Carib
@@ -180,14 +187,14 @@ NCRMP_calculate_cover <- function(region, year, analysis_strat = "NULL"){
       dat <- FGBNMS_2015_benthic_cover %>%
         dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS")
 
-  }
+    }
 
-     if(year == 2018) {
+    if(year == 2018) {
 
       dat <- FGBNMS_2018_benthic_cover  %>%
         dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS")
 
-     }
+    }
   }
 
 
@@ -213,13 +220,45 @@ NCRMP_calculate_cover <- function(region, year, analysis_strat = "NULL"){
 
   # Calculate percent cover of species by site
 
-  percent_cover_species <- dat %>%
-    dplyr::mutate(Percent_Cvr = rowSums(.[28:30])) %>%
-    dplyr::inner_join(.,ncrmp_frrp_sppcodes2,  by = c( "COVER_CAT_CD" = "fl_ncrmp_code")) %>%
-    dplyr::select(-HARDBOTTOM_P, -SOFTBOTTOM_P, -RUBBLE_P) %>%
-    dplyr::mutate(PROT = as.factor(PROT)) %>%
-    dplyr::select(REGION, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, STATION_NR, LAT_DEGREES, LON_DEGREES,
-                  ANALYSIS_STRATUM, STRAT, HABITAT_CD, PROT, COVER_CAT_CD, COVER_CAT_NAME, cover_group, Percent_Cvr)
+  if(year == 2014 && region == "SEFCRI" ||
+     year == 2014 && region == "FLK" ||
+     year == 2018 && region == "Tortugas") {
+
+    percent_cover_species <- dat %>%
+      dplyr::mutate(Percent_Cvr = rowSums(.[28:30])) %>%
+      dplyr::inner_join(.,ncrmp_frrp_sppcodes2,  by = c( "COVER_CAT_CD" = "fl_ncrmp_code")) %>%
+      dplyr::select(-HARDBOTTOM_P, -SOFTBOTTOM_P, -RUBBLE_P) %>%
+      dplyr::mutate(PROT = as.factor(PROT)) %>%
+      dplyr::group_by(REGION, YEAR, MONTH, DAY, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES,
+                      ANALYSIS_STRATUM, STRAT, PROT, COVER_CAT_CD, COVER_CAT_NAME, cover_group) %>%
+      dplyr::summarise(Percent_Cvr_site = mean(Percent_Cvr),
+                       MIN_DEPTH = mean(MIN_DEPTH),
+                       MAX_DEPTH = mean(MAX_DEPTH)) %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(Percent_Cvr = Percent_Cvr_site) %>%
+      dplyr::select(REGION, YEAR, MONTH, DAY, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES,
+                    ANALYSIS_STRATUM, STRAT, PROT, MIN_DEPTH, MAX_DEPTH, COVER_CAT_CD, COVER_CAT_NAME, cover_group, Percent_Cvr)
+
+    # Check to see if site level totals are 100%
+    cover_check_species <- percent_cover_species %>%
+      dplyr::group_by(REGION, YEAR, PRIMARY_SAMPLE_UNIT, STRAT) %>%
+      dplyr::summarise(Cover = sum(Percent_Cvr))
+
+  } else {
+
+    percent_cover_species <- dat %>%
+      dplyr::mutate(Percent_Cvr = rowSums(.[28:30])) %>%
+      dplyr::inner_join(.,ncrmp_frrp_sppcodes2,  by = c( "COVER_CAT_CD" = "fl_ncrmp_code")) %>%
+      dplyr::select(-HARDBOTTOM_P, -SOFTBOTTOM_P, -RUBBLE_P) %>%
+      dplyr::mutate(PROT = as.factor(PROT)) %>%
+      dplyr::select(REGION, YEAR, MONTH, DAY, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES,
+                    ANALYSIS_STRATUM, STRAT, PROT, MIN_DEPTH, MAX_DEPTH, COVER_CAT_CD, COVER_CAT_NAME, cover_group, Percent_Cvr)
+
+    cover_check_species <- percent_cover_species %>%
+      dplyr::group_by(REGION, YEAR, PRIMARY_SAMPLE_UNIT, STRAT) %>%
+      dplyr::summarise(Cover = sum(Percent_Cvr))
+
+  }
 
   # Calculate percent cover of major biological categories by site
 
@@ -234,7 +273,7 @@ NCRMP_calculate_cover <- function(region, year, analysis_strat = "NULL"){
     dplyr::ungroup()
 
 
-  # Calculate percent cover at the STRATA level using weighted and unweighted data
+  # Calculate percent cover at the STRATA level
 
   ### Reclassify all other categories to other or macroalgae
 
@@ -249,10 +288,11 @@ NCRMP_calculate_cover <- function(region, year, analysis_strat = "NULL"){
                                                  TRUE ~ cover_group))
 
 
-  ### Account for SEFCRI/FLK 2014 2 stage data - take the transect means
+  ### Account for SEFCRI/FLK 2014 & Tortugas 2018 2 transect data - take the transect means
 
   if(year == 2014 && region == "SEFCRI" ||
-     year == 2014 && region == "FLK") {
+     year == 2014 && region == "FLK" ||
+     year == 2018 && region == "Tortugas") {
 
     dat2 <- dat2 %>%
       dplyr::group_by(YEAR, REGION, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, STATION_NR, LAT_DEGREES, LON_DEGREES,
@@ -304,6 +344,10 @@ NCRMP_calculate_cover <- function(region, year, analysis_strat = "NULL"){
     dplyr::ungroup()
 
   percent_cover_site <- dat2
+
+  cover_check_site <- percent_cover_site %>%
+      dplyr::group_by(REGION, YEAR, PRIMARY_SAMPLE_UNIT, STRAT) %>%
+      dplyr::summarise(Cover = sum(Percent_Cvr))
 
   # Add NTOT, # Cells sampled and calculate sampling weights in weighting function
 
@@ -360,7 +404,9 @@ NCRMP_calculate_cover <- function(region, year, analysis_strat = "NULL"){
   # Create list to export
   output <- list(
     "percent_cover_species" = percent_cover_species,
+    "cover_check_species" = cover_check_species,
     "percent_cover_site" = percent_cover_site,
+    "cover_check_site" = cover_check_site,
     "cover_group_key" = cover_group_key,
     "unwh_cover_strata" = unwh_cover_strata,
     "Domain_est" = Domain_est,

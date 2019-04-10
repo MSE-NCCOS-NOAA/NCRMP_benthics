@@ -12,14 +12,14 @@
 
 <meta name="author" content="Sarah Groves" />
 
-<meta name="date" content="2018-11-20" />
+<meta name="date" content="2019-04-10" />
 
 <title>NCRMP Benthics statistical package in R</title>
 
 
 
 <style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
+<style type="text/css" data-origin="pandoc">
 a.sourceLine { display: inline-block; line-height: 1.25; }
 a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
 a.sourceLine:empty { height: 1.2em; }
@@ -81,7 +81,29 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
 </style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' || rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
 
 
 
@@ -269,6 +291,9 @@ code > span.al { color: #ff0000; font-weight: bold; }
 code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
 </style>
 
+
+
+
 </head>
 
 <body>
@@ -277,8 +302,8 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 
 <h1 class="title toc-ignore">NCRMP Benthics statistical package in R</h1>
-<h4 class="author"><em>Sarah Groves</em></h4>
-<h4 class="date"><em>2018-11-20</em></h4>
+<h4 class="author">Sarah Groves</h4>
+<h4 class="date">2019-04-10</h4>
 
 
 <div id="TOC">
@@ -303,6 +328,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <li><a href="#bleaching-abundance">Bleaching abundance</a></li>
 </ul></li>
 <li><a href="#frequently-asked-questions">Frequently asked questions:</a></li>
+<li><a href="#ncrmp-species-filter-developed-in-status-report-meetings">NCRMP species filter developed in status report meetings</a></li>
 <li><a href="#disclaimer">Disclaimer</a></li>
 </ul>
 </div>
@@ -329,7 +355,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <ul>
 <li>Southeast Florida (SEFCRI; 2014, 2016)</li>
 <li>Florida Keys (FLK; 2014, 2016)</li>
-<li>Dry Tortugas (Tortugas; 2014, 2016)</li>
+<li>Dry Tortugas (Tortugas; 2014, 2016, 2018)</li>
 </ul></li>
 <li>Caribbean:
 <ul>
@@ -339,10 +365,10 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </ul></li>
 <li>Gulf of Mexico:
 <ul>
-<li>Flower Garden Banks National Marine Sanctuary (GOM; 2013, 2015)</li>
+<li>Flower Garden Banks National Marine Sanctuary (GOM; 2013, 2015, 2018)</li>
 </ul></li>
 </ul>
-<p>Upcoming data additions: Florida &amp; Gulf of Mexico 2018 (in 2019), Caribbean 2019 (in 2020)</p>
+<p>Upcoming data additions: Florida 2018 (in 2019), Caribbean 2019 (in 2020)</p>
 </div>
 <div id="installation" class="section level2">
 <h2>Installation</h2>
@@ -389,10 +415,10 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <a class="sourceLine" id="cb2-24" data-line-number="24"><span class="co"># Add axis labels</span></a>
 <a class="sourceLine" id="cb2-25" data-line-number="25"><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;&quot;</span>) <span class="op">+</span></a>
 <a class="sourceLine" id="cb2-26" data-line-number="26"><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Cover (%)&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb2-27" data-line-number="27"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Hard coral cover&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb2-27" data-line-number="27"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Hard coral cover - St. Thomas &amp; St. John&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb2-28" data-line-number="28"><span class="co"># Remove legend </span></a>
 <a class="sourceLine" id="cb2-29" data-line-number="29"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</a></code></pre></div>
-<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
 <p><strong>Add dataframe to the Global Environmentt</strong></p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># require(ncrmp.benthics.analysis)</span></a>
 <a class="sourceLine" id="cb3-2" data-line-number="2"><span class="co">#</span></a>
@@ -484,7 +510,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <li>Sampling grids:
 <ul>
 <li>SEFCRI_2016_sample_frame</li>
-<li>FLK_TORT_2016_sample_frame</li>
+<li>FLK_TORT_2018_sample_frame</li>
 <li>STTSTJ_2017_sample_frame_WGS1984</li>
 <li>STX_2017_sample_frame_WGS1984</li>
 <li>PRICO_2016_sample_frame_WGS1984</li>
@@ -493,13 +519,14 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <li>NTOT files:
 <ul>
 <li>USVI_2017_NTOT (STTSTJ &amp; STX)</li>
-<li>FL_2016_NTOT (SEFCRI, FLK &amp; Tortugas)</li>
+<li>FL_2018_NTOT (SEFCRI, FLK &amp; Tortugas)</li>
 <li>PRICO_2016_NTOT</li>
-<li>FGBNMS_2015_NTOT</li>
+<li>FGBNMS_2018_NTOT</li>
 </ul></li>
 <li>Boundaries
 <ul>
 <li>FKNMS_boundary</li>
+<li>FGBNMS_boundary</li>
 </ul></li>
 </ul>
 </div>
@@ -529,7 +556,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <li>parameters:
 <ul>
 <li><p>region: “SEFCRI”, “FLK”, “Tortugas”, “STTSTJ”, “STX”, “PRICO”, “GOM”</p></li>
-<li><p>year: 2013, 2014, 2015, 2016, 2017 Note - for each region, only years where sampling was conducted will run</p></li>
+<li><p>year: 2013, 2014, 2015, 2016, 2017, 2018 Note - for each region, only years where sampling was conducted will run</p></li>
 <li><p>analysis_strat: “STRAT_PROT” (Florida regions only; default), “HABITAT_DEPTH” (Carib regions only; default), “STRAT” (Florida regions only ), “HABITAT” (Carib regions only)</p></li>
 </ul></li>
 <li>outputs (dataframes):
@@ -777,8 +804,8 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </div>
 <div id="coral-density" class="section level2">
 <h2>Coral density</h2>
-<div id="ncrmp_frrp_calculate_colony_density" class="section level3">
-<h3>4. NCRMP_FRRP_calculate_colony_density</h3>
+<div id="ncrmp_drm_calculate_colony_density" class="section level3">
+<h3>4. NCRMP_DRM_calculate_colony_density</h3>
 <p><strong>Calculates colony density from site to regional level for all sampling years</strong></p>
 <ul>
 <li>parameters:
@@ -801,7 +828,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <a class="sourceLine" id="cb10-2" data-line-number="2"><span class="kw">require</span>(ncrmp.benthics.analysis)</a>
 <a class="sourceLine" id="cb10-3" data-line-number="3"></a>
 <a class="sourceLine" id="cb10-4" data-line-number="4"><span class="co"># Run function </span></a>
-<a class="sourceLine" id="cb10-5" data-line-number="5">tmp &lt;-<span class="st"> </span><span class="kw">NCRMP_FRRP_calculate_colony_density</span>(<span class="dt">project =</span> <span class="st">&quot;NCRMP_FRRP&quot;</span>, </a>
+<a class="sourceLine" id="cb10-5" data-line-number="5">tmp &lt;-<span class="st"> </span><span class="kw">NCRMP_DRM_calculate_colony_density</span>(<span class="dt">project =</span> <span class="st">&quot;NCRMP_FRRP&quot;</span>, </a>
 <a class="sourceLine" id="cb10-6" data-line-number="6">                                           <span class="dt">region =</span> <span class="st">&quot;FLK&quot;</span>,</a>
 <a class="sourceLine" id="cb10-7" data-line-number="7">                                           <span class="dt">species_filter =</span> <span class="st">&quot;FALSE&quot;</span>,</a>
 <a class="sourceLine" id="cb10-8" data-line-number="8">                                           <span class="dt">analysis_strat =</span> <span class="st">&quot;STRAT_PROT&quot;</span>)</a>
@@ -817,7 +844,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <h3>5. NCRMP_make_weighted_demo_data</h3>
 <p><strong>Applies weighting scheme to coral demographic data (coral density, species richness, and mortality).</strong></p>
 <p>Analysis level strata = STRAT + PROT for Florida regions and HABITAT CODE + DEPTH STRAT for the Caribbean and GOM regions. These are the recommended and default settings.</p>
-<p>This function is called within NCRMP_FRRP_calculate_colony_density so the initial parameters you provide for region and year will be passed on.</p>
+<p>This function is called within NCRMP_DRM_calculate_colony_density so the initial parameters you provide for region and year will be passed on.</p>
 <p>Example of weighting application for Florida:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"></a>
 <a class="sourceLine" id="cb11-2" data-line-number="2"><span class="co"># Calculate average density (avden), stratum variance (svar), n and std at the strata and regional level using STRAT + PROT as the analysis strata. Inputdata = 1 stage site level coral density and ntot = the most recent NTOT file for the region, regardless of sampling year. </span></a>
@@ -908,7 +935,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <h3>6. NCRMP_make_weighted_demo_data_RC</h3>
 <p><strong>Applies weighting scheme to coral demographic data (coral density, species richness, and mortality).</strong></p>
 <p>Analysis level strata = STRAT for Florida regions and HABITAT CODE for the Caribbean and GOM regions.</p>
-<p>This function is called within NCRMP_FRRP_calculate_colony_density so the initial parameters you provide for region and year will be passed on.</p>
+<p>This function is called within NCRMP_DRM_calculate_colony_density so the initial parameters you provide for region and year will be passed on.</p>
 <p>Example of weighting application for Florida:</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"></a>
 <a class="sourceLine" id="cb13-2" data-line-number="2"><span class="co"># # Calculate average density (avden), stratum variance (svar), n and std at the strata and regional level using STRAT as the analysis strata. Inputdata = 1 stage site level coral density and ntot = the most recent NTOT file for the region, regardless of sampling year. </span></a>
@@ -997,8 +1024,8 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </div>
 <div id="species-richness-and-diversity" class="section level2">
 <h2>Species richness and diversity</h2>
-<div id="ncrmp_frrp_calculate_species_richness_diversity" class="section level3">
-<h3>7. NCRMP_FRRP_calculate_species_richness_diversity</h3>
+<div id="ncrmp_drm_calculate_species_richness_diversity" class="section level3">
+<h3>7. NCRMP_DRM_calculate_species_richness_diversity</h3>
 <p><strong>Calculates species richness from site to regional level for all sampling years. Calculates Simpson, Inverse Simpson and Shannon–Wiener diversity indices from site to regional level for all sampling years using the R package vegan.</strong></p>
 <ul>
 <li>parameters:
@@ -1024,7 +1051,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <a class="sourceLine" id="cb15-2" data-line-number="2"><span class="kw">require</span>(ncrmp.benthics.analysis)</a>
 <a class="sourceLine" id="cb15-3" data-line-number="3"></a>
 <a class="sourceLine" id="cb15-4" data-line-number="4"><span class="co"># Run function </span></a>
-<a class="sourceLine" id="cb15-5" data-line-number="5">tmp &lt;-<span class="st"> </span><span class="kw">NCRMP_FRRP_calculate_species_richness_diversity</span>(<span class="dt">project =</span> <span class="st">&quot;NCRMP&quot;</span>,</a>
+<a class="sourceLine" id="cb15-5" data-line-number="5">tmp &lt;-<span class="st"> </span><span class="kw">NCRMP_DRM_calculate_species_richness_diversity</span>(<span class="dt">project =</span> <span class="st">&quot;NCRMP&quot;</span>,</a>
 <a class="sourceLine" id="cb15-6" data-line-number="6">                                                       <span class="dt">region=</span> <span class="st">&quot;Tortugas&quot;</span>,</a>
 <a class="sourceLine" id="cb15-7" data-line-number="7">                                                       <span class="dt">analysis_strat =</span> <span class="st">&quot;STRAT_PROT&quot;</span>)</a>
 <a class="sourceLine" id="cb15-8" data-line-number="8"></a>
@@ -1044,8 +1071,8 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </div>
 <div id="mortality" class="section level2">
 <h2>Mortality</h2>
-<div id="ncrmp_frrp_calculate_mortality" class="section level3">
-<h3>8. NCRMP_FRRP_calculate_mortality</h3>
+<div id="ncrmp_drm_calculate_mortality" class="section level3">
+<h3>8. NCRMP_DRM_calculate_mortality</h3>
 <p><strong>Calculates old and recent mortality (percent of colony surface) from species to regional level for all sampling years</strong></p>
 <ul>
 <li>parameters:
@@ -1068,7 +1095,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <a class="sourceLine" id="cb16-2" data-line-number="2"><span class="kw">require</span>(ncrmp.benthics.analysis)</a>
 <a class="sourceLine" id="cb16-3" data-line-number="3"></a>
 <a class="sourceLine" id="cb16-4" data-line-number="4"><span class="co"># Run function</span></a>
-<a class="sourceLine" id="cb16-5" data-line-number="5">tmp &lt;-<span class="st"> </span><span class="kw">NCRMP_FRRP_calculate_mortality</span>(<span class="dt">project =</span> <span class="st">&quot;NCRMP&quot;</span>,</a>
+<a class="sourceLine" id="cb16-5" data-line-number="5">tmp &lt;-<span class="st"> </span><span class="kw">NCRMP_DRM_calculate_mortality</span>(<span class="dt">project =</span> <span class="st">&quot;NCRMP&quot;</span>,</a>
 <a class="sourceLine" id="cb16-6" data-line-number="6">                                      <span class="dt">region =</span> <span class="st">&quot;GOM&quot;</span>,</a>
 <a class="sourceLine" id="cb16-7" data-line-number="7">                                      <span class="dt">species_filter =</span> <span class="st">&quot;TRUE&quot;</span>,</a>
 <a class="sourceLine" id="cb16-8" data-line-number="8">                                      <span class="dt">analysis_strat =</span> <span class="st">&quot;HABITAT_DEPTH&quot;</span>)</a>
@@ -1124,9 +1151,9 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </div>
 <div id="disease-prevalence" class="section level2">
 <h2>Disease prevalence</h2>
-<div id="ncrmp_frrp_calculate_disease_prevalence" class="section level3">
-<h3>10. NCRMP_FRRP_calculate_disease_prevalence</h3>
-<p><strong>Calculates disease prevalence at the site (% colonies per site), strata (% colonies per strata), and regional (% colonies per region) level for all sampling years</strong></p>
+<div id="ncrmp_drm_calculate_disease_prevalence" class="section level3">
+<h3>10. NCRMP_DRM_calculate_disease_prevalence</h3>
+<p><strong>Calculates disease prevalence at the site (% colonies per site), strata (mean of % colonies per site), and regional (weighted mean of % colonies per site) level for all sampling years</strong></p>
 <ul>
 <li>parameters:
 <ul>
@@ -1148,7 +1175,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <a class="sourceLine" id="cb18-3" data-line-number="3"></a>
 <a class="sourceLine" id="cb18-4" data-line-number="4"><span class="co"># Run function </span></a>
 <a class="sourceLine" id="cb18-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb18-6" data-line-number="6">tmp &lt;-<span class="st"> </span><span class="kw">NCRMP_FRRP_calculate_disease_prevalence</span>(<span class="dt">project =</span> <span class="st">&quot;NCRMP_FRRP&quot;</span>,</a>
+<a class="sourceLine" id="cb18-6" data-line-number="6">tmp &lt;-<span class="st"> </span><span class="kw">NCRMP_DRM_calculate_disease_prevalence</span>(<span class="dt">project =</span> <span class="st">&quot;NCRMP_FRRP&quot;</span>,</a>
 <a class="sourceLine" id="cb18-7" data-line-number="7">                                        <span class="dt">region =</span> <span class="st">&quot;SEFCRI&quot;</span>,</a>
 <a class="sourceLine" id="cb18-8" data-line-number="8">                                        <span class="dt">species_filter =</span> <span class="st">&quot;FALSE&quot;</span>)</a>
 <a class="sourceLine" id="cb18-9" data-line-number="9"></a>
@@ -1231,25 +1258,13 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </div>
 <div id="frequently-asked-questions" class="section level1">
 <h1>Frequently asked questions:</h1>
-<div id="what-species-are-used-when-you-filter-the-species-in-ncrmp_frrp_calculate_colony_density-ncrmp_frrp_calculate_disease_prevalence-or-ncrmp_frrp_calculate_mortality" class="section level3">
-<h3>1. What species are used when you filter the species in NCRMP_FRRP_calculate_colony_density, NCRMP_FRRP_calculate_disease_prevalence or NCRMP_FRRP_calculate_mortality?</h3>
-<p><strong>First 6 species are from sample allocation, remainder are ESA listed species</strong></p>
-<ul>
-<li><p>FLK_filter &lt;- c(“COL NATA”, “MON CAVE”, “ORB FAVE”, “POR PORI”, “SID SIDE”, “SOL BOUR”, “ACR CERV”, “ACR PALM”, “ORB ANNU”, “ORB FRAN”, “DEN CYLI”, “MYC FERO”)</p></li>
-<li><p>Tort_filter &lt;- c(“COL NATA”, “MON CAVE”, “ORB FAVE”, “POR PORI”, “ORB FRAN”, “STE INTE”, “ACR CERV”, “ACR PALM”, “ORB ANNU”, “DEN CYLI”, “MYC FERO”)</p></li>
-<li><p>SEFCRI_filter &lt;- c(“ACR CERV”, “DIC STOK”, “MON CAVE”, “POR ASTR”, “PSE STRI”, “SID SIDE”,“ACR CERV”, “ACR PALM”, “ORB ANNU”, “ORB FRAN”, “ORB FAVE”, “DEN CYLI”, “MYC FERO”)</p></li>
-<li><p>STX_filter &lt;- c(“COL NATA”, “ORB ANNU”, “MEA MEAN”, “MAD DECA”, “ORB FRAN”, “ORB FAVE”, “ACR CERV”, “ACR PALM”, “ORB ANNU”, “DEN CYLI”, “MYC FERO”)</p></li>
-</ul>
-<p><strong>First 5 species are from sample allocation, remainder are ESA listed species</strong></p>
-<ul>
-<li><p>STTSTJ_filter &lt;- c(“COL NATA”, “ORB ANNU”, “DIP LABY”, “MAD DECA”, “ORB FAVE”, “ACR CERV”, “ACR PALM”, “ORB FRAN”, “DEN CYLI”, “MYC FERO”)</p></li>
-<li><p>PR_filter &lt;- c(“COL NATA”, “ORB ANNU”, “DIP LABY”, “MAD DECA”, “ORB FAVE”, “ACR CERV”, “ACR PALM”, “ORB FRAN”, “DEN CYLI”, “MYC FERO”)</p></li>
-</ul>
-<p><strong>Top 10 most abundant species - minus POR ASTR</strong></p>
-<ul>
-<li>GOM_filter &lt;- c(“ORB FRAN”, “PSE STRI”, “AGA AGAR”, “MON CAVE”, “STE INTE”, “COL NATA”, “MAD DECA”, “ORB FAVE”, “MAD AURE”)</li>
-</ul>
+<div id="what-species-are-used-when-you-filter-the-species-in-ncrmp_drm_calculate_colony_density-ncrmp_drm_calculate_disease_prevalence-or-ncrmp_drm_calculate_mortality" class="section level3">
+<h3>1. What species are used when you filter the species in NCRMP_DRM_calculate_colony_density, NCRMP_DRM_calculate_disease_prevalence or NCRMP_DRM_calculate_mortality?</h3>
 </div>
+</div>
+<div id="ncrmp-species-filter-developed-in-status-report-meetings" class="section level1">
+<h1>NCRMP species filter developed in status report meetings</h1>
+<p>Report_card_filter &lt;- c(“ACR CERV”, “ACR PALM”, “COL NATA”, “DIP LABY”, “MON CAVE”, “ORB ANNU”, “ORB FRAN”, “ORB FAVE”, “POR PORI”, “PSE STRI”, “PSE CLIV”, “SID SIDE”, “STE INTE”)</p>
 <div id="which-benthic-categories-are-combined-into-other-in-ncrmp_calculate_cover" class="section level3">
 <h3>2. Which benthic categories are combined into “OTHER” in NCRMP_calculate_cover?</h3>
 <p>The following major benthic categories are currently classified as OTHER in the benthic cover metrics: SUBSTRATE, HYDROCORALS, OTHER INVERTEBRATES, CYANOBACTERIA, and SEAGRASS. Please see ncrmp_frrp_sppcodes, which is contained in the package, for information on how taxa are categorized into major benthic categories.</p>

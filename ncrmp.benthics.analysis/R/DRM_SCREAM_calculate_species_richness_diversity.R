@@ -26,7 +26,6 @@
 
 # NCRMP Caribbean Benthic analytics team: Viehman, Bauer, Groves
 # Last update: Sept 2018
-# Current status: Needs review
 
 
 ##############################################################################################################################
