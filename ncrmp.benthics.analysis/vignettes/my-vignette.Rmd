@@ -38,9 +38,9 @@ Note:
 
 * This package currently uses NOAA's NCRMP Atlantic benthic data only. See https://github.com/jeremiaheb/rvc#reef-visual-census-statistical-package-in-r for Atlantic fish R package.
 
-* Where indicated in file names by NCRMP_FRRP or NCRMP_DRM, NCRMP and Disturbrance Response Monitoring (DRM; formerly known as Florida Reef Resilience Program or FRRP) data from 2014 to present have been combined during co-sampling (even) years. DRM only data is used for non-NCRMP (odd) years. We are in the process of changing the naming convention from FRRP to DRM but at present DRM and FRRP are used interchangeably. Please be patient while we complete this transition. 
+* Where indicated in file names by NCRMP_FRRP or NCRMP_DRM, NCRMP and Disturbrance Response Monitoring (DRM; formerly known as Florida Reef Resilience Program or FRRP) data from 2014 to present have been combined during co-sampling (even) years. DRM only data are used for non-NCRMP (odd) years. We are in the process of changing the naming convention from FRRP to DRM but at present DRM and FRRP are used interchangeably. Please be patient while we complete this transition. 
 
-* SEFCRI 2014 coral demographics, benthic cover and invertebrates/ESA corals data as well as FLK 2014 benthic cover and invertebrates/ESA corals data is 2 stage (2 transects per site). Site level metrics for these regions and years are the mean of transect 1 and transect 2. Strata and regional means are then calculated from this site level data. 
+* SEFCRI 2014 coral demographics, benthic cover and invertebrates/ESA corals data, FLK 2014 benthic cover and invertebrates/ESA corals data, and Tortugas 2018 coral demographic data are 2 stage (2 transects per site). Site level metrics for these regions and years are the mean of transect 1 and transect 2. Strata and regional means are then calculated from this site level data. 
 
 
 For questions, please contact the repository owner, Sarah Groves, sarah.groves@noaa.gov 
@@ -69,7 +69,7 @@ Type the following into R
 
 install.packages('devtools')
 
-devtools::install_github('TBD/ncrmp.benthic.analysis')
+devtools::install_github('shgroves/NCRMP_benthics')
 
 Note: You can skip the first line if you already have devtools installed. Requires R version 3.4.1 or higher.
 
@@ -119,9 +119,9 @@ ggplot(Hardcoral, aes(x = YEAR, y = avCvr, group = YEAR)) +
 # Set the y axis scale
   scale_y_continuous(limits = c(0,25), expand = c(0, 0)) +
 # Add axis labels
-  xlab("") +
+  xlab("Year") +
   ylab("Cover (%)") +
-  labs(title = "Hard coral cover - St. Thomas & St. John") + 
+  labs(title = "Hard coral cover") + 
 # Remove legend 
   theme(legend.position="none")
 
@@ -166,7 +166,7 @@ Datasets contained within the package at the strata and regional level are creat
   
 ### Analysis Ready (AR) data 
 
-Analysis ready NCRMP datasets for all regions and years are contained within this package in the most recent NCRMP Atlantic archive format. AR datasets can be identified because they begin with the region code followed by the year and then the data type; benthic_cover, coral_demographics or inverts_ESAcorals. Two stage (2 transect) data is identified in the file name except for the Tortugas 2018 data. All Tortugas 2018 data has two transects. Tortugas 2018 coral demographics surveys were a joint mission between NCRMP and DRM - this data is combined and indistinguishable. All other datasets are single transect. 
+Analysis ready NCRMP datasets for all regions and years are contained within this package in the most recent NCRMP Atlantic archive format. AR datasets can be identified because they begin with the region code followed by the year and then the data type; benthic_cover, coral_demographics or inverts_ESAcorals. Two stage (2 transect) data are identified in the file name except for the Tortugas 2018 data. Tortugas 2018 coral demographics surveys were a joint mission between NCRMP and DRM where two transects were conducted at each site. The NCRMP and DRM data are combined and indistinguishable. All other datasets are single transect. 
 
 * Data format: 
     * REGION_YEAR_datatype
@@ -177,7 +177,7 @@ Analysis ready NCRMP datasets for all regions and years are contained within thi
     * FGBNMS_2013_inverts_ESAcorals
   
    
-In addition, the following AR Florida DRM and Sanctuary Coral Reef Ecosystem Assessment Monitoring (SCREAM) datasets in NCRMP format are stored in the package. Combined DRM and SCREAM data is from 1999 to 2013 (not all regions are sampled each year) and individual DRM regions are 2014 to the most recent year of sampling.
+In addition, the following AR Florida DRM and Sanctuary Coral Reef Ecosystem Assessment Monitoring (SCREAM) datasets in NCRMP format are stored in the package. Combined DRM and SCREAM data are from 1999 to 2013 (not all regions are sampled each year) and individual DRM regions are 2014 to the most recent year of sampling.
 
 * preNCRMP_SCREAM_DRM_coral_demographics  
 * FRRP_SEFCRI_2017_2stage_demo_data - includes data from 2014 - 2017 
@@ -212,7 +212,7 @@ In addition, there are two dataframes that contain all regions and years
             
 ### Shapefiles and NTOT files 
 
-The most recent sampling grid shapefiles used for site allocation and associated NTOT (grid summary) files are also contained in the package. Grids can be used in R or exported as shapefiles. The NTOT files are required to properly apply the weighting scheme to summary data. The Florida Keys National Marine Sanctuary boundary polygon is also contained in the package. More boundary polygons for other regions will be added in future updates.
+The most recent sampling grid shapefiles used for site allocation and associated NTOT (grid summary) files are also contained in the package. Grids can be used in R or exported as shapefiles. The NTOT files are required to properly apply the weighting scheme to summary data. The Florida Keys National Marine Sanctuary (FKNMS) and the Flower Garden Banks National Marine Sanctuary (FGBNMS) boundary polygons are also contained in the package. More boundary polygons for other regions will be added in future updates.
 
 * Sampling grids:
     * SEFCRI_2016_sample_frame
