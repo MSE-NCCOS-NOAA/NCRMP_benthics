@@ -11,7 +11,7 @@ The ncrmp.benthic.analysis package is designed to use benthic data collected fro
 
 1. Download the zipped R package using the green "Clone or download" button.
 
-2. In R studio, open the ncrmp.benthics.analysis R project in the folder of the same name and use the following code to install the pacakge. You must be in the in the ncrmp.benthics.analysis R project. If you aleady have devtools installed you can skip the first line. 
+2. In R studio, open the ncrmp.benthics.analysis R project in the folder of the same name and use the following code to install the package. You must be in the in the ncrmp.benthics.analysis R project. If you aleady have devtools installed you can skip the first line. 
 
 ```
 install.packages('devtools')
