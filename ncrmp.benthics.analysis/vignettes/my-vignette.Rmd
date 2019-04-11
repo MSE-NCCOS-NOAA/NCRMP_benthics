@@ -61,19 +61,32 @@ For questions, please contact the repository owner, Sarah Groves, sarah.groves@n
 * Gulf of Mexico:
     * Flower Garden Banks National Marine Sanctuary (GOM; 2013, 2015, 2018)
     
-Upcoming data additions: Florida 2018 (in 2019), Caribbean 2019 (in 2020)
+Upcoming data additions: Southeast Florida and Florida Keys 2018 (in 2019), Caribbean 2019 (in 2020)
 
 
 ## Installation 
-Type the following into R
 
+1. Download the zipped R package using the green "Clone or download" button.
+
+2. In R studio, open the ncrmp.benthics.analysis R project in the folder of the same name and use the following code to install the pacakge. You must be in the in the ncrmp.benthics.analysis R project. If you aleady have devtools installed you can skip the first line. 
+
+```
 install.packages('devtools')
 
-devtools::install_github('shgroves/NCRMP_benthics')
+devtools::install()
+```
+3. Exit the ncrmp.benthics.analysis R project and check your R library to confirm the package installed. At this point you can either delete the files from the zipped folder or retain them if you are interested in the analysis code. 
 
-Note: You can skip the first line if you already have devtools installed. Requires R version 3.4.1 or higher.
+4. From your current project, use the following code to load and use the package. 
 
+```
+library(ncrmp.benthics.analysis) 
+```
+5. To update the package (when new data is added), repeat steps 1-4. If you are having trouble, try deleting the old version first before intalling the new one. 
 
+Note: Requires R version 3.4.1 or higher.
+
+Currently, you cannot load the package directly from Git Hub using devtools::install_github('shgroves/NCRMP_benthics'). Future updates will inlcude this feature. 
 
 ______________________________________________________________________________________________________
 
@@ -128,7 +141,7 @@ ggplot(Hardcoral, aes(x = YEAR, y = avCvr, group = YEAR)) +
 ```
 
 
-__Add dataframe to the Global Environmentt__
+__Add dataframe to the Global Environment__
 ```{r}
 # require(ncrmp.benthics.analysis)
 #

@@ -12,7 +12,7 @@
 
 <meta name="author" content="Sarah Groves" />
 
-<meta name="date" content="2019-04-10" />
+<meta name="date" content="2019-04-11" />
 
 <title>NCRMP Benthics statistical package in R</title>
 
@@ -303,7 +303,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 <h1 class="title toc-ignore">NCRMP Benthics statistical package in R</h1>
 <h4 class="author">Sarah Groves</h4>
-<h4 class="date">2019-04-10</h4>
+<h4 class="date">2019-04-11</h4>
 
 
 <div id="TOC">
@@ -344,8 +344,8 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <ul>
 <li><p>This package assumes some familiarity with NCRMP sampling methods and analysis ready (AR) data formats. NCEI and CoRIS archived AR data, data dictionaries and sampling protocols can be found on the NCRMP project page, <a href="https://coastalscience.noaa.gov/project/national-coral-reef-monitoring-program-biological-socioeconomic/" class="uri">https://coastalscience.noaa.gov/project/national-coral-reef-monitoring-program-biological-socioeconomic/</a> under “Products, Datasets and Reports”</p></li>
 <li><p>This package currently uses NOAA’s NCRMP Atlantic benthic data only. See <a href="https://github.com/jeremiaheb/rvc#reef-visual-census-statistical-package-in-r" class="uri">https://github.com/jeremiaheb/rvc#reef-visual-census-statistical-package-in-r</a> for Atlantic fish R package.</p></li>
-<li><p>Where indicated in file names by NCRMP_FRRP or NCRMP_DRM, NCRMP and Disturbrance Response Monitoring (DRM; formerly known as Florida Reef Resilience Program or FRRP) data from 2014 to present have been combined during co-sampling (even) years. DRM only data is used for non-NCRMP (odd) years. We are in the process of changing the naming convention from FRRP to DRM but at present DRM and FRRP are used interchangeably. Please be patient while we complete this transition.</p></li>
-<li><p>SEFCRI 2014 coral demographics, benthic cover and invertebrates/ESA corals data as well as FLK 2014 benthic cover and invertebrates/ESA corals data is 2 stage (2 transects per site). Site level metrics for these regions and years are the mean of transect 1 and transect 2. Strata and regional means are then calculated from this site level data.</p></li>
+<li><p>Where indicated in file names by NCRMP_FRRP or NCRMP_DRM, NCRMP and Disturbrance Response Monitoring (DRM; formerly known as Florida Reef Resilience Program or FRRP) data from 2014 to present have been combined during co-sampling (even) years. DRM only data are used for non-NCRMP (odd) years. We are in the process of changing the naming convention from FRRP to DRM but at present DRM and FRRP are used interchangeably. Please be patient while we complete this transition.</p></li>
+<li><p>SEFCRI 2014 coral demographics, benthic cover and invertebrates/ESA corals data, FLK 2014 benthic cover and invertebrates/ESA corals data, and Tortugas 2018 coral demographic data are 2 stage (2 transects per site). Site level metrics for these regions and years are the mean of transect 1 and transect 2. Strata and regional means are then calculated from this site level data.</p></li>
 </ul>
 <p>For questions, please contact the repository owner, Sarah Groves, <a href="mailto:sarah.groves@noaa.gov" class="email">sarah.groves@noaa.gov</a></p>
 <div id="ncrmp-regions-and-sampling-years" class="section level3">
@@ -368,14 +368,27 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <li>Flower Garden Banks National Marine Sanctuary (GOM; 2013, 2015, 2018)</li>
 </ul></li>
 </ul>
-<p>Upcoming data additions: Florida 2018 (in 2019), Caribbean 2019 (in 2020)</p>
+<p>Upcoming data additions: Southeast Florida and Florida Keys 2018 (in 2019), Caribbean 2019 (in 2020)</p>
 </div>
 <div id="installation" class="section level2">
 <h2>Installation</h2>
-<p>Type the following into R</p>
-<p>install.packages(‘devtools’)</p>
-<p>devtools::install_github(‘TBD/ncrmp.benthic.analysis’)</p>
-<p>Note: You can skip the first line if you already have devtools installed. Requires R version 3.4.1 or higher.</p>
+<ol style="list-style-type: decimal">
+<li><p>Download the zipped R package using the green “Clone or download” button.</p></li>
+<li><p>In R studio, open the ncrmp.benthics.analysis R project in the folder of the same name and use the following code to install the pacakge. You must be in the in the ncrmp.benthics.analysis R project. If you aleady have devtools installed you can skip the first line.</p></li>
+</ol>
+<pre><code>install.packages(&#39;devtools&#39;)
+
+devtools::install()</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li><p>Exit the ncrmp.benthics.analysis R project and check your R library to confirm the package installed. At this point you can either delete the files from the zipped folder or retain them if you are interested in the analysis code.</p></li>
+<li><p>From your current project, use the following code to load and use the package.</p></li>
+</ol>
+<pre><code>library(ncrmp.benthics.analysis) </code></pre>
+<ol start="5" style="list-style-type: decimal">
+<li>To update the package (when new data is added), repeat steps 1-4. If you are having trouble, try deleting the old version first before intalling the new one.</li>
+</ol>
+<p>Note: Requires R version 3.4.1 or higher.</p>
+<p>Currently, you cannot load the package directly from Git Hub using devtools::install_github(‘shgroves/NCRMP_benthics’). Future updates will inlcude this feature.</p>
 <hr />
 </div>
 </div>
@@ -385,50 +398,50 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <p>Because all datasets are stored in the R package, all that is required to access these dataframes is to load the package, and type the name of the dataset. You can then begin using it in your code or you can assign it to an object if you want to store it in your Global Environment.</p>
 <p><strong>Examples:</strong></p>
 <p><strong>Export a dataframe</strong></p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co"># require(ncrmp.benthics.analysis)</span></a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="co"># write.csv(NCRMP_DRM_FLK_2014_17_density_site, &quot;Your file path\\NCRMP_DRM_FLK_14_16_density_site.csv&quot;, row.names = F)</span></a></code></pre></div>
-<p><strong>Use a dataframe in a ggplot</strong></p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">require</span>(ncrmp.benthics.analysis)</a>
-<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="co">#&gt; Loading required package: ncrmp.benthics.analysis</span></a>
-<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="kw">require</span>(ggplot2)</a>
-<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="co">#&gt; Loading required package: ggplot2</span></a>
-<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="co">#&gt; Warning: package &#39;ggplot2&#39; was built under R version 3.5.1</span></a>
-<a class="sourceLine" id="cb2-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="co"># Load weighted strata means</span></a>
-<a class="sourceLine" id="cb2-8" data-line-number="8">Hardcoral &lt;-<span class="st"> </span>NCRMP_STTSTJ_<span class="dv">2013</span>_<span class="dv">17</span>_wh_cover_region <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb2-9" data-line-number="9"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb2-10" data-line-number="10"><span class="st">  </span><span class="co"># filter to just hardcoral</span></a>
-<a class="sourceLine" id="cb2-11" data-line-number="11"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(cover_group <span class="op">==</span><span class="st"> &quot;HARD CORALS&quot;</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb2-12" data-line-number="12"><span class="st">  </span><span class="co"># Change Year to factor so R sees it as a grouping variable and not a number</span></a>
-<a class="sourceLine" id="cb2-13" data-line-number="13"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">YEAR =</span> <span class="kw">as.factor</span>(YEAR))</a>
-<a class="sourceLine" id="cb2-14" data-line-number="14"></a>
-<a class="sourceLine" id="cb2-15" data-line-number="15"><span class="co"># Create your plot</span></a>
-<a class="sourceLine" id="cb2-16" data-line-number="16"><span class="kw">ggplot</span>(Hardcoral, <span class="kw">aes</span>(<span class="dt">x =</span> YEAR, <span class="dt">y =</span> avCvr, <span class="dt">group =</span> YEAR)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb2-17" data-line-number="17"><span class="st">  </span><span class="kw">geom_bar</span>(<span class="kw">aes</span>(<span class="dt">fill =</span> YEAR), <span class="dt">stat=</span><span class="st">&quot;identity&quot;</span>, <span class="dt">colour=</span><span class="st">&quot;black&quot;</span>,</a>
-<a class="sourceLine" id="cb2-18" data-line-number="18">           <span class="dt">position=</span><span class="kw">position_dodge</span>(),</a>
-<a class="sourceLine" id="cb2-19" data-line-number="19">           <span class="dt">size=</span>.<span class="dv">3</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb2-20" data-line-number="20"><span class="co"># Add error bars</span></a>
-<a class="sourceLine" id="cb2-21" data-line-number="21"><span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">ymax =</span> avCvr<span class="op">+</span>std, <span class="dt">ymin =</span> avCvr<span class="op">-</span>std), <span class="dt">width =</span> <span class="fl">.5</span>, <span class="dt">position=</span><span class="kw">position_dodge</span>(<span class="dv">1</span>)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb2-22" data-line-number="22"><span class="co"># Set the y axis scale</span></a>
-<a class="sourceLine" id="cb2-23" data-line-number="23"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">25</span>), <span class="dt">expand =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb2-24" data-line-number="24"><span class="co"># Add axis labels</span></a>
-<a class="sourceLine" id="cb2-25" data-line-number="25"><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb2-26" data-line-number="26"><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Cover (%)&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb2-27" data-line-number="27"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Hard coral cover - St. Thomas &amp; St. John&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb2-28" data-line-number="28"><span class="co"># Remove legend </span></a>
-<a class="sourceLine" id="cb2-29" data-line-number="29"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</a></code></pre></div>
-<p><img src="data:image/png;base64,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" /><!-- --></p>
-<p><strong>Add dataframe to the Global Environmentt</strong></p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># require(ncrmp.benthics.analysis)</span></a>
-<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="co">#</span></a>
-<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="co"># #The &#39;data&#39; function will load a dataframe to the Global Environment keeping the existing name, </span></a>
-<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="co"># </span></a>
-<a class="sourceLine" id="cb3-5" data-line-number="5"><span class="co"># data(&quot;NCRMP_DRM_FLK_2014_17_density_site&quot;)</span></a>
-<a class="sourceLine" id="cb3-6" data-line-number="6"><span class="co">#</span></a>
-<a class="sourceLine" id="cb3-7" data-line-number="7"><span class="co"># or you can give it a new name </span></a>
-<a class="sourceLine" id="cb3-8" data-line-number="8"><span class="co">#</span></a>
-<a class="sourceLine" id="cb3-9" data-line-number="9"><span class="co"># dat &lt;- NCRMP_DRM_FLK_2014_17_density_site</span></a></code></pre></div>
+<a class="sourceLine" id="cb3-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="co"># write.csv(NCRMP_DRM_FLK_2014_17_density_site, &quot;Your file path\\NCRMP_DRM_FLK_14_16_density_site.csv&quot;, row.names = F)</span></a></code></pre></div>
+<p><strong>Use a dataframe in a ggplot</strong></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw">require</span>(ncrmp.benthics.analysis)</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="co">#&gt; Loading required package: ncrmp.benthics.analysis</span></a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="kw">require</span>(ggplot2)</a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="co">#&gt; Loading required package: ggplot2</span></a>
+<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="co">#&gt; Warning: package &#39;ggplot2&#39; was built under R version 3.5.3</span></a>
+<a class="sourceLine" id="cb4-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb4-7" data-line-number="7"><span class="co"># Load weighted strata means</span></a>
+<a class="sourceLine" id="cb4-8" data-line-number="8">Hardcoral &lt;-<span class="st"> </span>NCRMP_STTSTJ_<span class="dv">2013</span>_<span class="dv">17</span>_wh_cover_region <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb4-9" data-line-number="9"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb4-10" data-line-number="10"><span class="st">  </span><span class="co"># filter to just hardcoral</span></a>
+<a class="sourceLine" id="cb4-11" data-line-number="11"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(cover_group <span class="op">==</span><span class="st"> &quot;HARD CORALS&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb4-12" data-line-number="12"><span class="st">  </span><span class="co"># Change Year to factor so R sees it as a grouping variable and not a number</span></a>
+<a class="sourceLine" id="cb4-13" data-line-number="13"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">YEAR =</span> <span class="kw">as.factor</span>(YEAR))</a>
+<a class="sourceLine" id="cb4-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb4-15" data-line-number="15"><span class="co"># Create your plot</span></a>
+<a class="sourceLine" id="cb4-16" data-line-number="16"><span class="kw">ggplot</span>(Hardcoral, <span class="kw">aes</span>(<span class="dt">x =</span> YEAR, <span class="dt">y =</span> avCvr, <span class="dt">group =</span> YEAR)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb4-17" data-line-number="17"><span class="st">  </span><span class="kw">geom_bar</span>(<span class="kw">aes</span>(<span class="dt">fill =</span> YEAR), <span class="dt">stat=</span><span class="st">&quot;identity&quot;</span>, <span class="dt">colour=</span><span class="st">&quot;black&quot;</span>,</a>
+<a class="sourceLine" id="cb4-18" data-line-number="18">           <span class="dt">position=</span><span class="kw">position_dodge</span>(),</a>
+<a class="sourceLine" id="cb4-19" data-line-number="19">           <span class="dt">size=</span>.<span class="dv">3</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb4-20" data-line-number="20"><span class="co"># Add error bars</span></a>
+<a class="sourceLine" id="cb4-21" data-line-number="21"><span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">ymax =</span> avCvr<span class="op">+</span>std, <span class="dt">ymin =</span> avCvr<span class="op">-</span>std), <span class="dt">width =</span> <span class="fl">.5</span>, <span class="dt">position=</span><span class="kw">position_dodge</span>(<span class="dv">1</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb4-22" data-line-number="22"><span class="co"># Set the y axis scale</span></a>
+<a class="sourceLine" id="cb4-23" data-line-number="23"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">25</span>), <span class="dt">expand =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb4-24" data-line-number="24"><span class="co"># Add axis labels</span></a>
+<a class="sourceLine" id="cb4-25" data-line-number="25"><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Year&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb4-26" data-line-number="26"><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Cover (%)&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb4-27" data-line-number="27"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Hard coral cover&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb4-28" data-line-number="28"><span class="co"># Remove legend </span></a>
+<a class="sourceLine" id="cb4-29" data-line-number="29"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</a></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p><strong>Add dataframe to the Global Environment</strong></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="co"># require(ncrmp.benthics.analysis)</span></a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="co">#</span></a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="co"># #The &#39;data&#39; function will load a dataframe to the Global Environment keeping the existing name, </span></a>
+<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="co"># </span></a>
+<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co"># data(&quot;NCRMP_DRM_FLK_2014_17_density_site&quot;)</span></a>
+<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="co">#</span></a>
+<a class="sourceLine" id="cb5-7" data-line-number="7"><span class="co"># or you can give it a new name </span></a>
+<a class="sourceLine" id="cb5-8" data-line-number="8"><span class="co">#</span></a>
+<a class="sourceLine" id="cb5-9" data-line-number="9"><span class="co"># dat &lt;- NCRMP_DRM_FLK_2014_17_density_site</span></a></code></pre></div>
 <div id="datasets" class="section level2">
 <h2>Datasets</h2>
 <p>Datasets contained within the package at the strata and regional level are created using the default function parameters:</p>
@@ -454,7 +467,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </ul>
 <div id="analysis-ready-ar-data" class="section level3">
 <h3>Analysis Ready (AR) data</h3>
-<p>Analysis ready NCRMP datasets for all regions and years are contained within this package in the most recent NCRMP Atlantic archive format. AR datasets can be identified because they begin with the region code followed by the year and then the data type; benthic_cover, coral_demographics or inverts_ESAcorals. Two stage (2 transect) data is identified in the file name, all other datasets are single transect.</p>
+<p>Analysis ready NCRMP datasets for all regions and years are contained within this package in the most recent NCRMP Atlantic archive format. AR datasets can be identified because they begin with the region code followed by the year and then the data type; benthic_cover, coral_demographics or inverts_ESAcorals. Two stage (2 transect) data are identified in the file name except for the Tortugas 2018 data. Tortugas 2018 coral demographics surveys were a joint mission between NCRMP and DRM where two transects were conducted at each site. The NCRMP and DRM data are combined and indistinguishable. All other datasets are single transect.</p>
 <ul>
 <li>Data format:
 <ul>
@@ -468,7 +481,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <li>FGBNMS_2013_inverts_ESAcorals</li>
 </ul></li>
 </ul>
-<p>In addition, the following AR Florida DRM and Sanctuary Coral Reef Ecosystem Assessment Monitoring (SCREAM) datasets in NCRMP format are stored in the package. Combined DRM and SCREAM data is from 1999 to 2013 (not all regions are sampled each year) and individual DRM regions are 2014 to the most recent year of sampling.</p>
+<p>In addition, the following AR Florida DRM and Sanctuary Coral Reef Ecosystem Assessment Monitoring (SCREAM) datasets in NCRMP format are stored in the package. Combined DRM and SCREAM data are from 1999 to 2013 (not all regions are sampled each year) and individual DRM regions are 2014 to the most recent year of sampling.</p>
 <ul>
 <li>preNCRMP_SCREAM_DRM_coral_demographics<br />
 </li>
@@ -480,8 +493,8 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <div id="summary-dataframes" class="section level3">
 <h3>Summary dataframes</h3>
 <p>Summary dataframes are provided for site, strata and weighted regional means. Every function listed below can produce several dataframes. Although there are too many to list individually, all provided dataframes follow a standard naming convention. Summary dataframes can be identified because they begin with the project or projects (NCRMP or NCRMP_DRM), followed by the region, year(s) and data type and level (site, strata, region). See associated functions used to create these dataframes (below) for more information. To view all of the data contained within this package you can 1. download the package from GitHub and view the ‘data’ folder or 2. use the following code to view all of the datasets in R.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="co"># data(package=&#39;ncrmp.benthics.analysis&#39;)</span></a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="co"># data(package=&#39;ncrmp.benthics.analysis&#39;)</span></a></code></pre></div>
 <ul>
 <li>Data format:
 <ul>
@@ -505,7 +518,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </div>
 <div id="shapefiles-and-ntot-files" class="section level3">
 <h3>Shapefiles and NTOT files</h3>
-<p>The most recent sampling grid shapefiles used for site allocation and associated NTOT (grid summary) files are also contained in the package. Grids can be used in R or exported as shapefiles. The NTOT files are required to properly apply the weighting scheme to summary data. The Florida Keys National Marine Sanctuary boundary polygon is also contained in the package. More boundary polygons for other regions will be added in future updates.</p>
+<p>The most recent sampling grid shapefiles used for site allocation and associated NTOT (grid summary) files are also contained in the package. Grids can be used in R or exported as shapefiles. The NTOT files are required to properly apply the weighting scheme to summary data. The Florida Keys National Marine Sanctuary (FKNMS) and the Flower Garden Banks National Marine Sanctuary (FGBNMS) boundary polygons are also contained in the package. More boundary polygons for other regions will be added in future updates.</p>
 <ul>
 <li>Sampling grids:
 <ul>
@@ -571,21 +584,21 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </ul>
 <p>Associated functions: NCRMP_make_weighted_LPI_data, NCRMP_make_weighted_LPI_data_RC</p>
 <p>Example:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="kw">require</span>(ncrmp.benthics.analysis)</a>
-<a class="sourceLine" id="cb5-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="co"># Run function and assign names to dataframes </span></a>
-<a class="sourceLine" id="cb5-5" data-line-number="5">tmp &lt;-<span class="st"> </span><span class="kw">NCRMP_calculate_cover</span>(<span class="dt">region =</span> <span class="st">&quot;SEFCRI&quot;</span>,</a>
-<a class="sourceLine" id="cb5-6" data-line-number="6">                             <span class="dt">year =</span> <span class="dv">2014</span>,</a>
-<a class="sourceLine" id="cb5-7" data-line-number="7">                             <span class="dt">analysis_strat =</span> <span class="st">&quot;STRAT&quot;</span>)</a>
-<a class="sourceLine" id="cb5-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb5-9" data-line-number="9"><span class="co"># The function will store all of the function outputs as a list in tmp</span></a>
-<a class="sourceLine" id="cb5-10" data-line-number="10"><span class="co"># Convert list objects to dataframes and rename </span></a>
-<a class="sourceLine" id="cb5-11" data-line-number="11">NCRMP_SEFCRI_<span class="dv">2014</span>_percent_cover_site &lt;-<span class="st"> </span>tmp<span class="op">$</span>percent_cover_site</a>
-<a class="sourceLine" id="cb5-12" data-line-number="12">NCRMP_SEFCRI_<span class="dv">2014</span>_cover_group_key &lt;-<span class="st"> </span>tmp<span class="op">$</span>cover_group_key</a>
-<a class="sourceLine" id="cb5-13" data-line-number="13">NCRMP_SEFCRI_<span class="dv">2014</span>_unwh_cover_strata &lt;-<span class="st"> </span>tmp<span class="op">$</span>unwh_cover_strata</a>
-<a class="sourceLine" id="cb5-14" data-line-number="14">NCRMP_SEFCRI_<span class="dv">2014</span>_wh_cover_region &lt;-<span class="st"> </span>tmp<span class="op">$</span>Domain_est</a>
-<a class="sourceLine" id="cb5-15" data-line-number="15">NCRMP_SEFCRI_<span class="dv">2014</span>_Domain_check &lt;-<span class="st"> </span>tmp<span class="op">$</span>Domain_check </a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="kw">require</span>(ncrmp.benthics.analysis)</a>
+<a class="sourceLine" id="cb7-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="co"># Run function and assign names to dataframes </span></a>
+<a class="sourceLine" id="cb7-5" data-line-number="5">tmp &lt;-<span class="st"> </span><span class="kw">NCRMP_calculate_cover</span>(<span class="dt">region =</span> <span class="st">&quot;SEFCRI&quot;</span>,</a>
+<a class="sourceLine" id="cb7-6" data-line-number="6">                             <span class="dt">year =</span> <span class="dv">2014</span>,</a>
+<a class="sourceLine" id="cb7-7" data-line-number="7">                             <span class="dt">analysis_strat =</span> <span class="st">&quot;STRAT&quot;</span>)</a>
+<a class="sourceLine" id="cb7-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb7-9" data-line-number="9"><span class="co"># The function will store all of the function outputs as a list in tmp</span></a>
+<a class="sourceLine" id="cb7-10" data-line-number="10"><span class="co"># Convert list objects to dataframes and rename </span></a>
+<a class="sourceLine" id="cb7-11" data-line-number="11">NCRMP_SEFCRI_<span class="dv">2014</span>_percent_cover_site &lt;-<span class="st"> </span>tmp<span class="op">$</span>percent_cover_site</a>
+<a class="sourceLine" id="cb7-12" data-line-number="12">NCRMP_SEFCRI_<span class="dv">2014</span>_cover_group_key &lt;-<span class="st"> </span>tmp<span class="op">$</span>cover_group_key</a>
+<a class="sourceLine" id="cb7-13" data-line-number="13">NCRMP_SEFCRI_<span class="dv">2014</span>_unwh_cover_strata &lt;-<span class="st"> </span>tmp<span class="op">$</span>unwh_cover_strata</a>
+<a class="sourceLine" id="cb7-14" data-line-number="14">NCRMP_SEFCRI_<span class="dv">2014</span>_wh_cover_region &lt;-<span class="st"> </span>tmp<span class="op">$</span>Domain_est</a>
+<a class="sourceLine" id="cb7-15" data-line-number="15">NCRMP_SEFCRI_<span class="dv">2014</span>_Domain_check &lt;-<span class="st"> </span>tmp<span class="op">$</span>Domain_check </a></code></pre></div>
 </div>
 <div id="ncrmp_make_weighted_lpi_data" class="section level3">
 <h3>2. NCRMP_make_weighted_LPI_data</h3>
@@ -593,105 +606,105 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <p>Analysis level strata = STRAT + PROT for Florida regions and HABITAT CODE + DEPTH STRAT for the Caribbean and GOM regions. These are the recommended and default settings.</p>
 <p>This function is called within NCRMP_calculate_cover so the initial parameters you provide for region and year. will be passed on.</p>
 <p>Example of weighting application for Florida:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="co">#Calculate average cover (avcvr), stratum variance (svar), n and std at the strata and regional level using STRAT + PROT as the analysis strata. Inputdata = 1 stage site level cover for major benthic categories and ntot = the most recent NTOT file for the region, regardless of sampling year. </span></a>
-<a class="sourceLine" id="cb6-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb6-4" data-line-number="4"><span class="co"># cover_est &lt;- inputdata %&gt;%</span></a>
-<a class="sourceLine" id="cb6-5" data-line-number="5"><span class="co">#    # group by analysis level strata</span></a>
-<a class="sourceLine" id="cb6-6" data-line-number="6"><span class="co">#   dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, &quot;/ PROT =&quot;, PROT, sep = &quot; &quot;)) %&gt;%</span></a>
-<a class="sourceLine" id="cb6-7" data-line-number="7"><span class="co">#   dplyr::group_by(ANALYSIS_STRATUM, STRAT, PROT, cover_group) %&gt;% </span></a>
-<a class="sourceLine" id="cb6-8" data-line-number="8"><span class="co">#   dplyr::summarise(</span></a>
-<a class="sourceLine" id="cb6-9" data-line-number="9"><span class="co">#     # calculate mean cover</span></a>
-<a class="sourceLine" id="cb6-10" data-line-number="10"><span class="co">#     avcvr = mean(Percent_Cvr),</span></a>
-<a class="sourceLine" id="cb6-11" data-line-number="11"><span class="co">#     # calculate stratum variance</span></a>
-<a class="sourceLine" id="cb6-12" data-line-number="12"><span class="co">#     svar = var(Percent_Cvr),</span></a>
-<a class="sourceLine" id="cb6-13" data-line-number="13"><span class="co">#     # calculate N</span></a>
-<a class="sourceLine" id="cb6-14" data-line-number="14"><span class="co">#     n = sum(n),</span></a>
-<a class="sourceLine" id="cb6-15" data-line-number="15"><span class="co">#     # calculate mean stratum depth</span></a>
-<a class="sourceLine" id="cb6-16" data-line-number="16"><span class="co">#     MIN_DEPTH = mean(MIN_DEPTH),</span></a>
-<a class="sourceLine" id="cb6-17" data-line-number="17"><span class="co">#     MAX_DEPTH = mean(MAX_DEPTH),</span></a>
-<a class="sourceLine" id="cb6-18" data-line-number="18"><span class="co">#     DEPTH_M = (MIN_DEPTH+MAX_DEPTH)/2) %&gt;%</span></a>
-<a class="sourceLine" id="cb6-19" data-line-number="19"><span class="co">#   </span></a>
-<a class="sourceLine" id="cb6-20" data-line-number="20"><span class="co">#   # convert 0 for stratum variance so that the sqrt is a small # but not a 0</span></a>
-<a class="sourceLine" id="cb6-21" data-line-number="21"><span class="co">#   dplyr::mutate(svar = dplyr::case_when(svar == 0 ~ 0.00000001,</span></a>
-<a class="sourceLine" id="cb6-22" data-line-number="22"><span class="co">#                                         TRUE ~ svar)) %&gt;%</span></a>
-<a class="sourceLine" id="cb6-23" data-line-number="23"><span class="co">#   dplyr::mutate(std = sqrt(svar))</span></a>
-<a class="sourceLine" id="cb6-24" data-line-number="24"><span class="co"># </span></a>
-<a class="sourceLine" id="cb6-25" data-line-number="25"><span class="co"># cover_est &lt;- cover_est %&gt;%</span></a>
-<a class="sourceLine" id="cb6-26" data-line-number="26"><span class="co">#   # Merge ntot with cover_est</span></a>
-<a class="sourceLine" id="cb6-27" data-line-number="27"><span class="co">#   dplyr::full_join(., ntot) %&gt;%</span></a>
-<a class="sourceLine" id="cb6-28" data-line-number="28"><span class="co">#   # stratum estimates</span></a>
-<a class="sourceLine" id="cb6-29" data-line-number="29"><span class="co">#   dplyr::mutate(whavcvr = wh * avcvr,</span></a>
-<a class="sourceLine" id="cb6-30" data-line-number="30"><span class="co">#                 whsvar = wh^2 * svar,</span></a>
-<a class="sourceLine" id="cb6-31" data-line-number="31"><span class="co">#                 whstd = wh * std,</span></a>
-<a class="sourceLine" id="cb6-32" data-line-number="32"><span class="co">#                 n = tidyr::replace_na(n, 0))</span></a>
-<a class="sourceLine" id="cb6-33" data-line-number="33"><span class="co"># </span></a>
-<a class="sourceLine" id="cb6-34" data-line-number="34"><span class="co"># # Reformat data</span></a>
-<a class="sourceLine" id="cb6-35" data-line-number="35"><span class="co"># </span></a>
-<a class="sourceLine" id="cb6-36" data-line-number="36"><span class="co"># # cover, unweighted by strata</span></a>
-<a class="sourceLine" id="cb6-37" data-line-number="37"><span class="co"># unwh_cover_strata &lt;- cover_est %&gt;%</span></a>
-<a class="sourceLine" id="cb6-38" data-line-number="38"><span class="co">#   dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, DEPTH_M, NTOT, ngrtot, wh, cover_group, n, avcvr, svar, std) %&gt;%</span></a>
-<a class="sourceLine" id="cb6-39" data-line-number="39"><span class="co">#   dplyr::mutate(METHOD = &quot;UNWEIGHTED&quot;) %&gt;%</span></a>
-<a class="sourceLine" id="cb6-40" data-line-number="40"><span class="co">#   dplyr::mutate(n = tidyr::replace_na(n, 0))</span></a>
-<a class="sourceLine" id="cb6-41" data-line-number="41"><span class="co"># </span></a>
-<a class="sourceLine" id="cb6-42" data-line-number="42"><span class="co"># # Calculate Domain Estimates</span></a>
-<a class="sourceLine" id="cb6-43" data-line-number="43"><span class="co">#   Domain_est &lt;- cover_est %&gt;%</span></a>
-<a class="sourceLine" id="cb6-44" data-line-number="44"><span class="co">#     dplyr::group_by(REGION, YEAR, cover_group) %&gt;%</span></a>
-<a class="sourceLine" id="cb6-45" data-line-number="45"><span class="co">#     dplyr::summarise(avCvr = sum(whavcvr),</span></a>
-<a class="sourceLine" id="cb6-46" data-line-number="46"><span class="co">#                      var = sum(whsvar, na.rm = T),</span></a>
-<a class="sourceLine" id="cb6-47" data-line-number="47"><span class="co">#                      std = sqrt(var),</span></a>
-<a class="sourceLine" id="cb6-48" data-line-number="48"><span class="co">#                      ngrtot = sum(NTOT) )</span></a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="co">#Calculate average cover (avcvr), stratum variance (svar), n and std at the strata and regional level using STRAT + PROT as the analysis strata. Inputdata = 1 stage site level cover for major benthic categories and ntot = the most recent NTOT file for the region, regardless of sampling year. </span></a>
+<a class="sourceLine" id="cb8-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="co"># cover_est &lt;- inputdata %&gt;%</span></a>
+<a class="sourceLine" id="cb8-5" data-line-number="5"><span class="co">#    # group by analysis level strata</span></a>
+<a class="sourceLine" id="cb8-6" data-line-number="6"><span class="co">#   dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, &quot;/ PROT =&quot;, PROT, sep = &quot; &quot;)) %&gt;%</span></a>
+<a class="sourceLine" id="cb8-7" data-line-number="7"><span class="co">#   dplyr::group_by(ANALYSIS_STRATUM, STRAT, PROT, cover_group) %&gt;% </span></a>
+<a class="sourceLine" id="cb8-8" data-line-number="8"><span class="co">#   dplyr::summarise(</span></a>
+<a class="sourceLine" id="cb8-9" data-line-number="9"><span class="co">#     # calculate mean cover</span></a>
+<a class="sourceLine" id="cb8-10" data-line-number="10"><span class="co">#     avcvr = mean(Percent_Cvr),</span></a>
+<a class="sourceLine" id="cb8-11" data-line-number="11"><span class="co">#     # calculate stratum variance</span></a>
+<a class="sourceLine" id="cb8-12" data-line-number="12"><span class="co">#     svar = var(Percent_Cvr),</span></a>
+<a class="sourceLine" id="cb8-13" data-line-number="13"><span class="co">#     # calculate N</span></a>
+<a class="sourceLine" id="cb8-14" data-line-number="14"><span class="co">#     n = sum(n),</span></a>
+<a class="sourceLine" id="cb8-15" data-line-number="15"><span class="co">#     # calculate mean stratum depth</span></a>
+<a class="sourceLine" id="cb8-16" data-line-number="16"><span class="co">#     MIN_DEPTH = mean(MIN_DEPTH),</span></a>
+<a class="sourceLine" id="cb8-17" data-line-number="17"><span class="co">#     MAX_DEPTH = mean(MAX_DEPTH),</span></a>
+<a class="sourceLine" id="cb8-18" data-line-number="18"><span class="co">#     DEPTH_M = (MIN_DEPTH+MAX_DEPTH)/2) %&gt;%</span></a>
+<a class="sourceLine" id="cb8-19" data-line-number="19"><span class="co">#   </span></a>
+<a class="sourceLine" id="cb8-20" data-line-number="20"><span class="co">#   # convert 0 for stratum variance so that the sqrt is a small # but not a 0</span></a>
+<a class="sourceLine" id="cb8-21" data-line-number="21"><span class="co">#   dplyr::mutate(svar = dplyr::case_when(svar == 0 ~ 0.00000001,</span></a>
+<a class="sourceLine" id="cb8-22" data-line-number="22"><span class="co">#                                         TRUE ~ svar)) %&gt;%</span></a>
+<a class="sourceLine" id="cb8-23" data-line-number="23"><span class="co">#   dplyr::mutate(std = sqrt(svar))</span></a>
+<a class="sourceLine" id="cb8-24" data-line-number="24"><span class="co"># </span></a>
+<a class="sourceLine" id="cb8-25" data-line-number="25"><span class="co"># cover_est &lt;- cover_est %&gt;%</span></a>
+<a class="sourceLine" id="cb8-26" data-line-number="26"><span class="co">#   # Merge ntot with cover_est</span></a>
+<a class="sourceLine" id="cb8-27" data-line-number="27"><span class="co">#   dplyr::full_join(., ntot) %&gt;%</span></a>
+<a class="sourceLine" id="cb8-28" data-line-number="28"><span class="co">#   # stratum estimates</span></a>
+<a class="sourceLine" id="cb8-29" data-line-number="29"><span class="co">#   dplyr::mutate(whavcvr = wh * avcvr,</span></a>
+<a class="sourceLine" id="cb8-30" data-line-number="30"><span class="co">#                 whsvar = wh^2 * svar,</span></a>
+<a class="sourceLine" id="cb8-31" data-line-number="31"><span class="co">#                 whstd = wh * std,</span></a>
+<a class="sourceLine" id="cb8-32" data-line-number="32"><span class="co">#                 n = tidyr::replace_na(n, 0))</span></a>
+<a class="sourceLine" id="cb8-33" data-line-number="33"><span class="co"># </span></a>
+<a class="sourceLine" id="cb8-34" data-line-number="34"><span class="co"># # Reformat data</span></a>
+<a class="sourceLine" id="cb8-35" data-line-number="35"><span class="co"># </span></a>
+<a class="sourceLine" id="cb8-36" data-line-number="36"><span class="co"># # cover, unweighted by strata</span></a>
+<a class="sourceLine" id="cb8-37" data-line-number="37"><span class="co"># unwh_cover_strata &lt;- cover_est %&gt;%</span></a>
+<a class="sourceLine" id="cb8-38" data-line-number="38"><span class="co">#   dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, DEPTH_M, NTOT, ngrtot, wh, cover_group, n, avcvr, svar, std) %&gt;%</span></a>
+<a class="sourceLine" id="cb8-39" data-line-number="39"><span class="co">#   dplyr::mutate(METHOD = &quot;UNWEIGHTED&quot;) %&gt;%</span></a>
+<a class="sourceLine" id="cb8-40" data-line-number="40"><span class="co">#   dplyr::mutate(n = tidyr::replace_na(n, 0))</span></a>
+<a class="sourceLine" id="cb8-41" data-line-number="41"><span class="co"># </span></a>
+<a class="sourceLine" id="cb8-42" data-line-number="42"><span class="co"># # Calculate Domain Estimates</span></a>
+<a class="sourceLine" id="cb8-43" data-line-number="43"><span class="co">#   Domain_est &lt;- cover_est %&gt;%</span></a>
+<a class="sourceLine" id="cb8-44" data-line-number="44"><span class="co">#     dplyr::group_by(REGION, YEAR, cover_group) %&gt;%</span></a>
+<a class="sourceLine" id="cb8-45" data-line-number="45"><span class="co">#     dplyr::summarise(avCvr = sum(whavcvr),</span></a>
+<a class="sourceLine" id="cb8-46" data-line-number="46"><span class="co">#                      var = sum(whsvar, na.rm = T),</span></a>
+<a class="sourceLine" id="cb8-47" data-line-number="47"><span class="co">#                      std = sqrt(var),</span></a>
+<a class="sourceLine" id="cb8-48" data-line-number="48"><span class="co">#                      ngrtot = sum(NTOT) )</span></a></code></pre></div>
 <p>Example of weighting application for Caribbean and GOM:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="co"># Calculate average cover (avcvr), stratum variance (svar), n and std at the strata and regional level using HABITAT + DEPTH_STRAT as the analysis strata. Inputdata = 1 stage site level cover for major benthic categories and ntot = the most recent NTOT file for the region, regardless of sampling year. </span></a>
-<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="co"># </span></a>
-<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="co"># cover_est &lt;- inputdata %&gt;%</span></a>
-<a class="sourceLine" id="cb7-5" data-line-number="5"><span class="co">#   # group by analysis level strata</span></a>
-<a class="sourceLine" id="cb7-6" data-line-number="6"><span class="co">#   dplyr::group_by(YEAR, ANALYSIS_STRATUM, STRAT, cover_group) %&gt;% </span></a>
-<a class="sourceLine" id="cb7-7" data-line-number="7"><span class="co">#   dplyr::summarise(</span></a>
-<a class="sourceLine" id="cb7-8" data-line-number="8"><span class="co">#     # compute average cover</span></a>
-<a class="sourceLine" id="cb7-9" data-line-number="9"><span class="co">#     avcvr = mean(Percent_Cvr),</span></a>
-<a class="sourceLine" id="cb7-10" data-line-number="10"><span class="co">#     # compute stratum variance</span></a>
-<a class="sourceLine" id="cb7-11" data-line-number="11"><span class="co">#     svar = var(Percent_Cvr),</span></a>
-<a class="sourceLine" id="cb7-12" data-line-number="12"><span class="co">#     # calculate N</span></a>
-<a class="sourceLine" id="cb7-13" data-line-number="13"><span class="co">#     n = sum(n),</span></a>
-<a class="sourceLine" id="cb7-14" data-line-number="14"><span class="co">#     # calculate mean stratum depth</span></a>
-<a class="sourceLine" id="cb7-15" data-line-number="15"><span class="co">#     MIN_DEPTH = mean(MIN_DEPTH),</span></a>
-<a class="sourceLine" id="cb7-16" data-line-number="16"><span class="co">#     MAX_DEPTH = mean(MAX_DEPTH),</span></a>
-<a class="sourceLine" id="cb7-17" data-line-number="17"><span class="co">#     DEPTH_M = (MIN_DEPTH+MAX_DEPTH)/2) %&gt;%</span></a>
-<a class="sourceLine" id="cb7-18" data-line-number="18"><span class="co">#   # convert 0 for stratum variance so that the sqrt is a small # but not a 0</span></a>
-<a class="sourceLine" id="cb7-19" data-line-number="19"><span class="co">#   dplyr::mutate(svar = dplyr::case_when(svar == 0 ~ 0.00000001,</span></a>
-<a class="sourceLine" id="cb7-20" data-line-number="20"><span class="co">#                                         TRUE ~ svar)) %&gt;%</span></a>
-<a class="sourceLine" id="cb7-21" data-line-number="21"><span class="co">#   dplyr::mutate(std = sqrt(svar))</span></a>
-<a class="sourceLine" id="cb7-22" data-line-number="22"><span class="co"># </span></a>
-<a class="sourceLine" id="cb7-23" data-line-number="23"><span class="co"># cover_est &lt;- cover_est %&gt;%</span></a>
-<a class="sourceLine" id="cb7-24" data-line-number="24"><span class="co">#   # Merge ntot with cover_est</span></a>
-<a class="sourceLine" id="cb7-25" data-line-number="25"><span class="co">#   dplyr::full_join(., ntot) %&gt;%</span></a>
-<a class="sourceLine" id="cb7-26" data-line-number="26"><span class="co">#   # stratum estimates</span></a>
-<a class="sourceLine" id="cb7-27" data-line-number="27"><span class="co">#   dplyr::mutate(whavcvr = wh * avcvr,</span></a>
-<a class="sourceLine" id="cb7-28" data-line-number="28"><span class="co">#                 whsvar = wh^2 * svar,</span></a>
-<a class="sourceLine" id="cb7-29" data-line-number="29"><span class="co">#                 whstd = wh * std,</span></a>
-<a class="sourceLine" id="cb7-30" data-line-number="30"><span class="co">#                 n = tidyr::replace_na(n, 0),</span></a>
-<a class="sourceLine" id="cb7-31" data-line-number="31"><span class="co">#                 # Add the following to match FL format</span></a>
-<a class="sourceLine" id="cb7-32" data-line-number="32"><span class="co">#                 PROT = NA,</span></a>
-<a class="sourceLine" id="cb7-33" data-line-number="33"><span class="co">#                 RUG_CD = NA)</span></a>
-<a class="sourceLine" id="cb7-34" data-line-number="34"><span class="co"># </span></a>
-<a class="sourceLine" id="cb7-35" data-line-number="35"><span class="co"># # Reformat data</span></a>
-<a class="sourceLine" id="cb7-36" data-line-number="36"><span class="co"># </span></a>
-<a class="sourceLine" id="cb7-37" data-line-number="37"><span class="co"># # cover, unweighted by strata</span></a>
-<a class="sourceLine" id="cb7-38" data-line-number="38"><span class="co"># unwh_cover_strata &lt;- cover_est %&gt;%</span></a>
-<a class="sourceLine" id="cb7-39" data-line-number="39"><span class="co">#   dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, DEPTH_M, NTOT, ngrtot, wh, cover_group, n, avcvr, svar, std) %&gt;%</span></a>
-<a class="sourceLine" id="cb7-40" data-line-number="40"><span class="co">#   dplyr::mutate(METHOD = &quot;UNWEIGHTED&quot;) %&gt;%</span></a>
-<a class="sourceLine" id="cb7-41" data-line-number="41"><span class="co">#   dplyr::mutate(n = tidyr::replace_na(n, 0))</span></a>
-<a class="sourceLine" id="cb7-42" data-line-number="42"><span class="co"># </span></a>
-<a class="sourceLine" id="cb7-43" data-line-number="43"><span class="co"># </span></a>
-<a class="sourceLine" id="cb7-44" data-line-number="44"><span class="co"># ## Calculate Domain Estimates</span></a>
-<a class="sourceLine" id="cb7-45" data-line-number="45"><span class="co"># Domain_est &lt;- cover_est %&gt;%</span></a>
-<a class="sourceLine" id="cb7-46" data-line-number="46"><span class="co">#   dplyr::group_by(REGION, YEAR, cover_group) %&gt;%</span></a>
-<a class="sourceLine" id="cb7-47" data-line-number="47"><span class="co">#   dplyr::summarise(avCvr = sum(whavcvr),</span></a>
-<a class="sourceLine" id="cb7-48" data-line-number="48"><span class="co">#                    var = sum(whsvar, na.rm = T),</span></a>
-<a class="sourceLine" id="cb7-49" data-line-number="49"><span class="co">#                    std = sqrt(var),</span></a>
-<a class="sourceLine" id="cb7-50" data-line-number="50"><span class="co">#                    ngrtot = sum(NTOT) )</span></a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="co"># Calculate average cover (avcvr), stratum variance (svar), n and std at the strata and regional level using HABITAT + DEPTH_STRAT as the analysis strata. Inputdata = 1 stage site level cover for major benthic categories and ntot = the most recent NTOT file for the region, regardless of sampling year. </span></a>
+<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="co"># </span></a>
+<a class="sourceLine" id="cb9-4" data-line-number="4"><span class="co"># cover_est &lt;- inputdata %&gt;%</span></a>
+<a class="sourceLine" id="cb9-5" data-line-number="5"><span class="co">#   # group by analysis level strata</span></a>
+<a class="sourceLine" id="cb9-6" data-line-number="6"><span class="co">#   dplyr::group_by(YEAR, ANALYSIS_STRATUM, STRAT, cover_group) %&gt;% </span></a>
+<a class="sourceLine" id="cb9-7" data-line-number="7"><span class="co">#   dplyr::summarise(</span></a>
+<a class="sourceLine" id="cb9-8" data-line-number="8"><span class="co">#     # compute average cover</span></a>
+<a class="sourceLine" id="cb9-9" data-line-number="9"><span class="co">#     avcvr = mean(Percent_Cvr),</span></a>
+<a class="sourceLine" id="cb9-10" data-line-number="10"><span class="co">#     # compute stratum variance</span></a>
+<a class="sourceLine" id="cb9-11" data-line-number="11"><span class="co">#     svar = var(Percent_Cvr),</span></a>
+<a class="sourceLine" id="cb9-12" data-line-number="12"><span class="co">#     # calculate N</span></a>
+<a class="sourceLine" id="cb9-13" data-line-number="13"><span class="co">#     n = sum(n),</span></a>
+<a class="sourceLine" id="cb9-14" data-line-number="14"><span class="co">#     # calculate mean stratum depth</span></a>
+<a class="sourceLine" id="cb9-15" data-line-number="15"><span class="co">#     MIN_DEPTH = mean(MIN_DEPTH),</span></a>
+<a class="sourceLine" id="cb9-16" data-line-number="16"><span class="co">#     MAX_DEPTH = mean(MAX_DEPTH),</span></a>
+<a class="sourceLine" id="cb9-17" data-line-number="17"><span class="co">#     DEPTH_M = (MIN_DEPTH+MAX_DEPTH)/2) %&gt;%</span></a>
+<a class="sourceLine" id="cb9-18" data-line-number="18"><span class="co">#   # convert 0 for stratum variance so that the sqrt is a small # but not a 0</span></a>
+<a class="sourceLine" id="cb9-19" data-line-number="19"><span class="co">#   dplyr::mutate(svar = dplyr::case_when(svar == 0 ~ 0.00000001,</span></a>
+<a class="sourceLine" id="cb9-20" data-line-number="20"><span class="co">#                                         TRUE ~ svar)) %&gt;%</span></a>
+<a class="sourceLine" id="cb9-21" data-line-number="21"><span class="co">#   dplyr::mutate(std = sqrt(svar))</span></a>
+<a class="sourceLine" id="cb9-22" data-line-number="22"><span class="co"># </span></a>
+<a class="sourceLine" id="cb9-23" data-line-number="23"><span class="co"># cover_est &lt;- cover_est %&gt;%</span></a>
+<a class="sourceLine" id="cb9-24" data-line-number="24"><span class="co">#   # Merge ntot with cover_est</span></a>
+<a class="sourceLine" id="cb9-25" data-line-number="25"><span class="co">#   dplyr::full_join(., ntot) %&gt;%</span></a>
+<a class="sourceLine" id="cb9-26" data-line-number="26"><span class="co">#   # stratum estimates</span></a>
+<a class="sourceLine" id="cb9-27" data-line-number="27"><span class="co">#   dplyr::mutate(whavcvr = wh * avcvr,</span></a>
+<a class="sourceLine" id="cb9-28" data-line-number="28"><span class="co">#                 whsvar = wh^2 * svar,</span></a>
+<a class="sourceLine" id="cb9-29" data-line-number="29"><span class="co">#                 whstd = wh * std,</span></a>
+<a class="sourceLine" id="cb9-30" data-line-number="30"><span class="co">#                 n = tidyr::replace_na(n, 0),</span></a>
+<a class="sourceLine" id="cb9-31" data-line-number="31"><span class="co">#                 # Add the following to match FL format</span></a>
+<a class="sourceLine" id="cb9-32" data-line-number="32"><span class="co">#                 PROT = NA,</span></a>
+<a class="sourceLine" id="cb9-33" data-line-number="33"><span class="co">#                 RUG_CD = NA)</span></a>
+<a class="sourceLine" id="cb9-34" data-line-number="34"><span class="co"># </span></a>
+<a class="sourceLine" id="cb9-35" data-line-number="35"><span class="co"># # Reformat data</span></a>
+<a class="sourceLine" id="cb9-36" data-line-number="36"><span class="co"># </span></a>
+<a class="sourceLine" id="cb9-37" data-line-number="37"><span class="co"># # cover, unweighted by strata</span></a>
+<a class="sourceLine" id="cb9-38" data-line-number="38"><span class="co"># unwh_cover_strata &lt;- cover_est %&gt;%</span></a>
+<a class="sourceLine" id="cb9-39" data-line-number="39"><span class="co">#   dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, DEPTH_M, NTOT, ngrtot, wh, cover_group, n, avcvr, svar, std) %&gt;%</span></a>
+<a class="sourceLine" id="cb9-40" data-line-number="40"><span class="co">#   dplyr::mutate(METHOD = &quot;UNWEIGHTED&quot;) %&gt;%</span></a>
+<a class="sourceLine" id="cb9-41" data-line-number="41"><span class="co">#   dplyr::mutate(n = tidyr::replace_na(n, 0))</span></a>
+<a class="sourceLine" id="cb9-42" data-line-number="42"><span class="co"># </span></a>
+<a class="sourceLine" id="cb9-43" data-line-number="43"><span class="co"># </span></a>
+<a class="sourceLine" id="cb9-44" data-line-number="44"><span class="co"># ## Calculate Domain Estimates</span></a>
+<a class="sourceLine" id="cb9-45" data-line-number="45"><span class="co"># Domain_est &lt;- cover_est %&gt;%</span></a>
+<a class="sourceLine" id="cb9-46" data-line-number="46"><span class="co">#   dplyr::group_by(REGION, YEAR, cover_group) %&gt;%</span></a>
+<a class="sourceLine" id="cb9-47" data-line-number="47"><span class="co">#   dplyr::summarise(avCvr = sum(whavcvr),</span></a>
+<a class="sourceLine" id="cb9-48" data-line-number="48"><span class="co">#                    var = sum(whsvar, na.rm = T),</span></a>
+<a class="sourceLine" id="cb9-49" data-line-number="49"><span class="co">#                    std = sqrt(var),</span></a>
+<a class="sourceLine" id="cb9-50" data-line-number="50"><span class="co">#                    ngrtot = sum(NTOT) )</span></a></code></pre></div>
 </div>
 <div id="ncrmp_make_weighted_lpi_data_rc" class="section level3">
 <h3>3. NCRMP_make_weighted_LPI_data_RC</h3>
@@ -699,107 +712,107 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <p>Analysis level strata = STRAT for Florida regions and HABITAT CODE for the Caribbean regions.</p>
 <p>This function is called within NCRMP_calculate_cover so the initial parameters you provide for region and year will be passed on.</p>
 <p>Example of weighting application for Florida:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="co"># Calculate average cover (avcvr), stratum variance (svar), n and std aat the strata and regional level using STRAT as the analysis strata. Inputdata = 1 stage site level cover for major benthic categories and ntot = the most recent NTOT file for the region, regardless of sampling year. </span></a>
-<a class="sourceLine" id="cb8-3" data-line-number="3"><span class="co"># </span></a>
-<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="co"># cover_est &lt;- inputdata %&gt;%</span></a>
-<a class="sourceLine" id="cb8-5" data-line-number="5"><span class="co">#   # group by analysis level strata</span></a>
-<a class="sourceLine" id="cb8-6" data-line-number="6"><span class="co">#   dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, &quot;/ PROT =&quot;, PROT, sep = &quot; &quot;)) %&gt;%</span></a>
-<a class="sourceLine" id="cb8-7" data-line-number="7"><span class="co">#   dplyr::mutate(ANALYSIS_STRATUM = STRAT) %&gt;%</span></a>
-<a class="sourceLine" id="cb8-8" data-line-number="8"><span class="co">#   dplyr::group_by(YEAR, ANALYSIS_STRATUM, STRAT, cover_group) %&gt;% </span></a>
-<a class="sourceLine" id="cb8-9" data-line-number="9"><span class="co">#   dplyr::summarise(</span></a>
-<a class="sourceLine" id="cb8-10" data-line-number="10"><span class="co">#     # calculate mean cover</span></a>
-<a class="sourceLine" id="cb8-11" data-line-number="11"><span class="co">#     avcvr = mean(Percent_Cvr),</span></a>
-<a class="sourceLine" id="cb8-12" data-line-number="12"><span class="co">#     # calculate stratum variance</span></a>
-<a class="sourceLine" id="cb8-13" data-line-number="13"><span class="co">#     svar = var(Percent_Cvr),</span></a>
-<a class="sourceLine" id="cb8-14" data-line-number="14"><span class="co">#     # calculate N</span></a>
-<a class="sourceLine" id="cb8-15" data-line-number="15"><span class="co">#     n = sum(n),</span></a>
-<a class="sourceLine" id="cb8-16" data-line-number="16"><span class="co">#     # calculate mean stratum depth</span></a>
-<a class="sourceLine" id="cb8-17" data-line-number="17"><span class="co">#     MIN_DEPTH = mean(MIN_DEPTH),</span></a>
-<a class="sourceLine" id="cb8-18" data-line-number="18"><span class="co">#     MAX_DEPTH = mean(MAX_DEPTH),</span></a>
-<a class="sourceLine" id="cb8-19" data-line-number="19"><span class="co">#     DEPTH_M = (MIN_DEPTH+MAX_DEPTH)/2) %&gt;%</span></a>
-<a class="sourceLine" id="cb8-20" data-line-number="20"><span class="co">#   </span></a>
-<a class="sourceLine" id="cb8-21" data-line-number="21"><span class="co">#   # convert 0 for stratum variance so that the sqrt is a small # but not a 0</span></a>
-<a class="sourceLine" id="cb8-22" data-line-number="22"><span class="co">#   dplyr::mutate(svar = dplyr::case_when(svar == 0 ~ 0.00000001,</span></a>
-<a class="sourceLine" id="cb8-23" data-line-number="23"><span class="co">#                                         TRUE ~ svar)) %&gt;%</span></a>
-<a class="sourceLine" id="cb8-24" data-line-number="24"><span class="co">#   dplyr::mutate(std = sqrt(svar))</span></a>
-<a class="sourceLine" id="cb8-25" data-line-number="25"><span class="co"># </span></a>
-<a class="sourceLine" id="cb8-26" data-line-number="26"><span class="co"># cover_est &lt;- cover_est %&gt;%</span></a>
-<a class="sourceLine" id="cb8-27" data-line-number="27"><span class="co">#   # Merge ntot with coral_est_spp</span></a>
-<a class="sourceLine" id="cb8-28" data-line-number="28"><span class="co">#   dplyr::full_join(., ntot) %&gt;%</span></a>
-<a class="sourceLine" id="cb8-29" data-line-number="29"><span class="co">#   # stratum estimates</span></a>
-<a class="sourceLine" id="cb8-30" data-line-number="30"><span class="co">#   dplyr::mutate(whavcvr = wh * avcvr,</span></a>
-<a class="sourceLine" id="cb8-31" data-line-number="31"><span class="co">#                 whsvar = wh^2 * svar,</span></a>
-<a class="sourceLine" id="cb8-32" data-line-number="32"><span class="co">#                 whstd = wh * std,</span></a>
-<a class="sourceLine" id="cb8-33" data-line-number="33"><span class="co">#                 n = tidyr::replace_na(n, 0))</span></a>
-<a class="sourceLine" id="cb8-34" data-line-number="34"><span class="co"># # Reformat data </span></a>
-<a class="sourceLine" id="cb8-35" data-line-number="35"><span class="co"># </span></a>
-<a class="sourceLine" id="cb8-36" data-line-number="36"><span class="co"># # cover, unweighted by strata</span></a>
-<a class="sourceLine" id="cb8-37" data-line-number="37"><span class="co"># unwh_cover_strata &lt;- cover_est %&gt;%</span></a>
-<a class="sourceLine" id="cb8-38" data-line-number="38"><span class="co">#   dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD,  DEPTH_M, NTOT, ngrtot, wh, cover_group, n, avcvr, svar, std) %&gt;%</span></a>
-<a class="sourceLine" id="cb8-39" data-line-number="39"><span class="co">#   dplyr::mutate(METHOD = &quot;UNWEIGHTED&quot;) %&gt;%</span></a>
-<a class="sourceLine" id="cb8-40" data-line-number="40"><span class="co">#   dplyr::mutate(n = tidyr::replace_na(n, 0))</span></a>
-<a class="sourceLine" id="cb8-41" data-line-number="41"><span class="co"># </span></a>
-<a class="sourceLine" id="cb8-42" data-line-number="42"><span class="co"># </span></a>
-<a class="sourceLine" id="cb8-43" data-line-number="43"><span class="co"># # Calculate Domain Estimates</span></a>
-<a class="sourceLine" id="cb8-44" data-line-number="44"><span class="co"># Domain_est &lt;- cover_est %&gt;%</span></a>
-<a class="sourceLine" id="cb8-45" data-line-number="45"><span class="co">#   dplyr::group_by(REGION, YEAR, cover_group) %&gt;%</span></a>
-<a class="sourceLine" id="cb8-46" data-line-number="46"><span class="co">#   dplyr::summarise(avCvr = sum(whavcvr),</span></a>
-<a class="sourceLine" id="cb8-47" data-line-number="47"><span class="co">#                    var = sum(whsvar, na.rm = T),</span></a>
-<a class="sourceLine" id="cb8-48" data-line-number="48"><span class="co">#                    std = sqrt(var),</span></a>
-<a class="sourceLine" id="cb8-49" data-line-number="49"><span class="co">#                    ngrtot = sum(NTOT) )</span></a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="co"># Calculate average cover (avcvr), stratum variance (svar), n and std aat the strata and regional level using STRAT as the analysis strata. Inputdata = 1 stage site level cover for major benthic categories and ntot = the most recent NTOT file for the region, regardless of sampling year. </span></a>
+<a class="sourceLine" id="cb10-3" data-line-number="3"><span class="co"># </span></a>
+<a class="sourceLine" id="cb10-4" data-line-number="4"><span class="co"># cover_est &lt;- inputdata %&gt;%</span></a>
+<a class="sourceLine" id="cb10-5" data-line-number="5"><span class="co">#   # group by analysis level strata</span></a>
+<a class="sourceLine" id="cb10-6" data-line-number="6"><span class="co">#   dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, &quot;/ PROT =&quot;, PROT, sep = &quot; &quot;)) %&gt;%</span></a>
+<a class="sourceLine" id="cb10-7" data-line-number="7"><span class="co">#   dplyr::mutate(ANALYSIS_STRATUM = STRAT) %&gt;%</span></a>
+<a class="sourceLine" id="cb10-8" data-line-number="8"><span class="co">#   dplyr::group_by(YEAR, ANALYSIS_STRATUM, STRAT, cover_group) %&gt;% </span></a>
+<a class="sourceLine" id="cb10-9" data-line-number="9"><span class="co">#   dplyr::summarise(</span></a>
+<a class="sourceLine" id="cb10-10" data-line-number="10"><span class="co">#     # calculate mean cover</span></a>
+<a class="sourceLine" id="cb10-11" data-line-number="11"><span class="co">#     avcvr = mean(Percent_Cvr),</span></a>
+<a class="sourceLine" id="cb10-12" data-line-number="12"><span class="co">#     # calculate stratum variance</span></a>
+<a class="sourceLine" id="cb10-13" data-line-number="13"><span class="co">#     svar = var(Percent_Cvr),</span></a>
+<a class="sourceLine" id="cb10-14" data-line-number="14"><span class="co">#     # calculate N</span></a>
+<a class="sourceLine" id="cb10-15" data-line-number="15"><span class="co">#     n = sum(n),</span></a>
+<a class="sourceLine" id="cb10-16" data-line-number="16"><span class="co">#     # calculate mean stratum depth</span></a>
+<a class="sourceLine" id="cb10-17" data-line-number="17"><span class="co">#     MIN_DEPTH = mean(MIN_DEPTH),</span></a>
+<a class="sourceLine" id="cb10-18" data-line-number="18"><span class="co">#     MAX_DEPTH = mean(MAX_DEPTH),</span></a>
+<a class="sourceLine" id="cb10-19" data-line-number="19"><span class="co">#     DEPTH_M = (MIN_DEPTH+MAX_DEPTH)/2) %&gt;%</span></a>
+<a class="sourceLine" id="cb10-20" data-line-number="20"><span class="co">#   </span></a>
+<a class="sourceLine" id="cb10-21" data-line-number="21"><span class="co">#   # convert 0 for stratum variance so that the sqrt is a small # but not a 0</span></a>
+<a class="sourceLine" id="cb10-22" data-line-number="22"><span class="co">#   dplyr::mutate(svar = dplyr::case_when(svar == 0 ~ 0.00000001,</span></a>
+<a class="sourceLine" id="cb10-23" data-line-number="23"><span class="co">#                                         TRUE ~ svar)) %&gt;%</span></a>
+<a class="sourceLine" id="cb10-24" data-line-number="24"><span class="co">#   dplyr::mutate(std = sqrt(svar))</span></a>
+<a class="sourceLine" id="cb10-25" data-line-number="25"><span class="co"># </span></a>
+<a class="sourceLine" id="cb10-26" data-line-number="26"><span class="co"># cover_est &lt;- cover_est %&gt;%</span></a>
+<a class="sourceLine" id="cb10-27" data-line-number="27"><span class="co">#   # Merge ntot with coral_est_spp</span></a>
+<a class="sourceLine" id="cb10-28" data-line-number="28"><span class="co">#   dplyr::full_join(., ntot) %&gt;%</span></a>
+<a class="sourceLine" id="cb10-29" data-line-number="29"><span class="co">#   # stratum estimates</span></a>
+<a class="sourceLine" id="cb10-30" data-line-number="30"><span class="co">#   dplyr::mutate(whavcvr = wh * avcvr,</span></a>
+<a class="sourceLine" id="cb10-31" data-line-number="31"><span class="co">#                 whsvar = wh^2 * svar,</span></a>
+<a class="sourceLine" id="cb10-32" data-line-number="32"><span class="co">#                 whstd = wh * std,</span></a>
+<a class="sourceLine" id="cb10-33" data-line-number="33"><span class="co">#                 n = tidyr::replace_na(n, 0))</span></a>
+<a class="sourceLine" id="cb10-34" data-line-number="34"><span class="co"># # Reformat data </span></a>
+<a class="sourceLine" id="cb10-35" data-line-number="35"><span class="co"># </span></a>
+<a class="sourceLine" id="cb10-36" data-line-number="36"><span class="co"># # cover, unweighted by strata</span></a>
+<a class="sourceLine" id="cb10-37" data-line-number="37"><span class="co"># unwh_cover_strata &lt;- cover_est %&gt;%</span></a>
+<a class="sourceLine" id="cb10-38" data-line-number="38"><span class="co">#   dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD,  DEPTH_M, NTOT, ngrtot, wh, cover_group, n, avcvr, svar, std) %&gt;%</span></a>
+<a class="sourceLine" id="cb10-39" data-line-number="39"><span class="co">#   dplyr::mutate(METHOD = &quot;UNWEIGHTED&quot;) %&gt;%</span></a>
+<a class="sourceLine" id="cb10-40" data-line-number="40"><span class="co">#   dplyr::mutate(n = tidyr::replace_na(n, 0))</span></a>
+<a class="sourceLine" id="cb10-41" data-line-number="41"><span class="co"># </span></a>
+<a class="sourceLine" id="cb10-42" data-line-number="42"><span class="co"># </span></a>
+<a class="sourceLine" id="cb10-43" data-line-number="43"><span class="co"># # Calculate Domain Estimates</span></a>
+<a class="sourceLine" id="cb10-44" data-line-number="44"><span class="co"># Domain_est &lt;- cover_est %&gt;%</span></a>
+<a class="sourceLine" id="cb10-45" data-line-number="45"><span class="co">#   dplyr::group_by(REGION, YEAR, cover_group) %&gt;%</span></a>
+<a class="sourceLine" id="cb10-46" data-line-number="46"><span class="co">#   dplyr::summarise(avCvr = sum(whavcvr),</span></a>
+<a class="sourceLine" id="cb10-47" data-line-number="47"><span class="co">#                    var = sum(whsvar, na.rm = T),</span></a>
+<a class="sourceLine" id="cb10-48" data-line-number="48"><span class="co">#                    std = sqrt(var),</span></a>
+<a class="sourceLine" id="cb10-49" data-line-number="49"><span class="co">#                    ngrtot = sum(NTOT) )</span></a></code></pre></div>
 <p>Example of weighting application for Caribbean and GOM:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="co"># Calculate average cover (avcvr), stratum variance (svar), n and std at the strata and regional level using HABITAT as the analysis strata. Inputdata = 1 stage site level cover for major benthic categories and ntot = the most recent NTOT file for the region, regardless of sampling year. </span></a>
-<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="co"># </span></a>
-<a class="sourceLine" id="cb9-4" data-line-number="4"><span class="co"># cover_est &lt;- inputdata %&gt;%</span></a>
-<a class="sourceLine" id="cb9-5" data-line-number="5"><span class="co">#   #group by analysis level strata</span></a>
-<a class="sourceLine" id="cb9-6" data-line-number="6"><span class="co">#    dplyr::mutate(ANALYSIS_STRATUM = HABITAT_CD) %&gt;%</span></a>
-<a class="sourceLine" id="cb9-7" data-line-number="7"><span class="co">#   dplyr::group_by(YEAR, ANALYSIS_STRATUM, STRAT, cover_group) %&gt;% </span></a>
-<a class="sourceLine" id="cb9-8" data-line-number="8"><span class="co">#   dplyr::summarise(</span></a>
-<a class="sourceLine" id="cb9-9" data-line-number="9"><span class="co">#     # compute average cover</span></a>
-<a class="sourceLine" id="cb9-10" data-line-number="10"><span class="co">#     avcvr = mean(Percent_Cvr),</span></a>
-<a class="sourceLine" id="cb9-11" data-line-number="11"><span class="co">#     # compute stratum variance</span></a>
-<a class="sourceLine" id="cb9-12" data-line-number="12"><span class="co">#     svar = var(Percent_Cvr),</span></a>
-<a class="sourceLine" id="cb9-13" data-line-number="13"><span class="co">#     # calculate N</span></a>
-<a class="sourceLine" id="cb9-14" data-line-number="14"><span class="co">#     n = sum(n),</span></a>
-<a class="sourceLine" id="cb9-15" data-line-number="15"><span class="co">#     # calculate mean stratum depth</span></a>
-<a class="sourceLine" id="cb9-16" data-line-number="16"><span class="co">#     MIN_DEPTH = mean(MIN_DEPTH),</span></a>
-<a class="sourceLine" id="cb9-17" data-line-number="17"><span class="co">#     MAX_DEPTH = mean(MAX_DEPTH),</span></a>
-<a class="sourceLine" id="cb9-18" data-line-number="18"><span class="co">#     DEPTH_M = (MIN_DEPTH+MAX_DEPTH)/2) %&gt;%</span></a>
-<a class="sourceLine" id="cb9-19" data-line-number="19"><span class="co">#   # convert 0 for stratum variance so that the sqrt is a small # but not a 0</span></a>
-<a class="sourceLine" id="cb9-20" data-line-number="20"><span class="co">#   dplyr::mutate(svar = dplyr::case_when(svar == 0 ~ 0.00000001,</span></a>
-<a class="sourceLine" id="cb9-21" data-line-number="21"><span class="co">#                                         TRUE ~ svar)) %&gt;%</span></a>
-<a class="sourceLine" id="cb9-22" data-line-number="22"><span class="co">#   dplyr::mutate(std = sqrt(svar))</span></a>
-<a class="sourceLine" id="cb9-23" data-line-number="23"><span class="co"># </span></a>
-<a class="sourceLine" id="cb9-24" data-line-number="24"><span class="co"># cover_est &lt;- cover_est %&gt;%</span></a>
-<a class="sourceLine" id="cb9-25" data-line-number="25"><span class="co">#   # Merge ntot with cover_est</span></a>
-<a class="sourceLine" id="cb9-26" data-line-number="26"><span class="co">#   dplyr::full_join(., ntot) %&gt;%</span></a>
-<a class="sourceLine" id="cb9-27" data-line-number="27"><span class="co">#   # stratum estimates</span></a>
-<a class="sourceLine" id="cb9-28" data-line-number="28"><span class="co">#   dplyr::mutate(whavcvr = wh * avcvr,</span></a>
-<a class="sourceLine" id="cb9-29" data-line-number="29"><span class="co">#                 whsvar = wh^2 * svar,</span></a>
-<a class="sourceLine" id="cb9-30" data-line-number="30"><span class="co">#                 whstd = wh * std,</span></a>
-<a class="sourceLine" id="cb9-31" data-line-number="31"><span class="co">#                 n = tidyr::replace_na(n, 0),</span></a>
-<a class="sourceLine" id="cb9-32" data-line-number="32"><span class="co">#                 # Add the following to match FL format</span></a>
-<a class="sourceLine" id="cb9-33" data-line-number="33"><span class="co">#                 PROT = NA,</span></a>
-<a class="sourceLine" id="cb9-34" data-line-number="34"><span class="co">#                 RUG_CD = NA)</span></a>
-<a class="sourceLine" id="cb9-35" data-line-number="35"></a>
-<a class="sourceLine" id="cb9-36" data-line-number="36"><span class="co"># Reformat data </span></a>
-<a class="sourceLine" id="cb9-37" data-line-number="37"><span class="co"># </span></a>
-<a class="sourceLine" id="cb9-38" data-line-number="38"><span class="co"># cover, unweighted by strata</span></a>
-<a class="sourceLine" id="cb9-39" data-line-number="39"><span class="co"># unwh_cover_strata &lt;- cover_est %&gt;%</span></a>
-<a class="sourceLine" id="cb9-40" data-line-number="40"><span class="co">#   dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD,  DEPTH_M, NTOT, ngrtot, wh, cover_group, n, avcvr, svar, std) %&gt;%</span></a>
-<a class="sourceLine" id="cb9-41" data-line-number="41"><span class="co">#   dplyr::mutate(METHOD = &quot;UNWEIGHTED&quot;) %&gt;%</span></a>
-<a class="sourceLine" id="cb9-42" data-line-number="42"><span class="co">#   dplyr::mutate(n = tidyr::replace_na(n, 0))</span></a>
-<a class="sourceLine" id="cb9-43" data-line-number="43"><span class="co"># </span></a>
-<a class="sourceLine" id="cb9-44" data-line-number="44"><span class="co"># </span></a>
-<a class="sourceLine" id="cb9-45" data-line-number="45"><span class="co"># # Calculate Domain Estimates</span></a>
-<a class="sourceLine" id="cb9-46" data-line-number="46"><span class="co"># Domain_est &lt;- cover_est %&gt;%</span></a>
-<a class="sourceLine" id="cb9-47" data-line-number="47"><span class="co">#   dplyr::group_by(REGION, YEAR, cover_group) %&gt;%</span></a>
-<a class="sourceLine" id="cb9-48" data-line-number="48"><span class="co">#   dplyr::summarise(avCvr = sum(whavcvr),</span></a>
-<a class="sourceLine" id="cb9-49" data-line-number="49"><span class="co">#                    var = sum(whsvar, na.rm = T),</span></a>
-<a class="sourceLine" id="cb9-50" data-line-number="50"><span class="co">#                    std = sqrt(var),</span></a>
-<a class="sourceLine" id="cb9-51" data-line-number="51"><span class="co">#                    ngrtot = sum(NTOT) )</span></a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="co"># Calculate average cover (avcvr), stratum variance (svar), n and std at the strata and regional level using HABITAT as the analysis strata. Inputdata = 1 stage site level cover for major benthic categories and ntot = the most recent NTOT file for the region, regardless of sampling year. </span></a>
+<a class="sourceLine" id="cb11-3" data-line-number="3"><span class="co"># </span></a>
+<a class="sourceLine" id="cb11-4" data-line-number="4"><span class="co"># cover_est &lt;- inputdata %&gt;%</span></a>
+<a class="sourceLine" id="cb11-5" data-line-number="5"><span class="co">#   #group by analysis level strata</span></a>
+<a class="sourceLine" id="cb11-6" data-line-number="6"><span class="co">#    dplyr::mutate(ANALYSIS_STRATUM = HABITAT_CD) %&gt;%</span></a>
+<a class="sourceLine" id="cb11-7" data-line-number="7"><span class="co">#   dplyr::group_by(YEAR, ANALYSIS_STRATUM, STRAT, cover_group) %&gt;% </span></a>
+<a class="sourceLine" id="cb11-8" data-line-number="8"><span class="co">#   dplyr::summarise(</span></a>
+<a class="sourceLine" id="cb11-9" data-line-number="9"><span class="co">#     # compute average cover</span></a>
+<a class="sourceLine" id="cb11-10" data-line-number="10"><span class="co">#     avcvr = mean(Percent_Cvr),</span></a>
+<a class="sourceLine" id="cb11-11" data-line-number="11"><span class="co">#     # compute stratum variance</span></a>
+<a class="sourceLine" id="cb11-12" data-line-number="12"><span class="co">#     svar = var(Percent_Cvr),</span></a>
+<a class="sourceLine" id="cb11-13" data-line-number="13"><span class="co">#     # calculate N</span></a>
+<a class="sourceLine" id="cb11-14" data-line-number="14"><span class="co">#     n = sum(n),</span></a>
+<a class="sourceLine" id="cb11-15" data-line-number="15"><span class="co">#     # calculate mean stratum depth</span></a>
+<a class="sourceLine" id="cb11-16" data-line-number="16"><span class="co">#     MIN_DEPTH = mean(MIN_DEPTH),</span></a>
+<a class="sourceLine" id="cb11-17" data-line-number="17"><span class="co">#     MAX_DEPTH = mean(MAX_DEPTH),</span></a>
+<a class="sourceLine" id="cb11-18" data-line-number="18"><span class="co">#     DEPTH_M = (MIN_DEPTH+MAX_DEPTH)/2) %&gt;%</span></a>
+<a class="sourceLine" id="cb11-19" data-line-number="19"><span class="co">#   # convert 0 for stratum variance so that the sqrt is a small # but not a 0</span></a>
+<a class="sourceLine" id="cb11-20" data-line-number="20"><span class="co">#   dplyr::mutate(svar = dplyr::case_when(svar == 0 ~ 0.00000001,</span></a>
+<a class="sourceLine" id="cb11-21" data-line-number="21"><span class="co">#                                         TRUE ~ svar)) %&gt;%</span></a>
+<a class="sourceLine" id="cb11-22" data-line-number="22"><span class="co">#   dplyr::mutate(std = sqrt(svar))</span></a>
+<a class="sourceLine" id="cb11-23" data-line-number="23"><span class="co"># </span></a>
+<a class="sourceLine" id="cb11-24" data-line-number="24"><span class="co"># cover_est &lt;- cover_est %&gt;%</span></a>
+<a class="sourceLine" id="cb11-25" data-line-number="25"><span class="co">#   # Merge ntot with cover_est</span></a>
+<a class="sourceLine" id="cb11-26" data-line-number="26"><span class="co">#   dplyr::full_join(., ntot) %&gt;%</span></a>
+<a class="sourceLine" id="cb11-27" data-line-number="27"><span class="co">#   # stratum estimates</span></a>
+<a class="sourceLine" id="cb11-28" data-line-number="28"><span class="co">#   dplyr::mutate(whavcvr = wh * avcvr,</span></a>
+<a class="sourceLine" id="cb11-29" data-line-number="29"><span class="co">#                 whsvar = wh^2 * svar,</span></a>
+<a class="sourceLine" id="cb11-30" data-line-number="30"><span class="co">#                 whstd = wh * std,</span></a>
+<a class="sourceLine" id="cb11-31" data-line-number="31"><span class="co">#                 n = tidyr::replace_na(n, 0),</span></a>
+<a class="sourceLine" id="cb11-32" data-line-number="32"><span class="co">#                 # Add the following to match FL format</span></a>
+<a class="sourceLine" id="cb11-33" data-line-number="33"><span class="co">#                 PROT = NA,</span></a>
+<a class="sourceLine" id="cb11-34" data-line-number="34"><span class="co">#                 RUG_CD = NA)</span></a>
+<a class="sourceLine" id="cb11-35" data-line-number="35"></a>
+<a class="sourceLine" id="cb11-36" data-line-number="36"><span class="co"># Reformat data </span></a>
+<a class="sourceLine" id="cb11-37" data-line-number="37"><span class="co"># </span></a>
+<a class="sourceLine" id="cb11-38" data-line-number="38"><span class="co"># cover, unweighted by strata</span></a>
+<a class="sourceLine" id="cb11-39" data-line-number="39"><span class="co"># unwh_cover_strata &lt;- cover_est %&gt;%</span></a>
+<a class="sourceLine" id="cb11-40" data-line-number="40"><span class="co">#   dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD,  DEPTH_M, NTOT, ngrtot, wh, cover_group, n, avcvr, svar, std) %&gt;%</span></a>
+<a class="sourceLine" id="cb11-41" data-line-number="41"><span class="co">#   dplyr::mutate(METHOD = &quot;UNWEIGHTED&quot;) %&gt;%</span></a>
+<a class="sourceLine" id="cb11-42" data-line-number="42"><span class="co">#   dplyr::mutate(n = tidyr::replace_na(n, 0))</span></a>
+<a class="sourceLine" id="cb11-43" data-line-number="43"><span class="co"># </span></a>
+<a class="sourceLine" id="cb11-44" data-line-number="44"><span class="co"># </span></a>
+<a class="sourceLine" id="cb11-45" data-line-number="45"><span class="co"># # Calculate Domain Estimates</span></a>
+<a class="sourceLine" id="cb11-46" data-line-number="46"><span class="co"># Domain_est &lt;- cover_est %&gt;%</span></a>
+<a class="sourceLine" id="cb11-47" data-line-number="47"><span class="co">#   dplyr::group_by(REGION, YEAR, cover_group) %&gt;%</span></a>
+<a class="sourceLine" id="cb11-48" data-line-number="48"><span class="co">#   dplyr::summarise(avCvr = sum(whavcvr),</span></a>
+<a class="sourceLine" id="cb11-49" data-line-number="49"><span class="co">#                    var = sum(whsvar, na.rm = T),</span></a>
+<a class="sourceLine" id="cb11-50" data-line-number="50"><span class="co">#                    std = sqrt(var),</span></a>
+<a class="sourceLine" id="cb11-51" data-line-number="51"><span class="co">#                    ngrtot = sum(NTOT) )</span></a></code></pre></div>
 </div>
 </div>
 <div id="coral-density" class="section level2">
@@ -824,21 +837,21 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </ul>
 <p>Associated functions: NCRMP_make_weighted_demo_data, NCRMP_make_weighted_demo_data_RC</p>
 <p>Example:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="kw">require</span>(ncrmp.benthics.analysis)</a>
-<a class="sourceLine" id="cb10-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb10-4" data-line-number="4"><span class="co"># Run function </span></a>
-<a class="sourceLine" id="cb10-5" data-line-number="5">tmp &lt;-<span class="st"> </span><span class="kw">NCRMP_DRM_calculate_colony_density</span>(<span class="dt">project =</span> <span class="st">&quot;NCRMP_FRRP&quot;</span>, </a>
-<a class="sourceLine" id="cb10-6" data-line-number="6">                                           <span class="dt">region =</span> <span class="st">&quot;FLK&quot;</span>,</a>
-<a class="sourceLine" id="cb10-7" data-line-number="7">                                           <span class="dt">species_filter =</span> <span class="st">&quot;FALSE&quot;</span>,</a>
-<a class="sourceLine" id="cb10-8" data-line-number="8">                                           <span class="dt">analysis_strat =</span> <span class="st">&quot;STRAT_PROT&quot;</span>)</a>
-<a class="sourceLine" id="cb10-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb10-10" data-line-number="10"><span class="co"># The function will store all of the function outputs as a list in tmp</span></a>
-<a class="sourceLine" id="cb10-11" data-line-number="11"><span class="co"># Convert list objects to dataframes and rename </span></a>
-<a class="sourceLine" id="cb10-12" data-line-number="12"></a>
-<a class="sourceLine" id="cb10-13" data-line-number="13">NCRMP_DRM_FLK_<span class="dv">2014</span>_<span class="dv">17</span>_density_site &lt;-<span class="st"> </span>tmp<span class="op">$</span>density_site</a>
-<a class="sourceLine" id="cb10-14" data-line-number="14">NCRMP_DRM_FLK_<span class="dv">2014</span>_<span class="dv">17</span>_unwh_density_strata &lt;-<span class="st"> </span>tmp<span class="op">$</span>unwh_density_strata</a>
-<a class="sourceLine" id="cb10-15" data-line-number="15">NCRMP_DRM_FLK_<span class="dv">2014</span>_<span class="dv">17</span>_wh_density_region &lt;-<span class="st"> </span>tmp<span class="op">$</span>Domain_est</a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb12-2" data-line-number="2"><span class="kw">require</span>(ncrmp.benthics.analysis)</a>
+<a class="sourceLine" id="cb12-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb12-4" data-line-number="4"><span class="co"># Run function </span></a>
+<a class="sourceLine" id="cb12-5" data-line-number="5">tmp &lt;-<span class="st"> </span><span class="kw">NCRMP_DRM_calculate_colony_density</span>(<span class="dt">project =</span> <span class="st">&quot;NCRMP_FRRP&quot;</span>, </a>
+<a class="sourceLine" id="cb12-6" data-line-number="6">                                           <span class="dt">region =</span> <span class="st">&quot;FLK&quot;</span>,</a>
+<a class="sourceLine" id="cb12-7" data-line-number="7">                                           <span class="dt">species_filter =</span> <span class="st">&quot;FALSE&quot;</span>,</a>
+<a class="sourceLine" id="cb12-8" data-line-number="8">                                           <span class="dt">analysis_strat =</span> <span class="st">&quot;STRAT_PROT&quot;</span>)</a>
+<a class="sourceLine" id="cb12-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb12-10" data-line-number="10"><span class="co"># The function will store all of the function outputs as a list in tmp</span></a>
+<a class="sourceLine" id="cb12-11" data-line-number="11"><span class="co"># Convert list objects to dataframes and rename </span></a>
+<a class="sourceLine" id="cb12-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb12-13" data-line-number="13">NCRMP_DRM_FLK_<span class="dv">2014</span>_<span class="dv">17</span>_density_site &lt;-<span class="st"> </span>tmp<span class="op">$</span>density_site</a>
+<a class="sourceLine" id="cb12-14" data-line-number="14">NCRMP_DRM_FLK_<span class="dv">2014</span>_<span class="dv">17</span>_unwh_density_strata &lt;-<span class="st"> </span>tmp<span class="op">$</span>unwh_density_strata</a>
+<a class="sourceLine" id="cb12-15" data-line-number="15">NCRMP_DRM_FLK_<span class="dv">2014</span>_<span class="dv">17</span>_wh_density_region &lt;-<span class="st"> </span>tmp<span class="op">$</span>Domain_est</a></code></pre></div>
 </div>
 <div id="ncrmp_make_weighted_demo_data" class="section level3">
 <h3>5. NCRMP_make_weighted_demo_data</h3>
@@ -846,90 +859,90 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <p>Analysis level strata = STRAT + PROT for Florida regions and HABITAT CODE + DEPTH STRAT for the Caribbean and GOM regions. These are the recommended and default settings.</p>
 <p>This function is called within NCRMP_DRM_calculate_colony_density so the initial parameters you provide for region and year will be passed on.</p>
 <p>Example of weighting application for Florida:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="co"># Calculate average density (avden), stratum variance (svar), n and std at the strata and regional level using STRAT + PROT as the analysis strata. Inputdata = 1 stage site level coral density and ntot = the most recent NTOT file for the region, regardless of sampling year. </span></a>
-<a class="sourceLine" id="cb11-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb11-4" data-line-number="4"><span class="co"># density_est &lt;- inputdata %&gt;%</span></a>
-<a class="sourceLine" id="cb11-5" data-line-number="5"><span class="co">#   # group by analysis level strata</span></a>
-<a class="sourceLine" id="cb11-6" data-line-number="6"><span class="co">#   dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, &quot;/ PROT =&quot;, PROT, sep = &quot; &quot;)) %&gt;%</span></a>
-<a class="sourceLine" id="cb11-7" data-line-number="7"><span class="co">#   dplyr::group_by(YEAR, ANALYSIS_STRATUM, STRAT, PROT) %&gt;% </span></a>
-<a class="sourceLine" id="cb11-8" data-line-number="8"><span class="co">#   dplyr::summarise(</span></a>
-<a class="sourceLine" id="cb11-9" data-line-number="9"><span class="co">#     # compute average density</span></a>
-<a class="sourceLine" id="cb11-10" data-line-number="10"><span class="co">#     avden = mean(DENSITY),</span></a>
-<a class="sourceLine" id="cb11-11" data-line-number="11"><span class="co">#     # compute stratum variance</span></a>
-<a class="sourceLine" id="cb11-12" data-line-number="12"><span class="co">#     svar = var(DENSITY),</span></a>
-<a class="sourceLine" id="cb11-13" data-line-number="13"><span class="co">#     # calculate N</span></a>
-<a class="sourceLine" id="cb11-14" data-line-number="14"><span class="co">#     n = length(DENSITY)) %&gt;%</span></a>
-<a class="sourceLine" id="cb11-15" data-line-number="15"><span class="co">#   # convert 0 for stratum variance so that the sqrt is a small # but not a 0</span></a>
-<a class="sourceLine" id="cb11-16" data-line-number="16"><span class="co">#   dplyr::mutate(svar = dplyr::case_when(svar == 0 ~ 0.00000001,</span></a>
-<a class="sourceLine" id="cb11-17" data-line-number="17"><span class="co">#                                         TRUE ~ svar)) %&gt;%</span></a>
-<a class="sourceLine" id="cb11-18" data-line-number="18"><span class="co">#   dplyr::mutate(std = sqrt(svar))</span></a>
-<a class="sourceLine" id="cb11-19" data-line-number="19"><span class="co"># </span></a>
-<a class="sourceLine" id="cb11-20" data-line-number="20"><span class="co"># density_est &lt;- density_est %&gt;%</span></a>
-<a class="sourceLine" id="cb11-21" data-line-number="21"><span class="co">#   # Merge ntot with coral_est_spp</span></a>
-<a class="sourceLine" id="cb11-22" data-line-number="22"><span class="co">#   dplyr::full_join(., ntot) %&gt;%</span></a>
-<a class="sourceLine" id="cb11-23" data-line-number="23"><span class="co">#   # stratum estimates</span></a>
-<a class="sourceLine" id="cb11-24" data-line-number="24"><span class="co">#   dplyr::mutate(whavden = wh * avden,</span></a>
-<a class="sourceLine" id="cb11-25" data-line-number="25"><span class="co">#                 whsvar = wh^2 * svar,</span></a>
-<a class="sourceLine" id="cb11-26" data-line-number="26"><span class="co">#                 whstd = wh * std,</span></a>
-<a class="sourceLine" id="cb11-27" data-line-number="27"><span class="co">#                 n = tidyr::replace_na(n, 0))</span></a>
-<a class="sourceLine" id="cb11-28" data-line-number="28"><span class="co"># </span></a>
-<a class="sourceLine" id="cb11-29" data-line-number="29"><span class="co"># # Reformat output</span></a>
-<a class="sourceLine" id="cb11-30" data-line-number="30"><span class="co"># </span></a>
-<a class="sourceLine" id="cb11-31" data-line-number="31"><span class="co"># unwh_density_strata &lt;-  density_est %&gt;%</span></a>
-<a class="sourceLine" id="cb11-32" data-line-number="32"><span class="co">#   dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, NTOT, ngrtot, wh, n, avden, svar, std)</span></a>
-<a class="sourceLine" id="cb11-33" data-line-number="33"><span class="co"># </span></a>
-<a class="sourceLine" id="cb11-34" data-line-number="34"><span class="co"># # Calculate Domain Estimates</span></a>
-<a class="sourceLine" id="cb11-35" data-line-number="35"><span class="co"># Domain_est &lt;- density_est %&gt;%</span></a>
-<a class="sourceLine" id="cb11-36" data-line-number="36"><span class="co">#   dplyr::group_by(REGION, YEAR) %&gt;%</span></a>
-<a class="sourceLine" id="cb11-37" data-line-number="37"><span class="co">#   dplyr::summarise(avDen = sum(whavden),</span></a>
-<a class="sourceLine" id="cb11-38" data-line-number="38"><span class="co">#                    var = sum(whsvar, na.rm = T),</span></a>
-<a class="sourceLine" id="cb11-39" data-line-number="39"><span class="co">#                    std = sqrt(var),</span></a>
-<a class="sourceLine" id="cb11-40" data-line-number="40"><span class="co">#                    ngrtot = sum(NTOT) )</span></a></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb13-2" data-line-number="2"><span class="co"># Calculate average density (avden), stratum variance (svar), n and std at the strata and regional level using STRAT + PROT as the analysis strata. Inputdata = 1 stage site level coral density and ntot = the most recent NTOT file for the region, regardless of sampling year. </span></a>
+<a class="sourceLine" id="cb13-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb13-4" data-line-number="4"><span class="co"># density_est &lt;- inputdata %&gt;%</span></a>
+<a class="sourceLine" id="cb13-5" data-line-number="5"><span class="co">#   # group by analysis level strata</span></a>
+<a class="sourceLine" id="cb13-6" data-line-number="6"><span class="co">#   dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, &quot;/ PROT =&quot;, PROT, sep = &quot; &quot;)) %&gt;%</span></a>
+<a class="sourceLine" id="cb13-7" data-line-number="7"><span class="co">#   dplyr::group_by(YEAR, ANALYSIS_STRATUM, STRAT, PROT) %&gt;% </span></a>
+<a class="sourceLine" id="cb13-8" data-line-number="8"><span class="co">#   dplyr::summarise(</span></a>
+<a class="sourceLine" id="cb13-9" data-line-number="9"><span class="co">#     # compute average density</span></a>
+<a class="sourceLine" id="cb13-10" data-line-number="10"><span class="co">#     avden = mean(DENSITY),</span></a>
+<a class="sourceLine" id="cb13-11" data-line-number="11"><span class="co">#     # compute stratum variance</span></a>
+<a class="sourceLine" id="cb13-12" data-line-number="12"><span class="co">#     svar = var(DENSITY),</span></a>
+<a class="sourceLine" id="cb13-13" data-line-number="13"><span class="co">#     # calculate N</span></a>
+<a class="sourceLine" id="cb13-14" data-line-number="14"><span class="co">#     n = length(DENSITY)) %&gt;%</span></a>
+<a class="sourceLine" id="cb13-15" data-line-number="15"><span class="co">#   # convert 0 for stratum variance so that the sqrt is a small # but not a 0</span></a>
+<a class="sourceLine" id="cb13-16" data-line-number="16"><span class="co">#   dplyr::mutate(svar = dplyr::case_when(svar == 0 ~ 0.00000001,</span></a>
+<a class="sourceLine" id="cb13-17" data-line-number="17"><span class="co">#                                         TRUE ~ svar)) %&gt;%</span></a>
+<a class="sourceLine" id="cb13-18" data-line-number="18"><span class="co">#   dplyr::mutate(std = sqrt(svar))</span></a>
+<a class="sourceLine" id="cb13-19" data-line-number="19"><span class="co"># </span></a>
+<a class="sourceLine" id="cb13-20" data-line-number="20"><span class="co"># density_est &lt;- density_est %&gt;%</span></a>
+<a class="sourceLine" id="cb13-21" data-line-number="21"><span class="co">#   # Merge ntot with coral_est_spp</span></a>
+<a class="sourceLine" id="cb13-22" data-line-number="22"><span class="co">#   dplyr::full_join(., ntot) %&gt;%</span></a>
+<a class="sourceLine" id="cb13-23" data-line-number="23"><span class="co">#   # stratum estimates</span></a>
+<a class="sourceLine" id="cb13-24" data-line-number="24"><span class="co">#   dplyr::mutate(whavden = wh * avden,</span></a>
+<a class="sourceLine" id="cb13-25" data-line-number="25"><span class="co">#                 whsvar = wh^2 * svar,</span></a>
+<a class="sourceLine" id="cb13-26" data-line-number="26"><span class="co">#                 whstd = wh * std,</span></a>
+<a class="sourceLine" id="cb13-27" data-line-number="27"><span class="co">#                 n = tidyr::replace_na(n, 0))</span></a>
+<a class="sourceLine" id="cb13-28" data-line-number="28"><span class="co"># </span></a>
+<a class="sourceLine" id="cb13-29" data-line-number="29"><span class="co"># # Reformat output</span></a>
+<a class="sourceLine" id="cb13-30" data-line-number="30"><span class="co"># </span></a>
+<a class="sourceLine" id="cb13-31" data-line-number="31"><span class="co"># unwh_density_strata &lt;-  density_est %&gt;%</span></a>
+<a class="sourceLine" id="cb13-32" data-line-number="32"><span class="co">#   dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, NTOT, ngrtot, wh, n, avden, svar, std)</span></a>
+<a class="sourceLine" id="cb13-33" data-line-number="33"><span class="co"># </span></a>
+<a class="sourceLine" id="cb13-34" data-line-number="34"><span class="co"># # Calculate Domain Estimates</span></a>
+<a class="sourceLine" id="cb13-35" data-line-number="35"><span class="co"># Domain_est &lt;- density_est %&gt;%</span></a>
+<a class="sourceLine" id="cb13-36" data-line-number="36"><span class="co">#   dplyr::group_by(REGION, YEAR) %&gt;%</span></a>
+<a class="sourceLine" id="cb13-37" data-line-number="37"><span class="co">#   dplyr::summarise(avDen = sum(whavden),</span></a>
+<a class="sourceLine" id="cb13-38" data-line-number="38"><span class="co">#                    var = sum(whsvar, na.rm = T),</span></a>
+<a class="sourceLine" id="cb13-39" data-line-number="39"><span class="co">#                    std = sqrt(var),</span></a>
+<a class="sourceLine" id="cb13-40" data-line-number="40"><span class="co">#                    ngrtot = sum(NTOT) )</span></a></code></pre></div>
 <p>Example of weighting application for Caribbean:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb12-2" data-line-number="2"><span class="co"># Calculate average density (avden), stratum variance (svar), n and std at the strata and regional level using HABITAT + DEPTH_STRAT as the analysis strata. Inputdata = 1 stage site level coral density and ntot = the most recent NTOT file for the region, regardless of sampling year. </span></a>
-<a class="sourceLine" id="cb12-3" data-line-number="3"><span class="co"># </span></a>
-<a class="sourceLine" id="cb12-4" data-line-number="4"><span class="co"># # Calculate avdns, svar, n and std</span></a>
-<a class="sourceLine" id="cb12-5" data-line-number="5"><span class="co"># density_est &lt;- inputdata %&gt;%</span></a>
-<a class="sourceLine" id="cb12-6" data-line-number="6"><span class="co">#   # group by analysis level strata</span></a>
-<a class="sourceLine" id="cb12-7" data-line-number="7"><span class="co">#   dplyr::mutate(ANALYSIS_STRATUM = STRAT) %&gt;%</span></a>
-<a class="sourceLine" id="cb12-8" data-line-number="8"><span class="co">#   dplyr::group_by(YEAR, ANALYSIS_STRATUM, STRAT) %&gt;% </span></a>
-<a class="sourceLine" id="cb12-9" data-line-number="9"><span class="co">#   dplyr::summarise(# compute average density</span></a>
-<a class="sourceLine" id="cb12-10" data-line-number="10"><span class="co">#     avden = mean(DENSITY),</span></a>
-<a class="sourceLine" id="cb12-11" data-line-number="11"><span class="co">#     # compute stratum variance</span></a>
-<a class="sourceLine" id="cb12-12" data-line-number="12"><span class="co">#     svar = var(DENSITY),</span></a>
-<a class="sourceLine" id="cb12-13" data-line-number="13"><span class="co">#     # calculate N</span></a>
-<a class="sourceLine" id="cb12-14" data-line-number="14"><span class="co">#     n = length(DENSITY)) %&gt;%</span></a>
-<a class="sourceLine" id="cb12-15" data-line-number="15"><span class="co">#   # convert 0 for stratum variance so that the sqrt is a small # but not a 0</span></a>
-<a class="sourceLine" id="cb12-16" data-line-number="16"><span class="co">#   dplyr::mutate(svar = dplyr::case_when(svar == 0 ~ 0.00000001,</span></a>
-<a class="sourceLine" id="cb12-17" data-line-number="17"><span class="co">#                                         TRUE ~ svar)) %&gt;%</span></a>
-<a class="sourceLine" id="cb12-18" data-line-number="18"><span class="co">#   dplyr::mutate(std = sqrt(svar))</span></a>
-<a class="sourceLine" id="cb12-19" data-line-number="19"><span class="co"># </span></a>
-<a class="sourceLine" id="cb12-20" data-line-number="20"><span class="co"># density_est &lt;- density_est %&gt;%</span></a>
-<a class="sourceLine" id="cb12-21" data-line-number="21"><span class="co">#   # Merge ntot with coral_est_spp</span></a>
-<a class="sourceLine" id="cb12-22" data-line-number="22"><span class="co">#   dplyr::full_join(., ntot) %&gt;%</span></a>
-<a class="sourceLine" id="cb12-23" data-line-number="23"><span class="co">#   # stratum estimates</span></a>
-<a class="sourceLine" id="cb12-24" data-line-number="24"><span class="co">#   dplyr::mutate(whavden = wh * avden,</span></a>
-<a class="sourceLine" id="cb12-25" data-line-number="25"><span class="co">#                 whsvar = wh^2 * svar,</span></a>
-<a class="sourceLine" id="cb12-26" data-line-number="26"><span class="co">#                 whstd = wh * std,</span></a>
-<a class="sourceLine" id="cb12-27" data-line-number="27"><span class="co">#                 n = tidyr::replace_na(n, 0),</span></a>
-<a class="sourceLine" id="cb12-28" data-line-number="28"><span class="co">#                 # Add the following to match FL format </span></a>
-<a class="sourceLine" id="cb12-29" data-line-number="29"><span class="co">#                 PROT = NA,           </span></a>
-<a class="sourceLine" id="cb12-30" data-line-number="30"><span class="co">#                 RUG_CD = NA)</span></a>
-<a class="sourceLine" id="cb12-31" data-line-number="31"><span class="co"># </span></a>
-<a class="sourceLine" id="cb12-32" data-line-number="32"><span class="co"># # Reformat output</span></a>
-<a class="sourceLine" id="cb12-33" data-line-number="33"><span class="co"># </span></a>
-<a class="sourceLine" id="cb12-34" data-line-number="34"><span class="co"># unwh_density_strata &lt;-  density_est %&gt;%</span></a>
-<a class="sourceLine" id="cb12-35" data-line-number="35"><span class="co">#   dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, NTOT, ngrtot, wh, n, avden, svar, std)</span></a>
-<a class="sourceLine" id="cb12-36" data-line-number="36"><span class="co"># </span></a>
-<a class="sourceLine" id="cb12-37" data-line-number="37"><span class="co"># # Calculate Domain Estimates</span></a>
-<a class="sourceLine" id="cb12-38" data-line-number="38"><span class="co"># Domain_est &lt;- density_est %&gt;%</span></a>
-<a class="sourceLine" id="cb12-39" data-line-number="39"><span class="co">#   dplyr::group_by(REGION, YEAR) %&gt;%</span></a>
-<a class="sourceLine" id="cb12-40" data-line-number="40"><span class="co">#   dplyr::summarise(avDen = sum(whavden),</span></a>
-<a class="sourceLine" id="cb12-41" data-line-number="41"><span class="co">#                    var = sum(whsvar, na.rm = T),</span></a>
-<a class="sourceLine" id="cb12-42" data-line-number="42"><span class="co">#                    std = sqrt(var),</span></a>
-<a class="sourceLine" id="cb12-43" data-line-number="43"><span class="co">#                    ngrtot = sum(NTOT) )</span></a></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb14-2" data-line-number="2"><span class="co"># Calculate average density (avden), stratum variance (svar), n and std at the strata and regional level using HABITAT + DEPTH_STRAT as the analysis strata. Inputdata = 1 stage site level coral density and ntot = the most recent NTOT file for the region, regardless of sampling year. </span></a>
+<a class="sourceLine" id="cb14-3" data-line-number="3"><span class="co"># </span></a>
+<a class="sourceLine" id="cb14-4" data-line-number="4"><span class="co"># # Calculate avdns, svar, n and std</span></a>
+<a class="sourceLine" id="cb14-5" data-line-number="5"><span class="co"># density_est &lt;- inputdata %&gt;%</span></a>
+<a class="sourceLine" id="cb14-6" data-line-number="6"><span class="co">#   # group by analysis level strata</span></a>
+<a class="sourceLine" id="cb14-7" data-line-number="7"><span class="co">#   dplyr::mutate(ANALYSIS_STRATUM = STRAT) %&gt;%</span></a>
+<a class="sourceLine" id="cb14-8" data-line-number="8"><span class="co">#   dplyr::group_by(YEAR, ANALYSIS_STRATUM, STRAT) %&gt;% </span></a>
+<a class="sourceLine" id="cb14-9" data-line-number="9"><span class="co">#   dplyr::summarise(# compute average density</span></a>
+<a class="sourceLine" id="cb14-10" data-line-number="10"><span class="co">#     avden = mean(DENSITY),</span></a>
+<a class="sourceLine" id="cb14-11" data-line-number="11"><span class="co">#     # compute stratum variance</span></a>
+<a class="sourceLine" id="cb14-12" data-line-number="12"><span class="co">#     svar = var(DENSITY),</span></a>
+<a class="sourceLine" id="cb14-13" data-line-number="13"><span class="co">#     # calculate N</span></a>
+<a class="sourceLine" id="cb14-14" data-line-number="14"><span class="co">#     n = length(DENSITY)) %&gt;%</span></a>
+<a class="sourceLine" id="cb14-15" data-line-number="15"><span class="co">#   # convert 0 for stratum variance so that the sqrt is a small # but not a 0</span></a>
+<a class="sourceLine" id="cb14-16" data-line-number="16"><span class="co">#   dplyr::mutate(svar = dplyr::case_when(svar == 0 ~ 0.00000001,</span></a>
+<a class="sourceLine" id="cb14-17" data-line-number="17"><span class="co">#                                         TRUE ~ svar)) %&gt;%</span></a>
+<a class="sourceLine" id="cb14-18" data-line-number="18"><span class="co">#   dplyr::mutate(std = sqrt(svar))</span></a>
+<a class="sourceLine" id="cb14-19" data-line-number="19"><span class="co"># </span></a>
+<a class="sourceLine" id="cb14-20" data-line-number="20"><span class="co"># density_est &lt;- density_est %&gt;%</span></a>
+<a class="sourceLine" id="cb14-21" data-line-number="21"><span class="co">#   # Merge ntot with coral_est_spp</span></a>
+<a class="sourceLine" id="cb14-22" data-line-number="22"><span class="co">#   dplyr::full_join(., ntot) %&gt;%</span></a>
+<a class="sourceLine" id="cb14-23" data-line-number="23"><span class="co">#   # stratum estimates</span></a>
+<a class="sourceLine" id="cb14-24" data-line-number="24"><span class="co">#   dplyr::mutate(whavden = wh * avden,</span></a>
+<a class="sourceLine" id="cb14-25" data-line-number="25"><span class="co">#                 whsvar = wh^2 * svar,</span></a>
+<a class="sourceLine" id="cb14-26" data-line-number="26"><span class="co">#                 whstd = wh * std,</span></a>
+<a class="sourceLine" id="cb14-27" data-line-number="27"><span class="co">#                 n = tidyr::replace_na(n, 0),</span></a>
+<a class="sourceLine" id="cb14-28" data-line-number="28"><span class="co">#                 # Add the following to match FL format </span></a>
+<a class="sourceLine" id="cb14-29" data-line-number="29"><span class="co">#                 PROT = NA,           </span></a>
+<a class="sourceLine" id="cb14-30" data-line-number="30"><span class="co">#                 RUG_CD = NA)</span></a>
+<a class="sourceLine" id="cb14-31" data-line-number="31"><span class="co"># </span></a>
+<a class="sourceLine" id="cb14-32" data-line-number="32"><span class="co"># # Reformat output</span></a>
+<a class="sourceLine" id="cb14-33" data-line-number="33"><span class="co"># </span></a>
+<a class="sourceLine" id="cb14-34" data-line-number="34"><span class="co"># unwh_density_strata &lt;-  density_est %&gt;%</span></a>
+<a class="sourceLine" id="cb14-35" data-line-number="35"><span class="co">#   dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, NTOT, ngrtot, wh, n, avden, svar, std)</span></a>
+<a class="sourceLine" id="cb14-36" data-line-number="36"><span class="co"># </span></a>
+<a class="sourceLine" id="cb14-37" data-line-number="37"><span class="co"># # Calculate Domain Estimates</span></a>
+<a class="sourceLine" id="cb14-38" data-line-number="38"><span class="co"># Domain_est &lt;- density_est %&gt;%</span></a>
+<a class="sourceLine" id="cb14-39" data-line-number="39"><span class="co">#   dplyr::group_by(REGION, YEAR) %&gt;%</span></a>
+<a class="sourceLine" id="cb14-40" data-line-number="40"><span class="co">#   dplyr::summarise(avDen = sum(whavden),</span></a>
+<a class="sourceLine" id="cb14-41" data-line-number="41"><span class="co">#                    var = sum(whsvar, na.rm = T),</span></a>
+<a class="sourceLine" id="cb14-42" data-line-number="42"><span class="co">#                    std = sqrt(var),</span></a>
+<a class="sourceLine" id="cb14-43" data-line-number="43"><span class="co">#                    ngrtot = sum(NTOT) )</span></a></code></pre></div>
 </div>
 <div id="ncrmp_make_weighted_demo_data_rc" class="section level3">
 <h3>6. NCRMP_make_weighted_demo_data_RC</h3>
@@ -937,89 +950,89 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <p>Analysis level strata = STRAT for Florida regions and HABITAT CODE for the Caribbean and GOM regions.</p>
 <p>This function is called within NCRMP_DRM_calculate_colony_density so the initial parameters you provide for region and year will be passed on.</p>
 <p>Example of weighting application for Florida:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb13-2" data-line-number="2"><span class="co"># # Calculate average density (avden), stratum variance (svar), n and std at the strata and regional level using STRAT as the analysis strata. Inputdata = 1 stage site level coral density and ntot = the most recent NTOT file for the region, regardless of sampling year. </span></a>
-<a class="sourceLine" id="cb13-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb13-4" data-line-number="4"><span class="co"># </span></a>
-<a class="sourceLine" id="cb13-5" data-line-number="5"><span class="co"># # Calculate avdns, svar, n and std</span></a>
-<a class="sourceLine" id="cb13-6" data-line-number="6"><span class="co"># density_est &lt;- inputdata %&gt;%</span></a>
-<a class="sourceLine" id="cb13-7" data-line-number="7"><span class="co">#   # group by analysis level strata</span></a>
-<a class="sourceLine" id="cb13-8" data-line-number="8"><span class="co">#   dplyr::mutate(ANALYSIS_STRATUM = STRAT) %&gt;%</span></a>
-<a class="sourceLine" id="cb13-9" data-line-number="9"><span class="co">#   dplyr::group_by(YEAR, ANALYSIS_STRATUM, STRAT) %&gt;% </span></a>
-<a class="sourceLine" id="cb13-10" data-line-number="10"><span class="co">#   dplyr::summarise(</span></a>
-<a class="sourceLine" id="cb13-11" data-line-number="11"><span class="co">#     # compute average density</span></a>
-<a class="sourceLine" id="cb13-12" data-line-number="12"><span class="co">#     avden = mean(DENSITY),</span></a>
-<a class="sourceLine" id="cb13-13" data-line-number="13"><span class="co">#     # compute stratum variance</span></a>
-<a class="sourceLine" id="cb13-14" data-line-number="14"><span class="co">#     svar = var(DENSITY),</span></a>
-<a class="sourceLine" id="cb13-15" data-line-number="15"><span class="co">#     n = length(DENSITY)) %&gt;%</span></a>
-<a class="sourceLine" id="cb13-16" data-line-number="16"><span class="co">#   # convert 0 for stratum variance so that the sqrt is a small # but not a 0</span></a>
-<a class="sourceLine" id="cb13-17" data-line-number="17"><span class="co">#   dplyr::mutate(svar = dplyr::case_when(svar == 0 ~ 0.00000001,</span></a>
-<a class="sourceLine" id="cb13-18" data-line-number="18"><span class="co">#                                         TRUE ~ svar)) %&gt;%</span></a>
-<a class="sourceLine" id="cb13-19" data-line-number="19"><span class="co">#   dplyr::mutate(std = sqrt(svar))</span></a>
-<a class="sourceLine" id="cb13-20" data-line-number="20"><span class="co"># </span></a>
-<a class="sourceLine" id="cb13-21" data-line-number="21"><span class="co"># density_est &lt;- density_est %&gt;%</span></a>
-<a class="sourceLine" id="cb13-22" data-line-number="22"><span class="co">#   # Merge ntot with coral_est_spp</span></a>
-<a class="sourceLine" id="cb13-23" data-line-number="23"><span class="co">#   dplyr::full_join(., ntot) %&gt;%</span></a>
-<a class="sourceLine" id="cb13-24" data-line-number="24"><span class="co">#   # stratum estimates</span></a>
-<a class="sourceLine" id="cb13-25" data-line-number="25"><span class="co">#   dplyr::mutate(whavden = wh * avden,</span></a>
-<a class="sourceLine" id="cb13-26" data-line-number="26"><span class="co">#                 whsvar = wh^2 * svar,</span></a>
-<a class="sourceLine" id="cb13-27" data-line-number="27"><span class="co">#                 whstd = wh * std,</span></a>
-<a class="sourceLine" id="cb13-28" data-line-number="28"><span class="co">#                 n = tidyr::replace_na(n, 0))</span></a>
-<a class="sourceLine" id="cb13-29" data-line-number="29"><span class="co"># </span></a>
-<a class="sourceLine" id="cb13-30" data-line-number="30"><span class="co"># # Reformat output</span></a>
-<a class="sourceLine" id="cb13-31" data-line-number="31"><span class="co"># </span></a>
-<a class="sourceLine" id="cb13-32" data-line-number="32"><span class="co"># unwh_density_strata &lt;-  density_est %&gt;%</span></a>
-<a class="sourceLine" id="cb13-33" data-line-number="33"><span class="co">#   dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, RUG_CD, NTOT, ngrtot, wh, n, avden, svar, std)</span></a>
-<a class="sourceLine" id="cb13-34" data-line-number="34"><span class="co"># </span></a>
-<a class="sourceLine" id="cb13-35" data-line-number="35"><span class="co"># # Domain Estimates</span></a>
-<a class="sourceLine" id="cb13-36" data-line-number="36"><span class="co"># Domain_est &lt;- density_est %&gt;%</span></a>
-<a class="sourceLine" id="cb13-37" data-line-number="37"><span class="co">#   dplyr::group_by(REGION, YEAR) %&gt;%</span></a>
-<a class="sourceLine" id="cb13-38" data-line-number="38"><span class="co">#   dplyr::summarise(avDen = sum(whavden),</span></a>
-<a class="sourceLine" id="cb13-39" data-line-number="39"><span class="co">#                    var = sum(whsvar, na.rm = T),</span></a>
-<a class="sourceLine" id="cb13-40" data-line-number="40"><span class="co">#                    std = sqrt(var),</span></a>
-<a class="sourceLine" id="cb13-41" data-line-number="41"><span class="co">#                    ngrtot = sum(NTOT) )</span></a></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb15-2" data-line-number="2"><span class="co"># # Calculate average density (avden), stratum variance (svar), n and std at the strata and regional level using STRAT as the analysis strata. Inputdata = 1 stage site level coral density and ntot = the most recent NTOT file for the region, regardless of sampling year. </span></a>
+<a class="sourceLine" id="cb15-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb15-4" data-line-number="4"><span class="co"># </span></a>
+<a class="sourceLine" id="cb15-5" data-line-number="5"><span class="co"># # Calculate avdns, svar, n and std</span></a>
+<a class="sourceLine" id="cb15-6" data-line-number="6"><span class="co"># density_est &lt;- inputdata %&gt;%</span></a>
+<a class="sourceLine" id="cb15-7" data-line-number="7"><span class="co">#   # group by analysis level strata</span></a>
+<a class="sourceLine" id="cb15-8" data-line-number="8"><span class="co">#   dplyr::mutate(ANALYSIS_STRATUM = STRAT) %&gt;%</span></a>
+<a class="sourceLine" id="cb15-9" data-line-number="9"><span class="co">#   dplyr::group_by(YEAR, ANALYSIS_STRATUM, STRAT) %&gt;% </span></a>
+<a class="sourceLine" id="cb15-10" data-line-number="10"><span class="co">#   dplyr::summarise(</span></a>
+<a class="sourceLine" id="cb15-11" data-line-number="11"><span class="co">#     # compute average density</span></a>
+<a class="sourceLine" id="cb15-12" data-line-number="12"><span class="co">#     avden = mean(DENSITY),</span></a>
+<a class="sourceLine" id="cb15-13" data-line-number="13"><span class="co">#     # compute stratum variance</span></a>
+<a class="sourceLine" id="cb15-14" data-line-number="14"><span class="co">#     svar = var(DENSITY),</span></a>
+<a class="sourceLine" id="cb15-15" data-line-number="15"><span class="co">#     n = length(DENSITY)) %&gt;%</span></a>
+<a class="sourceLine" id="cb15-16" data-line-number="16"><span class="co">#   # convert 0 for stratum variance so that the sqrt is a small # but not a 0</span></a>
+<a class="sourceLine" id="cb15-17" data-line-number="17"><span class="co">#   dplyr::mutate(svar = dplyr::case_when(svar == 0 ~ 0.00000001,</span></a>
+<a class="sourceLine" id="cb15-18" data-line-number="18"><span class="co">#                                         TRUE ~ svar)) %&gt;%</span></a>
+<a class="sourceLine" id="cb15-19" data-line-number="19"><span class="co">#   dplyr::mutate(std = sqrt(svar))</span></a>
+<a class="sourceLine" id="cb15-20" data-line-number="20"><span class="co"># </span></a>
+<a class="sourceLine" id="cb15-21" data-line-number="21"><span class="co"># density_est &lt;- density_est %&gt;%</span></a>
+<a class="sourceLine" id="cb15-22" data-line-number="22"><span class="co">#   # Merge ntot with coral_est_spp</span></a>
+<a class="sourceLine" id="cb15-23" data-line-number="23"><span class="co">#   dplyr::full_join(., ntot) %&gt;%</span></a>
+<a class="sourceLine" id="cb15-24" data-line-number="24"><span class="co">#   # stratum estimates</span></a>
+<a class="sourceLine" id="cb15-25" data-line-number="25"><span class="co">#   dplyr::mutate(whavden = wh * avden,</span></a>
+<a class="sourceLine" id="cb15-26" data-line-number="26"><span class="co">#                 whsvar = wh^2 * svar,</span></a>
+<a class="sourceLine" id="cb15-27" data-line-number="27"><span class="co">#                 whstd = wh * std,</span></a>
+<a class="sourceLine" id="cb15-28" data-line-number="28"><span class="co">#                 n = tidyr::replace_na(n, 0))</span></a>
+<a class="sourceLine" id="cb15-29" data-line-number="29"><span class="co"># </span></a>
+<a class="sourceLine" id="cb15-30" data-line-number="30"><span class="co"># # Reformat output</span></a>
+<a class="sourceLine" id="cb15-31" data-line-number="31"><span class="co"># </span></a>
+<a class="sourceLine" id="cb15-32" data-line-number="32"><span class="co"># unwh_density_strata &lt;-  density_est %&gt;%</span></a>
+<a class="sourceLine" id="cb15-33" data-line-number="33"><span class="co">#   dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, RUG_CD, NTOT, ngrtot, wh, n, avden, svar, std)</span></a>
+<a class="sourceLine" id="cb15-34" data-line-number="34"><span class="co"># </span></a>
+<a class="sourceLine" id="cb15-35" data-line-number="35"><span class="co"># # Domain Estimates</span></a>
+<a class="sourceLine" id="cb15-36" data-line-number="36"><span class="co"># Domain_est &lt;- density_est %&gt;%</span></a>
+<a class="sourceLine" id="cb15-37" data-line-number="37"><span class="co">#   dplyr::group_by(REGION, YEAR) %&gt;%</span></a>
+<a class="sourceLine" id="cb15-38" data-line-number="38"><span class="co">#   dplyr::summarise(avDen = sum(whavden),</span></a>
+<a class="sourceLine" id="cb15-39" data-line-number="39"><span class="co">#                    var = sum(whsvar, na.rm = T),</span></a>
+<a class="sourceLine" id="cb15-40" data-line-number="40"><span class="co">#                    std = sqrt(var),</span></a>
+<a class="sourceLine" id="cb15-41" data-line-number="41"><span class="co">#                    ngrtot = sum(NTOT) )</span></a></code></pre></div>
 <p>Example of weighting application for Caribbean:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb14-2" data-line-number="2"><span class="co"># #  Calculate average density (avden), stratum variance (svar), n and std at the strata and regional level using HABITAT_CD as the analysis strata. Inputdata = 1 stage site level coral density and ntot = the most recent NTOT file for the region, regardless of sampling year. </span></a>
-<a class="sourceLine" id="cb14-3" data-line-number="3"><span class="co"># </span></a>
-<a class="sourceLine" id="cb14-4" data-line-number="4"><span class="co"># # Calculate avdns, svar, n and std</span></a>
-<a class="sourceLine" id="cb14-5" data-line-number="5"><span class="co"># density_est &lt;- inputdata %&gt;%</span></a>
-<a class="sourceLine" id="cb14-6" data-line-number="6"><span class="co">#   # group by analysis level strata</span></a>
-<a class="sourceLine" id="cb14-7" data-line-number="7"><span class="co">#   dplyr::mutate(ANALYSIS_STRATUM = HABITAT_CD) %&gt;%</span></a>
-<a class="sourceLine" id="cb14-8" data-line-number="8"><span class="co">#   dplyr::group_by(YEAR, ANALYSIS_STRATUM, HABITAT_CD) %&gt;% </span></a>
-<a class="sourceLine" id="cb14-9" data-line-number="9"><span class="co">#   dplyr::summarise(# compute average density</span></a>
-<a class="sourceLine" id="cb14-10" data-line-number="10"><span class="co">#     avden = mean(DENSITY),</span></a>
-<a class="sourceLine" id="cb14-11" data-line-number="11"><span class="co">#     # compute stratum variance</span></a>
-<a class="sourceLine" id="cb14-12" data-line-number="12"><span class="co">#     svar = var(DENSITY),</span></a>
-<a class="sourceLine" id="cb14-13" data-line-number="13"><span class="co">#     n = length(DENSITY)) %&gt;%</span></a>
-<a class="sourceLine" id="cb14-14" data-line-number="14"><span class="co">#   # convert 0 for stratum variance so that the sqrt is a small # but not a 0</span></a>
-<a class="sourceLine" id="cb14-15" data-line-number="15"><span class="co">#   dplyr::mutate(svar = dplyr::case_when(svar == 0 ~ 0.00000001,</span></a>
-<a class="sourceLine" id="cb14-16" data-line-number="16"><span class="co">#                                         TRUE ~ svar)) %&gt;%</span></a>
-<a class="sourceLine" id="cb14-17" data-line-number="17"><span class="co">#   dplyr::mutate(std = sqrt(svar))</span></a>
-<a class="sourceLine" id="cb14-18" data-line-number="18"><span class="co"># </span></a>
-<a class="sourceLine" id="cb14-19" data-line-number="19"><span class="co"># density_est &lt;- density_est %&gt;%</span></a>
-<a class="sourceLine" id="cb14-20" data-line-number="20"><span class="co">#   # Merge ntot with coral_est_spp</span></a>
-<a class="sourceLine" id="cb14-21" data-line-number="21"><span class="co">#   dplyr::full_join(., ntot) %&gt;%</span></a>
-<a class="sourceLine" id="cb14-22" data-line-number="22"><span class="co">#   # stratum estimates</span></a>
-<a class="sourceLine" id="cb14-23" data-line-number="23"><span class="co">#   dplyr::mutate(whavden = wh * avden,</span></a>
-<a class="sourceLine" id="cb14-24" data-line-number="24"><span class="co">#                 whsvar = wh^2 * svar,</span></a>
-<a class="sourceLine" id="cb14-25" data-line-number="25"><span class="co">#                 whstd = wh * std,</span></a>
-<a class="sourceLine" id="cb14-26" data-line-number="26"><span class="co">#                 n = tidyr::replace_na(n, 0),</span></a>
-<a class="sourceLine" id="cb14-27" data-line-number="27"><span class="co">#                 # Add the following to match FL format</span></a>
-<a class="sourceLine" id="cb14-28" data-line-number="28"><span class="co">#                 RUG_CD = NA)</span></a>
-<a class="sourceLine" id="cb14-29" data-line-number="29"><span class="co"># </span></a>
-<a class="sourceLine" id="cb14-30" data-line-number="30"><span class="co"># # Reformat output</span></a>
-<a class="sourceLine" id="cb14-31" data-line-number="31"><span class="co"># </span></a>
-<a class="sourceLine" id="cb14-32" data-line-number="32"><span class="co"># unwh_density_strata &lt;-  density_est %&gt;%</span></a>
-<a class="sourceLine" id="cb14-33" data-line-number="33"><span class="co">#   dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, RUG_CD, NTOT, ngrtot, wh, n, avden, svar, std)</span></a>
-<a class="sourceLine" id="cb14-34" data-line-number="34"><span class="co"># </span></a>
-<a class="sourceLine" id="cb14-35" data-line-number="35"><span class="co"># # Domain Estimates</span></a>
-<a class="sourceLine" id="cb14-36" data-line-number="36"><span class="co"># Domain_est &lt;- density_est %&gt;%</span></a>
-<a class="sourceLine" id="cb14-37" data-line-number="37"><span class="co">#   dplyr::group_by(REGION, YEAR) %&gt;%</span></a>
-<a class="sourceLine" id="cb14-38" data-line-number="38"><span class="co">#   dplyr::summarise(avDen = sum(whavden),</span></a>
-<a class="sourceLine" id="cb14-39" data-line-number="39"><span class="co">#                    var = sum(whsvar, na.rm = T),</span></a>
-<a class="sourceLine" id="cb14-40" data-line-number="40"><span class="co">#                    std = sqrt(var),</span></a>
-<a class="sourceLine" id="cb14-41" data-line-number="41"><span class="co">#                    ngrtot = sum(NTOT) )</span></a></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb16-2" data-line-number="2"><span class="co"># #  Calculate average density (avden), stratum variance (svar), n and std at the strata and regional level using HABITAT_CD as the analysis strata. Inputdata = 1 stage site level coral density and ntot = the most recent NTOT file for the region, regardless of sampling year. </span></a>
+<a class="sourceLine" id="cb16-3" data-line-number="3"><span class="co"># </span></a>
+<a class="sourceLine" id="cb16-4" data-line-number="4"><span class="co"># # Calculate avdns, svar, n and std</span></a>
+<a class="sourceLine" id="cb16-5" data-line-number="5"><span class="co"># density_est &lt;- inputdata %&gt;%</span></a>
+<a class="sourceLine" id="cb16-6" data-line-number="6"><span class="co">#   # group by analysis level strata</span></a>
+<a class="sourceLine" id="cb16-7" data-line-number="7"><span class="co">#   dplyr::mutate(ANALYSIS_STRATUM = HABITAT_CD) %&gt;%</span></a>
+<a class="sourceLine" id="cb16-8" data-line-number="8"><span class="co">#   dplyr::group_by(YEAR, ANALYSIS_STRATUM, HABITAT_CD) %&gt;% </span></a>
+<a class="sourceLine" id="cb16-9" data-line-number="9"><span class="co">#   dplyr::summarise(# compute average density</span></a>
+<a class="sourceLine" id="cb16-10" data-line-number="10"><span class="co">#     avden = mean(DENSITY),</span></a>
+<a class="sourceLine" id="cb16-11" data-line-number="11"><span class="co">#     # compute stratum variance</span></a>
+<a class="sourceLine" id="cb16-12" data-line-number="12"><span class="co">#     svar = var(DENSITY),</span></a>
+<a class="sourceLine" id="cb16-13" data-line-number="13"><span class="co">#     n = length(DENSITY)) %&gt;%</span></a>
+<a class="sourceLine" id="cb16-14" data-line-number="14"><span class="co">#   # convert 0 for stratum variance so that the sqrt is a small # but not a 0</span></a>
+<a class="sourceLine" id="cb16-15" data-line-number="15"><span class="co">#   dplyr::mutate(svar = dplyr::case_when(svar == 0 ~ 0.00000001,</span></a>
+<a class="sourceLine" id="cb16-16" data-line-number="16"><span class="co">#                                         TRUE ~ svar)) %&gt;%</span></a>
+<a class="sourceLine" id="cb16-17" data-line-number="17"><span class="co">#   dplyr::mutate(std = sqrt(svar))</span></a>
+<a class="sourceLine" id="cb16-18" data-line-number="18"><span class="co"># </span></a>
+<a class="sourceLine" id="cb16-19" data-line-number="19"><span class="co"># density_est &lt;- density_est %&gt;%</span></a>
+<a class="sourceLine" id="cb16-20" data-line-number="20"><span class="co">#   # Merge ntot with coral_est_spp</span></a>
+<a class="sourceLine" id="cb16-21" data-line-number="21"><span class="co">#   dplyr::full_join(., ntot) %&gt;%</span></a>
+<a class="sourceLine" id="cb16-22" data-line-number="22"><span class="co">#   # stratum estimates</span></a>
+<a class="sourceLine" id="cb16-23" data-line-number="23"><span class="co">#   dplyr::mutate(whavden = wh * avden,</span></a>
+<a class="sourceLine" id="cb16-24" data-line-number="24"><span class="co">#                 whsvar = wh^2 * svar,</span></a>
+<a class="sourceLine" id="cb16-25" data-line-number="25"><span class="co">#                 whstd = wh * std,</span></a>
+<a class="sourceLine" id="cb16-26" data-line-number="26"><span class="co">#                 n = tidyr::replace_na(n, 0),</span></a>
+<a class="sourceLine" id="cb16-27" data-line-number="27"><span class="co">#                 # Add the following to match FL format</span></a>
+<a class="sourceLine" id="cb16-28" data-line-number="28"><span class="co">#                 RUG_CD = NA)</span></a>
+<a class="sourceLine" id="cb16-29" data-line-number="29"><span class="co"># </span></a>
+<a class="sourceLine" id="cb16-30" data-line-number="30"><span class="co"># # Reformat output</span></a>
+<a class="sourceLine" id="cb16-31" data-line-number="31"><span class="co"># </span></a>
+<a class="sourceLine" id="cb16-32" data-line-number="32"><span class="co"># unwh_density_strata &lt;-  density_est %&gt;%</span></a>
+<a class="sourceLine" id="cb16-33" data-line-number="33"><span class="co">#   dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, RUG_CD, NTOT, ngrtot, wh, n, avden, svar, std)</span></a>
+<a class="sourceLine" id="cb16-34" data-line-number="34"><span class="co"># </span></a>
+<a class="sourceLine" id="cb16-35" data-line-number="35"><span class="co"># # Domain Estimates</span></a>
+<a class="sourceLine" id="cb16-36" data-line-number="36"><span class="co"># Domain_est &lt;- density_est %&gt;%</span></a>
+<a class="sourceLine" id="cb16-37" data-line-number="37"><span class="co">#   dplyr::group_by(REGION, YEAR) %&gt;%</span></a>
+<a class="sourceLine" id="cb16-38" data-line-number="38"><span class="co">#   dplyr::summarise(avDen = sum(whavden),</span></a>
+<a class="sourceLine" id="cb16-39" data-line-number="39"><span class="co">#                    var = sum(whsvar, na.rm = T),</span></a>
+<a class="sourceLine" id="cb16-40" data-line-number="40"><span class="co">#                    std = sqrt(var),</span></a>
+<a class="sourceLine" id="cb16-41" data-line-number="41"><span class="co">#                    ngrtot = sum(NTOT) )</span></a></code></pre></div>
 </div>
 </div>
 <div id="species-richness-and-diversity" class="section level2">
@@ -1047,25 +1060,25 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </ul>
 <p>Associated functions: NCRMP_make_weighted_demo_data, NCRMP_make_weighted_demo_data_RC</p>
 <p>Example:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb15-2" data-line-number="2"><span class="kw">require</span>(ncrmp.benthics.analysis)</a>
-<a class="sourceLine" id="cb15-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb15-4" data-line-number="4"><span class="co"># Run function </span></a>
-<a class="sourceLine" id="cb15-5" data-line-number="5">tmp &lt;-<span class="st"> </span><span class="kw">NCRMP_DRM_calculate_species_richness_diversity</span>(<span class="dt">project =</span> <span class="st">&quot;NCRMP&quot;</span>,</a>
-<a class="sourceLine" id="cb15-6" data-line-number="6">                                                       <span class="dt">region=</span> <span class="st">&quot;Tortugas&quot;</span>,</a>
-<a class="sourceLine" id="cb15-7" data-line-number="7">                                                       <span class="dt">analysis_strat =</span> <span class="st">&quot;STRAT_PROT&quot;</span>)</a>
-<a class="sourceLine" id="cb15-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb15-9" data-line-number="9"><span class="co"># The function will store all of the function outputs as a list in tmp</span></a>
-<a class="sourceLine" id="cb15-10" data-line-number="10"><span class="co"># Convert list objects to dataframes and rename </span></a>
-<a class="sourceLine" id="cb15-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb15-12" data-line-number="12">NCRMP_Tort_<span class="dv">2014</span>_<span class="dv">16</span>_spp_list &lt;-<span class="st"> </span>tmp<span class="op">$</span>species_list </a>
-<a class="sourceLine" id="cb15-13" data-line-number="13">NCRMP_Tort_<span class="dv">2014</span>_<span class="dv">16</span>_richness_site &lt;-<span class="st"> </span>tmp<span class="op">$</span>richness_site</a>
-<a class="sourceLine" id="cb15-14" data-line-number="14">NCRMP_Tort_<span class="dv">2014</span>_<span class="dv">16</span>_unwh_richness_strata &lt;-<span class="st"> </span>tmp<span class="op">$</span>unwh_richness_strata</a>
-<a class="sourceLine" id="cb15-15" data-line-number="15">NCRMP_Tort_<span class="dv">2014</span>_<span class="dv">16</span>_wh_richness_region &lt;-<span class="st"> </span>tmp<span class="op">$</span>Domain_est</a>
-<a class="sourceLine" id="cb15-16" data-line-number="16"></a>
-<a class="sourceLine" id="cb15-17" data-line-number="17">NCRMP_Tort_<span class="dv">2014</span>_<span class="dv">16</span>_diversity_site &lt;-<span class="st"> </span>tmp<span class="op">$</span>species_diversity_site</a>
-<a class="sourceLine" id="cb15-18" data-line-number="18">NCRMP_Tort_<span class="dv">2014</span>_<span class="dv">16</span>_diversity_strata &lt;-<span class="st"> </span>tmp<span class="op">$</span>unwh_diversity_strata</a>
-<a class="sourceLine" id="cb15-19" data-line-number="19">NCRMP_Tort_<span class="dv">2014</span>_<span class="dv">16</span>_diversity_region &lt;-<span class="st"> </span>tmp<span class="op">$</span>Domain_est_div</a></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb17-2" data-line-number="2"><span class="kw">require</span>(ncrmp.benthics.analysis)</a>
+<a class="sourceLine" id="cb17-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb17-4" data-line-number="4"><span class="co"># Run function </span></a>
+<a class="sourceLine" id="cb17-5" data-line-number="5">tmp &lt;-<span class="st"> </span><span class="kw">NCRMP_DRM_calculate_species_richness_diversity</span>(<span class="dt">project =</span> <span class="st">&quot;NCRMP&quot;</span>,</a>
+<a class="sourceLine" id="cb17-6" data-line-number="6">                                                       <span class="dt">region=</span> <span class="st">&quot;Tortugas&quot;</span>,</a>
+<a class="sourceLine" id="cb17-7" data-line-number="7">                                                       <span class="dt">analysis_strat =</span> <span class="st">&quot;STRAT_PROT&quot;</span>)</a>
+<a class="sourceLine" id="cb17-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb17-9" data-line-number="9"><span class="co"># The function will store all of the function outputs as a list in tmp</span></a>
+<a class="sourceLine" id="cb17-10" data-line-number="10"><span class="co"># Convert list objects to dataframes and rename </span></a>
+<a class="sourceLine" id="cb17-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb17-12" data-line-number="12">NCRMP_Tort_<span class="dv">2014</span>_<span class="dv">16</span>_spp_list &lt;-<span class="st"> </span>tmp<span class="op">$</span>species_list </a>
+<a class="sourceLine" id="cb17-13" data-line-number="13">NCRMP_Tort_<span class="dv">2014</span>_<span class="dv">16</span>_richness_site &lt;-<span class="st"> </span>tmp<span class="op">$</span>richness_site</a>
+<a class="sourceLine" id="cb17-14" data-line-number="14">NCRMP_Tort_<span class="dv">2014</span>_<span class="dv">16</span>_unwh_richness_strata &lt;-<span class="st"> </span>tmp<span class="op">$</span>unwh_richness_strata</a>
+<a class="sourceLine" id="cb17-15" data-line-number="15">NCRMP_Tort_<span class="dv">2014</span>_<span class="dv">16</span>_wh_richness_region &lt;-<span class="st"> </span>tmp<span class="op">$</span>Domain_est</a>
+<a class="sourceLine" id="cb17-16" data-line-number="16"></a>
+<a class="sourceLine" id="cb17-17" data-line-number="17">NCRMP_Tort_<span class="dv">2014</span>_<span class="dv">16</span>_diversity_site &lt;-<span class="st"> </span>tmp<span class="op">$</span>species_diversity_site</a>
+<a class="sourceLine" id="cb17-18" data-line-number="18">NCRMP_Tort_<span class="dv">2014</span>_<span class="dv">16</span>_diversity_strata &lt;-<span class="st"> </span>tmp<span class="op">$</span>unwh_diversity_strata</a>
+<a class="sourceLine" id="cb17-19" data-line-number="19">NCRMP_Tort_<span class="dv">2014</span>_<span class="dv">16</span>_diversity_region &lt;-<span class="st"> </span>tmp<span class="op">$</span>Domain_est_div</a></code></pre></div>
 <p>Regional species richness and diversity are calculated using the same weighting scheme as coral density. See NCRMP_make_weighted_demo_data and NCRMP_make_weighted_demo_data_RC for example code. Only the default analysis strat settings are available for species diversity. See <a href="https://cran.r-project.org/web/packages/vegan/vegan.pdf" class="uri">https://cran.r-project.org/web/packages/vegan/vegan.pdf</a> for more information on the diversity indices.</p>
 </div>
 </div>
@@ -1091,26 +1104,26 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </ul>
 <p>Associated functions: NCRMP_make_weighted_demo_data, NCRMP_make_weighted_demo_data_RC</p>
 <p>Example:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb16-2" data-line-number="2"><span class="kw">require</span>(ncrmp.benthics.analysis)</a>
-<a class="sourceLine" id="cb16-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb16-4" data-line-number="4"><span class="co"># Run function</span></a>
-<a class="sourceLine" id="cb16-5" data-line-number="5">tmp &lt;-<span class="st"> </span><span class="kw">NCRMP_DRM_calculate_mortality</span>(<span class="dt">project =</span> <span class="st">&quot;NCRMP&quot;</span>,</a>
-<a class="sourceLine" id="cb16-6" data-line-number="6">                                      <span class="dt">region =</span> <span class="st">&quot;GOM&quot;</span>,</a>
-<a class="sourceLine" id="cb16-7" data-line-number="7">                                      <span class="dt">species_filter =</span> <span class="st">&quot;TRUE&quot;</span>,</a>
-<a class="sourceLine" id="cb16-8" data-line-number="8">                                      <span class="dt">analysis_strat =</span> <span class="st">&quot;HABITAT_DEPTH&quot;</span>)</a>
-<a class="sourceLine" id="cb16-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb16-10" data-line-number="10"><span class="co"># The function will store all of the function outputs as a list in tmp</span></a>
-<a class="sourceLine" id="cb16-11" data-line-number="11"><span class="co"># Convert list objects to dataframes and rename</span></a>
-<a class="sourceLine" id="cb16-12" data-line-number="12"></a>
-<a class="sourceLine" id="cb16-13" data-line-number="13">NCRMP_FGBNMS_<span class="dv">2013</span>_<span class="dv">15</span>_old_mort_site &lt;-<span class="st"> </span>tmp<span class="op">$</span>old_mortality_site</a>
-<a class="sourceLine" id="cb16-14" data-line-number="14">NCRMP_FGBNMS_<span class="dv">2013</span>_<span class="dv">15</span>_rec_mort_site &lt;-<span class="st"> </span>tmp<span class="op">$</span>recent_mortality_site</a>
-<a class="sourceLine" id="cb16-15" data-line-number="15"></a>
-<a class="sourceLine" id="cb16-16" data-line-number="16">NCRMP_FGBNMS_<span class="dv">2013</span>_<span class="dv">15</span>_unwh_old_mort_strata &lt;-<span class="st"> </span>tmp<span class="op">$</span>unwh_old_mortality_strata</a>
-<a class="sourceLine" id="cb16-17" data-line-number="17">NCRMP_FGBNMS_<span class="dv">2013</span>_<span class="dv">15</span>_unwh_rec_mort_strata &lt;-<span class="st"> </span>tmp<span class="op">$</span>unwh_rec_mortality_strata</a>
-<a class="sourceLine" id="cb16-18" data-line-number="18"></a>
-<a class="sourceLine" id="cb16-19" data-line-number="19">NCRMP_FGBNMS_<span class="dv">2013</span>_<span class="dv">15</span>_wh_old_mort_region &lt;-<span class="st"> </span>tmp<span class="op">$</span>Domain_est_old_mort</a>
-<a class="sourceLine" id="cb16-20" data-line-number="20">NCRMP_FGBNMS_<span class="dv">2013</span>_<span class="dv">15</span>_wh_rec_mort_region &lt;-<span class="st"> </span>tmp<span class="op">$</span>Domain_est_rec_mort</a></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb18-2" data-line-number="2"><span class="kw">require</span>(ncrmp.benthics.analysis)</a>
+<a class="sourceLine" id="cb18-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb18-4" data-line-number="4"><span class="co"># Run function</span></a>
+<a class="sourceLine" id="cb18-5" data-line-number="5">tmp &lt;-<span class="st"> </span><span class="kw">NCRMP_DRM_calculate_mortality</span>(<span class="dt">project =</span> <span class="st">&quot;NCRMP&quot;</span>,</a>
+<a class="sourceLine" id="cb18-6" data-line-number="6">                                      <span class="dt">region =</span> <span class="st">&quot;GOM&quot;</span>,</a>
+<a class="sourceLine" id="cb18-7" data-line-number="7">                                      <span class="dt">species_filter =</span> <span class="st">&quot;TRUE&quot;</span>,</a>
+<a class="sourceLine" id="cb18-8" data-line-number="8">                                      <span class="dt">analysis_strat =</span> <span class="st">&quot;HABITAT_DEPTH&quot;</span>)</a>
+<a class="sourceLine" id="cb18-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb18-10" data-line-number="10"><span class="co"># The function will store all of the function outputs as a list in tmp</span></a>
+<a class="sourceLine" id="cb18-11" data-line-number="11"><span class="co"># Convert list objects to dataframes and rename</span></a>
+<a class="sourceLine" id="cb18-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb18-13" data-line-number="13">NCRMP_FGBNMS_<span class="dv">2013</span>_<span class="dv">15</span>_old_mort_site &lt;-<span class="st"> </span>tmp<span class="op">$</span>old_mortality_site</a>
+<a class="sourceLine" id="cb18-14" data-line-number="14">NCRMP_FGBNMS_<span class="dv">2013</span>_<span class="dv">15</span>_rec_mort_site &lt;-<span class="st"> </span>tmp<span class="op">$</span>recent_mortality_site</a>
+<a class="sourceLine" id="cb18-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb18-16" data-line-number="16">NCRMP_FGBNMS_<span class="dv">2013</span>_<span class="dv">15</span>_unwh_old_mort_strata &lt;-<span class="st"> </span>tmp<span class="op">$</span>unwh_old_mortality_strata</a>
+<a class="sourceLine" id="cb18-17" data-line-number="17">NCRMP_FGBNMS_<span class="dv">2013</span>_<span class="dv">15</span>_unwh_rec_mort_strata &lt;-<span class="st"> </span>tmp<span class="op">$</span>unwh_rec_mortality_strata</a>
+<a class="sourceLine" id="cb18-18" data-line-number="18"></a>
+<a class="sourceLine" id="cb18-19" data-line-number="19">NCRMP_FGBNMS_<span class="dv">2013</span>_<span class="dv">15</span>_wh_old_mort_region &lt;-<span class="st"> </span>tmp<span class="op">$</span>Domain_est_old_mort</a>
+<a class="sourceLine" id="cb18-20" data-line-number="20">NCRMP_FGBNMS_<span class="dv">2013</span>_<span class="dv">15</span>_wh_rec_mort_region &lt;-<span class="st"> </span>tmp<span class="op">$</span>Domain_est_rec_mort</a></code></pre></div>
 <p>Regional old and recent mortality are calculated using the same weighting scheme as coral density. See NCRMP_make_weighted_demo_data and NCRMP_make_weighted_demo_data_RC for example code.</p>
 </div>
 </div>
@@ -1133,19 +1146,19 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </ul>
 <p>Associated functions: NCRMP_make_weighted_invert_density</p>
 <p>Example:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb17-2" data-line-number="2"><span class="kw">require</span>(ncrmp.benthics.analysis)</a>
-<a class="sourceLine" id="cb17-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb17-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb17-5" data-line-number="5"><span class="co"># Run function </span></a>
-<a class="sourceLine" id="cb17-6" data-line-number="6">tmp &lt;-<span class="st"> </span><span class="kw">NCRMP_calculate_invert_density</span>(<span class="dt">region =</span> <span class="st">&quot;PRICO&quot;</span>)</a>
-<a class="sourceLine" id="cb17-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb17-8" data-line-number="8"><span class="co"># The function will store all of the function outputs as a list in tmp</span></a>
-<a class="sourceLine" id="cb17-9" data-line-number="9"><span class="co"># Convert list objects to dataframes and rename </span></a>
-<a class="sourceLine" id="cb17-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb17-11" data-line-number="11">NCRMP_PRICO_<span class="dv">2014</span>_<span class="dv">16</span>_invert_den_site &lt;-<span class="st"> </span>tmp<span class="op">$</span>diadema_density_site</a>
-<a class="sourceLine" id="cb17-12" data-line-number="12">NCRMP_PRICO_<span class="dv">2014</span>_<span class="dv">16</span>_unwh_invert_den_strata &lt;-<span class="st"> </span>tmp<span class="op">$</span>unwh_invert_strata <span class="co"># Right now just Diadema</span></a>
-<a class="sourceLine" id="cb17-13" data-line-number="13">NCRMP_PRICO_<span class="dv">2014</span>_<span class="dv">16</span>_wh_invert_den_region &lt;-<span class="st"> </span>tmp<span class="op">$</span>Domain_est</a></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb19-2" data-line-number="2"><span class="kw">require</span>(ncrmp.benthics.analysis)</a>
+<a class="sourceLine" id="cb19-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb19-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb19-5" data-line-number="5"><span class="co"># Run function </span></a>
+<a class="sourceLine" id="cb19-6" data-line-number="6">tmp &lt;-<span class="st"> </span><span class="kw">NCRMP_calculate_invert_density</span>(<span class="dt">region =</span> <span class="st">&quot;PRICO&quot;</span>)</a>
+<a class="sourceLine" id="cb19-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb19-8" data-line-number="8"><span class="co"># The function will store all of the function outputs as a list in tmp</span></a>
+<a class="sourceLine" id="cb19-9" data-line-number="9"><span class="co"># Convert list objects to dataframes and rename </span></a>
+<a class="sourceLine" id="cb19-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb19-11" data-line-number="11">NCRMP_PRICO_<span class="dv">2014</span>_<span class="dv">16</span>_invert_den_site &lt;-<span class="st"> </span>tmp<span class="op">$</span>diadema_density_site</a>
+<a class="sourceLine" id="cb19-12" data-line-number="12">NCRMP_PRICO_<span class="dv">2014</span>_<span class="dv">16</span>_unwh_invert_den_strata &lt;-<span class="st"> </span>tmp<span class="op">$</span>unwh_invert_strata <span class="co"># Right now just Diadema</span></a>
+<a class="sourceLine" id="cb19-13" data-line-number="13">NCRMP_PRICO_<span class="dv">2014</span>_<span class="dv">16</span>_wh_invert_den_region &lt;-<span class="st"> </span>tmp<span class="op">$</span>Domain_est</a></code></pre></div>
 <p>Regional <em>Diadema</em> density is calculated using the same weighting scheme as coral density. See NCRMP_make_weighted_invert_density for example code. This function is currently only calculating <em>Diadema</em> density. Future updates will include conch and lobster; but until these updates are complete, please see the code in this function for guidance on how to calculate density for the other invertebrates.</p>
 </div>
 </div>
@@ -1170,21 +1183,21 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </ul>
 <p>Associated functions: NCRMP_make_weighted_demo_data, NCRMP_make_weighted_demo_data_RC</p>
 <p>Example:</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb18-2" data-line-number="2"><span class="kw">require</span>(ncrmp.benthics.analysis)</a>
-<a class="sourceLine" id="cb18-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb18-4" data-line-number="4"><span class="co"># Run function </span></a>
-<a class="sourceLine" id="cb18-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb18-6" data-line-number="6">tmp &lt;-<span class="st"> </span><span class="kw">NCRMP_DRM_calculate_disease_prevalence</span>(<span class="dt">project =</span> <span class="st">&quot;NCRMP_FRRP&quot;</span>,</a>
-<a class="sourceLine" id="cb18-7" data-line-number="7">                                        <span class="dt">region =</span> <span class="st">&quot;SEFCRI&quot;</span>,</a>
-<a class="sourceLine" id="cb18-8" data-line-number="8">                                        <span class="dt">species_filter =</span> <span class="st">&quot;FALSE&quot;</span>)</a>
-<a class="sourceLine" id="cb18-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb18-10" data-line-number="10"><span class="co"># The function will store all of the function outputs as a list in tmp</span></a>
-<a class="sourceLine" id="cb18-11" data-line-number="11"><span class="co"># Convert list objects to dataframes and rename </span></a>
-<a class="sourceLine" id="cb18-12" data-line-number="12"></a>
-<a class="sourceLine" id="cb18-13" data-line-number="13">NCRMP_DRM_SEFCRI_<span class="dv">2014</span>_<span class="dv">17</span>_dis_prev_site &lt;-<span class="st"> </span>tmp<span class="op">$</span>disease_prev_site</a>
-<a class="sourceLine" id="cb18-14" data-line-number="14">NCRMP_DRM_SEFCRI_<span class="dv">2014</span>_<span class="dv">17</span>_unwh_dis_prev_strata &lt;-<span class="st"> </span>tmp<span class="op">$</span>unwh_dis_prev_strata</a>
-<a class="sourceLine" id="cb18-15" data-line-number="15">NCRMP_DRM_SEFCRI_<span class="dv">2014</span>_<span class="dv">17</span>_wh_dis_prev_region &lt;-<span class="st"> </span>tmp<span class="op">$</span>Domain_est</a></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb20-2" data-line-number="2"><span class="kw">require</span>(ncrmp.benthics.analysis)</a>
+<a class="sourceLine" id="cb20-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb20-4" data-line-number="4"><span class="co"># Run function </span></a>
+<a class="sourceLine" id="cb20-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb20-6" data-line-number="6">tmp &lt;-<span class="st"> </span><span class="kw">NCRMP_DRM_calculate_disease_prevalence</span>(<span class="dt">project =</span> <span class="st">&quot;NCRMP_FRRP&quot;</span>,</a>
+<a class="sourceLine" id="cb20-7" data-line-number="7">                                        <span class="dt">region =</span> <span class="st">&quot;SEFCRI&quot;</span>,</a>
+<a class="sourceLine" id="cb20-8" data-line-number="8">                                        <span class="dt">species_filter =</span> <span class="st">&quot;FALSE&quot;</span>)</a>
+<a class="sourceLine" id="cb20-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb20-10" data-line-number="10"><span class="co"># The function will store all of the function outputs as a list in tmp</span></a>
+<a class="sourceLine" id="cb20-11" data-line-number="11"><span class="co"># Convert list objects to dataframes and rename </span></a>
+<a class="sourceLine" id="cb20-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb20-13" data-line-number="13">NCRMP_DRM_SEFCRI_<span class="dv">2014</span>_<span class="dv">17</span>_dis_prev_site &lt;-<span class="st"> </span>tmp<span class="op">$</span>disease_prev_site</a>
+<a class="sourceLine" id="cb20-14" data-line-number="14">NCRMP_DRM_SEFCRI_<span class="dv">2014</span>_<span class="dv">17</span>_unwh_dis_prev_strata &lt;-<span class="st"> </span>tmp<span class="op">$</span>unwh_dis_prev_strata</a>
+<a class="sourceLine" id="cb20-15" data-line-number="15">NCRMP_DRM_SEFCRI_<span class="dv">2014</span>_<span class="dv">17</span>_wh_dis_prev_region &lt;-<span class="st"> </span>tmp<span class="op">$</span>Domain_est</a></code></pre></div>
 <p>Regional disease prevalence are calculated using the same weighting scheme as coral density. See NCRMP_make_weighted_demo_data and NCRMP_make_weighted_demo_data_RC for example code.</p>
 <p>Note: Disease was not sampled in the Flower Garden Banks National Marine Sanctuary (FGBNMS) in 2013</p>
 </div>
@@ -1213,16 +1226,16 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </ul>
 <p>Associated functions: None</p>
 <p>Example:</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="kw">require</span>(ncrmp.benthics.analysis)</a>
-<a class="sourceLine" id="cb19-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb19-3" data-line-number="3"><span class="co"># Run function </span></a>
-<a class="sourceLine" id="cb19-4" data-line-number="4">tmp &lt;-<span class="st"> </span><span class="kw">NCRMP_calculate_ESA_corals_PresAbs</span>()</a>
-<a class="sourceLine" id="cb19-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb19-6" data-line-number="6"><span class="co"># The function will store all of the function outputs as a list in tmp</span></a>
-<a class="sourceLine" id="cb19-7" data-line-number="7"><span class="co"># Convert list objects to dataframes and rename </span></a>
-<a class="sourceLine" id="cb19-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb19-9" data-line-number="9">NCRMP_AllRegions_Years_ESA_PresAbs &lt;-<span class="st"> </span>tmp<span class="op">$</span>NCRMP_AllRegions_Years_ESA_PresAbs</a>
-<a class="sourceLine" id="cb19-10" data-line-number="10">region_year &lt;-<span class="st"> </span>tmp<span class="op">$</span>region_year </a></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="kw">require</span>(ncrmp.benthics.analysis)</a>
+<a class="sourceLine" id="cb21-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb21-3" data-line-number="3"><span class="co"># Run function </span></a>
+<a class="sourceLine" id="cb21-4" data-line-number="4">tmp &lt;-<span class="st"> </span><span class="kw">NCRMP_calculate_ESA_corals_PresAbs</span>()</a>
+<a class="sourceLine" id="cb21-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb21-6" data-line-number="6"><span class="co"># The function will store all of the function outputs as a list in tmp</span></a>
+<a class="sourceLine" id="cb21-7" data-line-number="7"><span class="co"># Convert list objects to dataframes and rename </span></a>
+<a class="sourceLine" id="cb21-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb21-9" data-line-number="9">NCRMP_AllRegions_Years_ESA_PresAbs &lt;-<span class="st"> </span>tmp<span class="op">$</span>NCRMP_AllRegions_Years_ESA_PresAbs</a>
+<a class="sourceLine" id="cb21-10" data-line-number="10">region_year &lt;-<span class="st"> </span>tmp<span class="op">$</span>region_year </a></code></pre></div>
 </div>
 </div>
 <div id="bleaching-abundance" class="section level2">
@@ -1242,16 +1255,16 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </ul>
 <p>Associated functions: None</p>
 <p>Example:</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="kw">require</span>(ncrmp.benthics.analysis)</a>
-<a class="sourceLine" id="cb20-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb20-3" data-line-number="3"><span class="co"># Run function </span></a>
-<a class="sourceLine" id="cb20-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb20-5" data-line-number="5">tmp &lt;-<span class="st"> </span><span class="kw">NCRMP_make_bleaching_abundance</span>()</a>
-<a class="sourceLine" id="cb20-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb20-7" data-line-number="7"><span class="co"># The function will store all of the function outputs as a list in tmp</span></a>
-<a class="sourceLine" id="cb20-8" data-line-number="8"><span class="co"># Convert list objects to dataframes and rename </span></a>
-<a class="sourceLine" id="cb20-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb20-10" data-line-number="10">NCRMP_bleaching_abundance_Allyears_Allregions &lt;-<span class="st"> </span>tmp<span class="op">$</span>NCRMP_bleaching_abundance_Allyears_Allregions</a></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1"><span class="kw">require</span>(ncrmp.benthics.analysis)</a>
+<a class="sourceLine" id="cb22-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb22-3" data-line-number="3"><span class="co"># Run function </span></a>
+<a class="sourceLine" id="cb22-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb22-5" data-line-number="5">tmp &lt;-<span class="st"> </span><span class="kw">NCRMP_make_bleaching_abundance</span>()</a>
+<a class="sourceLine" id="cb22-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb22-7" data-line-number="7"><span class="co"># The function will store all of the function outputs as a list in tmp</span></a>
+<a class="sourceLine" id="cb22-8" data-line-number="8"><span class="co"># Convert list objects to dataframes and rename </span></a>
+<a class="sourceLine" id="cb22-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb22-10" data-line-number="10">NCRMP_bleaching_abundance_Allyears_Allregions &lt;-<span class="st"> </span>tmp<span class="op">$</span>NCRMP_bleaching_abundance_Allyears_Allregions</a></code></pre></div>
 <hr />
 </div>
 </div>
