@@ -22,6 +22,8 @@ devtools::install()
 
 4. From your current project, use the following code to load and use the package. 
 
+Note: Requires R version 3.4.1 or higher.
+
 ```
 library(ncrmp.benthics.analysis) 
 ```
