@@ -189,34 +189,39 @@ DRM_SCREAM_make_weighted_demo_data <- function(inputdata, datatype){
       # convert 0 for stratum variance so that the sqrt is a small # but not a 0
       dplyr::mutate(svar = dplyr::case_when(svar == 0 ~ 0.00000001,
                                             TRUE ~ svar)) %>%
-      dplyr::mutate(std = sqrt(svar))
+      dplyr::mutate(Var=svar/n, #variance of mean density in stratum
+                      std = sqrt(svar), # std dev of density in stratum
+                      SE=sqrt(Var), #SE of the mean density in stratum
+                      CV_perc=(SE/avden)*100)
 
-    density_est <- density_est %>%
-      # Merge ntot with density_est
-      dplyr::full_join(., ntot) %>%
-      # stratum estimates
-      dplyr::mutate(whavden = wh * avden,
-                    whsvar = wh^2 * svar,
-                    whstd = wh * std,
-                    n = tidyr::replace_na(n, 0))
+      density_est <- density_est %>%
+        # Merge ntot with coral_est_spp
+        dplyr::full_join(., ntot) %>%
+        # stratum estimates
+        dplyr::mutate(whavden = wh * avden,
+                      whvar = wh^2 * Var,
+                      n = tidyr::replace_na(n, 0))  %>%
+        dplyr::ungroup()
 
     # Reformat output
 
-    density_est <- density_est %>%
-      dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, NTOT, ngrtot, wh, n, avden, svar, std, whavden, whsvar, whstd)
-
+    # strata_means
     unwh_density_strata <-  density_est %>%
-      dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, NTOT, ngrtot, wh, n, avden, svar, std)
-
+      dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, n, avden, Var, SE, CV_perc) %>%
+      dplyr::mutate(RUG_CD = as.factor(RUG_CD))
 
     ## Domain Estimates
+    # region/population means
     Domain_est <- density_est %>%
       dplyr::group_by(REGION, YEAR) %>%
-      dplyr::summarise(avDen = sum(whavden),
-                       var = sum(whsvar, na.rm = T),
-                       std = sqrt(var),
-                       ngrtot = sum(NTOT) ) %>%
-      dplyr::ungroup()
+      dplyr::summarise(avDen = sum(whavden, na.rm = T), # This accounts for strata with 0 species of interest present
+                       Var = sum(whvar, na.rm = T),    # This accounts for strata with N = 1
+                       SE=sqrt(Var),
+                       CV_perc=(SE/avDen)*100,
+                       n_sites = sum(n),
+                       n_strat = length(unique(ANALYSIS_STRATUM)),
+                       ngrtot = sum(NTOT) )  %>%
+    dplyr::ungroup()
 
     ################
     # Export
@@ -224,7 +229,7 @@ DRM_SCREAM_make_weighted_demo_data <- function(inputdata, datatype){
 
     # Create list to export
     output <- list(
-      "unwh_density_strata" = unwh_density_strata,
+      "density_strata" = unwh_density_strata,
       "Domain_est" = Domain_est)
 
     return(output)
@@ -249,34 +254,40 @@ DRM_SCREAM_make_weighted_demo_data <- function(inputdata, datatype){
       # convert 0 for stratum variance so that the sqrt is a small # but not a 0
       dplyr::mutate(svar = dplyr::case_when(svar == 0 ~ 0.00000001,
                                             TRUE ~ svar)) %>%
-      dplyr::mutate(std = sqrt(svar))
+      dplyr::mutate(Var=svar/n, #variance of mean density in stratum
+                      std = sqrt(svar), # std dev of density in stratum
+                      SE=sqrt(Var), #SE of the mean density in stratum
+                      CV_perc=(SE/avmort)*100)
 
-    mortality_est <- mortality_est %>%
-      # Merge ntot with  mortality_est
-      dplyr::full_join(., ntot) %>%
-      # stratum estimates
-      dplyr::mutate(whavmort = wh * avmort,
-                    whsvar = wh^2 * svar,
-                    whstd = wh * std,
-                    n = tidyr::replace_na(n, 0))
+      mortality_est <- mortality_est %>%
+        # Merge ntot with coral_est_spp
+        dplyr::full_join(., ntot) %>%
+        # stratum estimates
+        dplyr::mutate(whavmort = wh * avmort,
+                      whvar = wh^2 * Var,
+                      n = tidyr::replace_na(n, 0))  %>%
+        dplyr::ungroup()
 
 
     # Reformat output
 
-    mortality_est <- mortality_est %>%
-      dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, NTOT, ngrtot, wh, n, avmort, svar, std, whavmort, whsvar, whstd)
-
+    # strata_means
     unwh_mortality_strata <-  mortality_est %>%
-      dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, NTOT, ngrtot, wh, n, avmort, svar, std)
+      dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, n, avmort, Var, SE, CV_perc) %>%
+      dplyr::mutate(RUG_CD = as.factor(RUG_CD))
 
     ## Domain Estimates
+    # region/population means
     Domain_est <- mortality_est %>%
       dplyr::group_by(REGION, YEAR) %>%
-      dplyr::summarise(avMort = sum(whavmort),
-                       var = sum(whsvar, na.rm = T),
-                       std = sqrt(var),
-                       ngrtot = sum(NTOT) )%>%
-      dplyr::ungroup()
+      dplyr::summarise(avMort = sum(whavmort, na.rm = T), # This accounts for strata with 0 species of interest present
+                       Var = sum(whvar, na.rm = T),    # This accounts for strata with N = 1
+                       SE=sqrt(Var),
+                       CV_perc=(SE/avMort)*100,
+                       n_sites = sum(n),
+                       n_strat = length(unique(ANALYSIS_STRATUM)),
+                       ngrtot = sum(NTOT) )  %>%
+    dplyr::ungroup()
 
 
     ################
@@ -285,7 +296,7 @@ DRM_SCREAM_make_weighted_demo_data <- function(inputdata, datatype){
 
     # Create list to export
     output <- list(
-      "unwh_mortality_strata" = unwh_mortality_strata,
+      "mortality_strata" = unwh_mortality_strata,
       "Domain_est" = Domain_est)
 
     return(output)

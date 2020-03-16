@@ -4,8 +4,7 @@
 \alias{DRM_SCREAM_calculate_colony_density}
 \title{Creates colony density and colony size summary dataframes}
 \usage{
-DRM_SCREAM_calculate_colony_density(project = "NULL",
-  species_filter = "NULL")
+DRM_SCREAM_calculate_colony_density(project = "NULL", species_filter = "NULL")
 }
 \arguments{
 \item{project}{A string indicating the project, DRM or DRM and SCREAM combined}

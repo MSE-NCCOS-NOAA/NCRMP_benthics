@@ -21,8 +21,8 @@
 # Analysis Rmarkdown, etc.
 #
 
-# NCRMP Caribbean Benthic analytics team: Viehman, Bauer, Groves
-# Last update: Apr 2019
+# NCRMP Caribbean Benthic analytics team: Groves, Viehman
+# Last update: Mar 2020
 
 
 ##############################################################################################################################
@@ -97,8 +97,11 @@ NCRMP_calculate_invert_density <- function(region) {
     tmp3 <- USVI_2017_inverts_ESAcorals %>%
       dplyr::filter(REGION == "STTSTJ")
 
+    tmp4 <- USVI_2019_inverts_ESAcorals %>%
+      dplyr::filter(REGION == "STTSTJ")
+
     #Combine 1 stage or 2 stage data
-    dat_1stage <- rbind(tmp1, tmp2, tmp3) %>%
+    dat_1stage <-dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4) %>%
       dplyr::mutate(DIADEMA_NUM = as.numeric(DIADEMA_NUM))
 
 
@@ -114,8 +117,11 @@ NCRMP_calculate_invert_density <- function(region) {
     tmp2 <- USVI_2017_inverts_ESAcorals %>%
       dplyr::filter(REGION == "STX")
 
+    tmp3 <- USVI_2019_inverts_ESAcorals %>%
+      dplyr::filter(REGION == "STX")
+
     #Combine 1 stage or 2 stage data
-    dat_1stage <- rbind(tmp1, tmp2)
+    dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3)
 
 
   }
@@ -259,7 +265,7 @@ NCRMP_calculate_invert_density <- function(region) {
   # Create list to export
   output <- list(
     "diadema_density_site" = diadema_density_site,
-    "unwh_invert_strata" = unwh_invert_strata,
+    "invert_strata" = invert_strata,
     "Domain_est" = Domain_est)
 
   return(output)

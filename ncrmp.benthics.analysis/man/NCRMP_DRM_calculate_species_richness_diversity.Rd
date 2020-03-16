@@ -5,8 +5,7 @@
 \alias{NCRMP_DRM_calculate_species_richness_diversity}
 \title{Creates species list, species richness and species diversity dataframes from NCRMP and FRRP data}
 \usage{
-NCRMP_DRM_calculate_species_richness_diversity(project, region,
-  analysis_strat)
+NCRMP_DRM_calculate_species_richness_diversity(project, region)
 }
 \arguments{
 \item{project}{A string indicating the project, NCRMP or NCRMP and FRRP combined}

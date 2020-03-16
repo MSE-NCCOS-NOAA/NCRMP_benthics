@@ -4,10 +4,17 @@
 \alias{NCRMP_make_weighted_demo_data}
 \title{Creates weighted demo data}
 \usage{
-NCRMP_make_weighted_demo_data(project, inputdata, region, datatype)
+NCRMP_make_weighted_demo_data(
+  project,
+  inputdata,
+  region,
+  datatype,
+  species_filter,
+  species_data = NULL
+)
 }
 \arguments{
-\item{project}{A string indicating the project, NCRMP or NCRMP and FRRP combined}
+\item{project}{A string indicating the project, NCRMP or NCRMP and DRM combined}
 
 \item{inputdata}{A dataframe}
 

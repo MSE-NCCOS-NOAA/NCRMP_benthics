@@ -4,17 +4,18 @@
 \alias{NCRMP_DRM_calculate_colony_density}
 \title{Creates colony density summary dataframes}
 \usage{
-NCRMP_DRM_calculate_colony_density(project, region,
-  species_filter = "NULL", analysis_strat = "NULL")
+NCRMP_DRM_calculate_colony_density(
+  project = "NULL",
+  region,
+  species_filter = "NULL"
+)
 }
 \arguments{
-\item{project}{A string indicating the project, NCRMP or NCRMP and FRRP combined}
+\item{project}{A string indicating the project, NCRMP or NCRMP and DRM combined}
 
 \item{region}{A string indicating the region}
 
 \item{species_filter}{A string indicating whether to filter to a subset of species}
-
-\item{analysis_strat}{A string indicating the analysis level strata}
 }
 \value{
 A dataframe

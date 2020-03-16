@@ -269,7 +269,7 @@ NCRMP_DRM_calculate_disease_prevalence <- function(project, region, species_filt
 
     if(region == "STTSTJ"){
 
-      tmp1 <- USVI_2013_coral_demographics %>%
+       tmp1 <- USVI_2013_coral_demographics %>%
         dplyr::filter(REGION == "STTSTJ")
 
       tmp2 <- USVI_2015_coral_demographics %>%
@@ -278,17 +278,20 @@ NCRMP_DRM_calculate_disease_prevalence <- function(project, region, species_filt
       tmp3 <- USVI_2017_coral_demographics %>%
         dplyr::filter(REGION == "STTSTJ")
 
+      tmp4 <- USVI_2019_coral_demographics %>%
+        dplyr::filter(REGION == "STTSTJ")
+
       if(species_filter == "FALSE" ||
          species_filter == "NULL"){
 
         #Combine 1 stage or 2 stage data
-        dat_1stage <- rbind(tmp1, tmp2, tmp3) %>%
+        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4) %>%
           dplyr::mutate(SURVEY = "NCRMP")
       }
 
       if(species_filter == "TRUE"){
         #Combine 1 stage or 2 stage data
-        dat_1stage <- rbind(tmp1, tmp2, tmp3) %>%
+        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4) %>%
           dplyr::mutate(SURVEY = "NCRMP") %>%
           dplyr::filter(SPECIES_CD %in% STTSTJ_filter)
       }
@@ -296,24 +299,27 @@ NCRMP_DRM_calculate_disease_prevalence <- function(project, region, species_filt
 
     if(region == "STX"){
 
-      tmp1 <- USVI_2015_coral_demographics %>%
+     tmp1 <- USVI_2015_coral_demographics %>%
         dplyr::filter(REGION == "STX")
 
       tmp2 <- USVI_2017_coral_demographics %>%
+        dplyr::filter(REGION == "STX")
+
+      tmp3 <- USVI_2019_coral_demographics %>%
         dplyr::filter(REGION == "STX")
 
       if(species_filter == "FALSE" ||
          species_filter == "NULL"){
 
         #Combine 1 stage or 2 stage data
-        dat_1stage <- rbind(tmp1, tmp2) %>%
+        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3) %>%
           dplyr::mutate(SURVEY = "NCRMP")
       }
 
       if(species_filter == "TRUE"){
 
         #Combine 1 stage or 2 stage data
-        dat_1stage <- rbind(tmp1, tmp2) %>%
+        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3) %>%
           dplyr::mutate(SURVEY = "NCRMP") %>%
           dplyr::filter(SPECIES_CD %in% STX_filter)
       }
@@ -327,11 +333,13 @@ NCRMP_DRM_calculate_disease_prevalence <- function(project, region, species_filt
       tmp2 <- PRICO_2016_coral_demographics %>%
         dplyr::mutate(YEAR = 2016)
 
+      tmp3 <- PRICO_2019_coral_demographics
+
       if(species_filter == "FALSE"||
          species_filter == "NULL"){
 
         #Combine 1 stage or 2 stage data
-        dat_1stage <- rbind(tmp1, tmp2) %>%
+        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3) %>%
           dplyr::mutate(SURVEY = "NCRMP")
 
       }
@@ -339,7 +347,7 @@ NCRMP_DRM_calculate_disease_prevalence <- function(project, region, species_filt
       if(species_filter == "TRUE"){
 
         #Combine 1 stage or 2 stage data
-        dat_1stage <- rbind(tmp1, tmp2) %>%
+        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3) %>%
           dplyr::mutate(SURVEY = "NCRMP") %>%
           dplyr::filter(SPECIES_CD %in% PR_filter)
 
@@ -455,7 +463,7 @@ NCRMP_DRM_calculate_disease_prevalence <- function(project, region, species_filt
   # Create list to export
   output <- list(
     "disease_prev_site" = disease_prev_site,
-    "unwh_dis_prev_strata" = unwh_dis_prev_strata,
+    "dis_prev_strata" = dis_prev_strata,
     "Domain_est" = Domain_est)
 
   return(output)

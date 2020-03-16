@@ -47,14 +47,26 @@ DRM_SCREAM_calculate_mortality <- function(project = "NULL", species_filter = "N
   ### Create species filters
 
   # First 6 species are from sample allocation, remainder are ESA listed species
-  FLK_filter <- c("COL NATA", "MON CAVE", "ORB FAVE", "POR PORI", "SID SIDE", "SOL BOUR", "ACR CERV", "ACR PALM",
-                  "ORB ANNU", "ORB FRAN", "DEN CYLI", "MYC FERO")
+  FLK_filter <- c("ACR CERV", "MON CAVE", "ACR PALM", "PSE STRI", "PSE CLIV",
+                     "ORB ANNU", "ORB FRAN", "ORB FAVE",  "COL NATA", "DIP LABY","STE INTE", "MEA MEAN"
+                  ,
+                     "SID SIDE",
+                     "POR PORI"
+                  )
 
-  Tort_filter <- c("COL NATA", "MON CAVE", "ORB FAVE", "POR PORI", "ORB FRAN", "STE INTE", "ACR CERV", "ACR PALM",
-                   "ORB ANNU", "DEN CYLI", "MYC FERO")
+  Tort_filter <- c("ACR CERV", "MON CAVE", "ACR PALM", "PSE STRI", "PSE CLIV",
+                     "ORB ANNU", "ORB FRAN", "ORB FAVE",  "COL NATA", "DIP LABY","STE INTE", "MEA MEAN"
+                   ,
+                     "SID SIDE",
+                     "POR PORI"
+                   )
 
-  SEFCRI_filter <- c("ACR CERV", "DIC STOK", "MON CAVE", "POR ASTR", "PSE STRI", "SID SIDE","ACR CERV", "ACR PALM",
-                     "ORB ANNU", "ORB FRAN", "ORB FAVE", "DEN CYLI", "MYC FERO")
+  SEFCRI_filter <- c("ACR CERV", "MON CAVE", "ACR PALM", "PSE STRI", "PSE CLIV",
+                     "ORB ANNU", "ORB FRAN", "ORB FAVE",  "COL NATA", "DIP LABY","STE INTE", "MEA MEAN"
+                     ,
+                     "SID SIDE",
+                     "POR PORI"
+                     )
 
 
 
@@ -187,7 +199,7 @@ DRM_SCREAM_calculate_mortality <- function(project = "NULL", species_filter = "N
   # unpack list
   for(k in 1:length(tmp))assign(names(tmp)[k], tmp[[k]])
 
-  unwh_old_mortality_strata <- unwh_mortality_strata %>%
+  old_mortality_strata <- mortality_strata %>%
     dplyr::mutate(MORT_TYPE = "Old")
 
   Domain_est_old_mort <- Domain_est %>%
@@ -225,7 +237,7 @@ DRM_SCREAM_calculate_mortality <- function(project = "NULL", species_filter = "N
   # unpack list
   for(k in 1:length(tmp))assign(names(tmp)[k], tmp[[k]])
 
-  unwh_rec_mortality_strata <- unwh_mortality_strata %>%
+  rec_mortality_strata <- mortality_strata %>%
     dplyr::mutate(MORT_TYPE = "Recent")
 
   Domain_est_rec_mort <- Domain_est %>%
@@ -241,8 +253,8 @@ DRM_SCREAM_calculate_mortality <- function(project = "NULL", species_filter = "N
   output <- list(
     "old_mortality_site" = old_mortality_site,
     "recent_mortality_site" = recent_mortality_site,
-    "unwh_old_mortality_strata" = unwh_old_mortality_strata,
-    "unwh_rec_mortality_strata" = unwh_rec_mortality_strata,
+    "old_mortality_strata" = old_mortality_strata,
+    "rec_mortality_strata" = rec_mortality_strata,
     "Domain_est_old_mort" = Domain_est_old_mort,
     "Domain_est_rec_mort" = Domain_est_rec_mort)
 

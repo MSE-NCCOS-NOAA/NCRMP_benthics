@@ -2,10 +2,14 @@
 % Please edit documentation in R/NCRMP_DRM_calculate_mortality.R
 \name{NCRMP_DRM_calculate_mortality}
 \alias{NCRMP_DRM_calculate_mortality}
-\title{Creates colony density and colony size summary dataframes}
+\title{Creates colony mortality summary dataframes}
 \usage{
-NCRMP_DRM_calculate_mortality(project, region, species_filter = "NULL",
-  analysis_strat = "NULL")
+NCRMP_DRM_calculate_mortality(
+  project,
+  region,
+  species_filter = "NULL",
+  analysis_strat = "NULL"
+)
 }
 \arguments{
 \item{project}{A string indicating the project, NCRMP or NCRMP and DRM combined}
@@ -20,5 +24,5 @@ NCRMP_DRM_calculate_mortality(project, region, species_filter = "NULL",
 A dataframe
 }
 \description{
-Creates colony density and colony size summary dataframes
+Creates colony mortality summary dataframes
 }

@@ -24,7 +24,7 @@
 #
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman
-# Last update: Apr 2019
+# Last update: Mar 2020
 
 
 ##############################################################################################################################
@@ -35,8 +35,6 @@
 #'
 #'
 #' @param region A string indicating the region
-#' @param year A string indicating the year
-#' @param analysis_strat  A string indicating the analysis level strata
 #' @return A dataframe
 #' @importFrom magrittr "%>%"
 #' @export
@@ -44,7 +42,7 @@
 #'
 
 
-NCRMP_calculate_cover <- function(region, year, analysis_strat = "NULL"){
+NCRMP_calculate_cover <- function(region){
 
   # Load analysis ready (AR) data
   # Florida
@@ -62,6 +60,13 @@ NCRMP_calculate_cover <- function(region, year, analysis_strat = "NULL"){
       dat <- SEFCRI_2016_benthic_cover %>%
         dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
     }
+
+    if(year == 2018){
+
+      dat <- SEFCRI_2018_benthic_cover %>%
+        dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
+    }
+
   }
 
   if(region == "FLK"){
@@ -78,6 +83,13 @@ NCRMP_calculate_cover <- function(region, year, analysis_strat = "NULL"){
       dat <- FLK_2016_benthic_cover %>%
         dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
     }
+
+    if(year == 2018){
+
+      dat <- FLK_2018_benthic_cover %>%
+        dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
+    }
+
   }
 
   if(region == "Tortugas"){
@@ -110,49 +122,38 @@ NCRMP_calculate_cover <- function(region, year, analysis_strat = "NULL"){
 
   if(region == "STTSTJ"){
 
-    if(year == 2013){
 
-      dat <- USVI_2013_benthic_cover %>%
-        dplyr::filter(REGION == "STTSTJ") %>%
-        dplyr::mutate(ANALYSIS_STRATUM = STRAT)
+      dat1 <- USVI_2013_benthic_cover %>%
+        dplyr::filter(REGION == "STTSTJ")
 
-    }
+      dat2 <- USVI_2015_benthic_cover %>%
+        dplyr::filter(REGION == "STTSTJ")
 
-    if(year == 2015){
+      dat3 <- USVI_2017_benthic_cover %>%
+        dplyr::filter(REGION == "STTSTJ")
 
-      dat <- USVI_2015_benthic_cover %>%
-        dplyr::filter(REGION == "STTSTJ") %>%
-        dplyr::mutate(ANALYSIS_STRATUM = STRAT)
+      dat4 <- USVI_2019_benthic_cover %>%
+        dplyr::filter(REGION == "STTSTJ")
 
-    }
-
-
-    if(year == 2017){
-
-      dat <- USVI_2017_benthic_cover %>%
-        dplyr::filter(REGION == "STTSTJ") %>%
-        dplyr::mutate(ANALYSIS_STRATUM = STRAT)
+      dat <- dplyr::bind_rows(dat1, dat2, dat3, dat4) %>%
+          dplyr::mutate(ANALYSIS_STRATUM = STRAT)
 
     }
-
-  }
 
   if(region == "STX"){
 
-    if(year == 2015){
 
-      dat <- USVI_2015_benthic_cover %>%
-        dplyr::filter(STRAT != "BDRK_DEEP",
-                      REGION == "STX") %>% # There is no BDRK DEEP in the 2017 NTOT for STX - only 1 site is being removed
-        dplyr::mutate(ANALYSIS_STRATUM = STRAT)
+      dat2 <- USVI_2015_benthic_cover %>%
+        dplyr::filter(REGION == "STX")
 
-    }
+      dat3 <- USVI_2017_benthic_cover %>%
+        dplyr::filter(REGION == "STX")
 
-    if(year == 2017)
+      dat4 <- USVI_2019_benthic_cover %>%
+        dplyr::filter(REGION == "STX")
 
-      dat <- USVI_2017_benthic_cover %>%
-        dplyr::filter(REGION == "STX") %>%
-        dplyr::mutate(ANALYSIS_STRATUM = STRAT)
+      dat <- dplyr::bind_rows(dat2, dat3, dat4) %>%
+          dplyr::mutate(ANALYSIS_STRATUM = STRAT)
 
   }
 
@@ -220,9 +221,9 @@ NCRMP_calculate_cover <- function(region, year, analysis_strat = "NULL"){
 
   # Calculate percent cover of species by site
 
-  if(year == 2014 && region == "SEFCRI" ||
-     year == 2014 && region == "FLK" ||
-     year == 2018 && region == "Tortugas") {
+  if(region == "SEFCRI" ||
+     region == "FLK" ||
+     region == "Tortugas") {
 
     percent_cover_species <- dat %>%
       dplyr::mutate(Percent_Cvr = rowSums(.[28:30])) %>%
@@ -239,11 +240,6 @@ NCRMP_calculate_cover <- function(region, year, analysis_strat = "NULL"){
       dplyr::select(REGION, YEAR, MONTH, DAY, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES,
                     ANALYSIS_STRATUM, STRAT, PROT, MIN_DEPTH, MAX_DEPTH, COVER_CAT_CD, COVER_CAT_NAME, cover_group, Percent_Cvr)
 
-    # Check to see if site level totals are 100%
-    cover_check_species <- percent_cover_species %>%
-      dplyr::group_by(REGION, YEAR, PRIMARY_SAMPLE_UNIT, STRAT) %>%
-      dplyr::summarise(Cover = sum(Percent_Cvr))
-
   } else {
 
     percent_cover_species <- dat %>%
@@ -253,10 +249,6 @@ NCRMP_calculate_cover <- function(region, year, analysis_strat = "NULL"){
       dplyr::mutate(PROT = as.factor(PROT)) %>%
       dplyr::select(REGION, YEAR, MONTH, DAY, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES,
                     ANALYSIS_STRATUM, STRAT, PROT, MIN_DEPTH, MAX_DEPTH, COVER_CAT_CD, COVER_CAT_NAME, cover_group, Percent_Cvr)
-
-    cover_check_species <- percent_cover_species %>%
-      dplyr::group_by(REGION, YEAR, PRIMARY_SAMPLE_UNIT, STRAT) %>%
-      dplyr::summarise(Cover = sum(Percent_Cvr))
 
   }
 
@@ -290,9 +282,9 @@ NCRMP_calculate_cover <- function(region, year, analysis_strat = "NULL"){
 
   ### Account for SEFCRI/FLK 2014 & Tortugas 2018 2 transect data - take the transect means
 
-  if(year == 2014 && region == "SEFCRI" ||
-     year == 2014 && region == "FLK" ||
-     year == 2018 && region == "Tortugas") {
+  if(region == "SEFCRI" ||
+     region == "FLK" ||
+     region == "Tortugas") {
 
     dat2 <- dat2 %>%
       dplyr::group_by(YEAR, REGION, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, STATION_NR, LAT_DEGREES, LON_DEGREES,
@@ -345,41 +337,15 @@ NCRMP_calculate_cover <- function(region, year, analysis_strat = "NULL"){
 
   percent_cover_site <- dat2
 
+  # site level totals are ~100% (may not be exact for 2 transect data where means are taken)
   cover_check_site <- percent_cover_site %>%
-      dplyr::group_by(REGION, YEAR, PRIMARY_SAMPLE_UNIT, STRAT) %>%
-      dplyr::summarise(Cover = sum(Percent_Cvr))
+    dplyr::group_by(REGION, YEAR, PRIMARY_SAMPLE_UNIT, STRAT) %>%
+    dplyr::summarise(Cover = sum(Percent_Cvr))
 
   # Add NTOT, # Cells sampled and calculate sampling weights in weighting function
 
-  if(analysis_strat == "STRAT_PROT" ||
-     analysis_strat == "NULL"){
 
-    # FL Analysis strat = STRAT + PROT
-    tmp  <- NCRMP_make_weighted_LPI_data(inputdata = dat2, region, year)
-
-  }
-
-  if(analysis_strat == "STRAT"){
-
-    # FL Analysis strat = STRAT
-    tmp  <- NCRMP_make_weighted_LPI_data_RC(inputdata = dat2, region, year)
-
-  }
-
-  if(analysis_strat == "HABITAT_DEPTH"){
-
-    # Carib/GOM Analysis strat = HABITAT CODE + DEPTH STRAT
-    tmp  <- NCRMP_make_weighted_LPI_data(inputdata = dat2, region, year)
-
-  }
-
-  if(analysis_strat == "HABITAT"){
-
-    # Carib/GOM Analysis strat = HABITAT CODE
-    tmp  <- NCRMP_make_weighted_LPI_data_RC(inputdata = dat2, region, year)
-
-  }
-
+  tmp  <- NCRMP_make_weighted_LPI_data(inputdata = dat2, region)
 
 
   # unpack list
@@ -392,7 +358,7 @@ NCRMP_calculate_cover <- function(region, year, analysis_strat = "NULL"){
   # could be due to using the most recent NTOT file for past years - this is OK.
 
   Domain_check <- Domain_est %>%
-    dplyr::group_by(REGION) %>%
+    dplyr::group_by(REGION, YEAR) %>%
     dplyr::summarise(Whole_pie = sum(avCvr))
 
 
@@ -404,11 +370,10 @@ NCRMP_calculate_cover <- function(region, year, analysis_strat = "NULL"){
   # Create list to export
   output <- list(
     "percent_cover_species" = percent_cover_species,
-    "cover_check_species" = cover_check_species,
     "percent_cover_site" = percent_cover_site,
     "cover_check_site" = cover_check_site,
     "cover_group_key" = cover_group_key,
-    "unwh_cover_strata" = unwh_cover_strata,
+    "cover_strata" = cover_strata,
     "Domain_est" = Domain_est,
     "Domain_check" = Domain_check
   )

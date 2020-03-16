@@ -10,8 +10,6 @@
 # outputs created in this file --------------
 # old_mortality_site
 # new_mortality_site
-# wh_old_mortality_strata
-# wh_new_mortality_strata
 # Domain estimates
 
 
@@ -24,12 +22,12 @@
 #
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman
-# Last update: Apr 2019
+# Last update: Mar 2020
 
 
 ##############################################################################################################################
 
-#' Creates colony density and colony size summary dataframes
+#' Creates colony mortality summary dataframes
 #'
 #'
 #'
@@ -46,49 +44,46 @@
 
 NCRMP_DRM_calculate_mortality <- function(project, region, species_filter = "NULL", analysis_strat = "NULL"){
 
-### Create species filters
+  ### Create species filters - developed during 2019 status report juridictional meetings
 
-  # First 6 species are from sample allocation, remainder are ESA listed species
-  # FLK_filter <- c("COL NATA", "MON CAVE", "ORB FAVE", "POR PORI", "SID SIDE", "SOL BOUR", "ACR CERV", "ACR PALM",
-  #                 "ORB ANNU", "ORB FRAN", "DEN CYLI", "MYC FERO")
-  #
-  # Tort_filter <- c("COL NATA", "MON CAVE", "ORB FAVE", "POR PORI", "ORB FRAN", "STE INTE", "ACR CERV", "ACR PALM",
-  #                  "ORB ANNU", "DEN CYLI", "MYC FERO")
-  #
-  # SEFCRI_filter <- c("ACR CERV", "DIC STOK", "MON CAVE", "POR ASTR", "PSE STRI", "SID SIDE","ACR CERV", "ACR PALM",
-  #                    "ORB ANNU", "ORB FRAN", "ORB FAVE", "DEN CYLI", "MYC FERO")
-  #
-  # STX_filter <- c("COL NATA", "ORB ANNU", "MEA MEAN", "MAD DECA", "ORB FRAN", "ORB FAVE", "ACR CERV", "ACR PALM",
-  #                 "ORB ANNU", "DEN CYLI", "MYC FERO")
-  #
-  # # First 5 species are from sample allocation, remainder are ESA listed species
-  # STTSTJ_filter <- c("COL NATA", "ORB ANNU", "DIP LABY", "MAD DECA", "ORB FAVE", "ACR CERV", "ACR PALM",
-  #                    "ORB FRAN", "DEN CYLI", "MYC FERO")
-  #
-  # PR_filter <- c("COL NATA", "ORB ANNU", "DIP LABY", "MAD DECA", "ORB FAVE", "ACR CERV", "ACR PALM",
-  #                "ORB FRAN", "DEN CYLI", "MYC FERO")
-  #
-  # # Top 10 most abundant species - minus POR ASTR
-  # GOM_filter <- c("ORB FRAN", "PSE STRI", "AGA AGAR", "MON CAVE", "STE INTE", "COL NATA", "MAD DECA",
-  #                 "ORB FAVE", "MAD AURE")
+  FLK_filter <- c("ACR CERV", "MON CAVE", "ACR PALM", "PSE STRI", "PSE CLIV",
+                  "ORB ANNU", "ORB FRAN", "ORB FAVE",  "COL NATA", "DIP LABY","STE INTE", "MEA MEAN"
+                  ,
+                     "SID SIDE",
+                     "POR PORI"
+                  )
 
-   # Broader NCRMP species filter developed in previous status report meetings
+  Tort_filter <- c("ACR CERV", "MON CAVE", "ACR PALM", "PSE STRI", "PSE CLIV",
+                   "ORB ANNU", "ORB FRAN", "ORB FAVE",  "COL NATA", "DIP LABY","STE INTE", "MEA MEAN"
+                   ,
+                     "SID SIDE",
+                     "POR PORI"
+                   )
 
-   Report_card_filter <- c("ACR CERV", "ACR PALM", "COL NATA", "DIP LABY", "MON CAVE", "ORB ANNU", "ORB FRAN", "ORB FAVE",
-                           "POR PORI", "PSE STRI", "PSE CLIV", "SID SIDE", "STE INTE")
+  SEFCRI_filter <- c("ACR CERV", "MON CAVE", "ACR PALM", "PSE STRI", "PSE CLIV",
+                     "ORB ANNU", "ORB FRAN", "ORB FAVE",  "COL NATA", "DIP LABY","STE INTE", "MEA MEAN"
+                     ,
+                     "SID SIDE",
+                     "POR PORI"
+                     )
 
-   FLK_filter <- Report_card_filter
-   Tort_filter <- Report_card_filter
-   SEFCRI_filter <- Report_card_filter
-   STTSTJ_filter <- Report_card_filter
-   STX_filter <- Report_card_filter
-   PR_filter <- Report_card_filter
-   GOM_filter <- Report_card_filter
+  STX_filter <- c("COL NATA", "ORB ANNU", "MEA MEAN", "ORB FRAN", "ORB FAVE", "ACR CERV", "ACR PALM",
+                  "ORB ANNU", "DIP LABY", "MON CAVE", "POR PORI", "PSE STRI", "PSE CLIV", "SID SIDE", "STE INTE")
+
+  STTSTJ_filter <- c("COL NATA", "ORB ANNU", "ORB FAVE", "ACR CERV", "ACR PALM",
+                     "ORB FRAN", "DIP LABY", "MON CAVE", "POR PORI", "PSE STRI", "PSE CLIV",  "MEA MEAN", "SID SIDE", "STE INTE")
+
+  PR_filter <- c("COL NATA", "ORB ANNU", "DIP LABY", "POR PORI", "ORB FAVE", "ACR CERV", "ACR PALM",
+                 "ORB FRAN", "DEN CYLI", "MON CAVE", "PSE STRI", "SID SIDE", "AGA AGAR", "AGA LAMA")
+
+
+  GOM_filter <- c("ORB FRAN", "PSE STRI", "AGA AGAR", "MON CAVE", "STE INTE", "COL NATA", "MAD DECA",
+                  "ORB FAVE", "MAD AURE", "DIP LABY", "ORB ANNU", "POR ASTR", "PSE CLIV", "SID SIDE")
 
 
   # Florida
 
-  if(project == "NCRMP_FRRP"){
+  if(project == "NCRMP_DRM"){
 
     if(region == "SEFCRI"){
 
@@ -99,14 +94,17 @@ NCRMP_DRM_calculate_mortality <- function(project, region, species_filter = "NUL
       tmp2 <- SEFCRI_2016_coral_demographics %>%
         dplyr::mutate(SURVEY = "NCRMP")
 
-      tmp3 <- FRRP_SEFCRI_2017_2stage_demo_data %>%
-        dplyr::mutate(SURVEY = "FRRP")
+      tmp3 <- DRM_SEFCRI_2018_2stage_demo_data %>%
+        dplyr::mutate(SURVEY = "DRM")
+
+      tmp4 <- SEFCRI_2018_coral_demographics %>%
+        dplyr::mutate(SURVEY = "NCRMP")
 
       if(species_filter == "FALSE"||
          species_filter == "NULL"){
 
         #Combine 1 stage or 2 stage data
-        dat_1stage <- rbind(tmp2)
+        dat_1stage <- rbind(tmp2, tmp4)
 
         dat_2stage <- rbind(tmp1, tmp3)
 
@@ -115,7 +113,7 @@ NCRMP_DRM_calculate_mortality <- function(project, region, species_filter = "NUL
       if(species_filter == "TRUE"){
 
         #Combine 1 stage or 2 stage data
-        dat_1stage <- rbind(tmp2) %>%
+        dat_1stage <- rbind(tmp2, tmp4) %>%
           dplyr::filter(SPECIES_CD %in% SEFCRI_filter)
 
         dat_2stage <- rbind(tmp1, tmp3) %>%
@@ -126,27 +124,31 @@ NCRMP_DRM_calculate_mortality <- function(project, region, species_filter = "NUL
     if(region == "FLK"){
 
       tmp1 <- FLK_2014_coral_demographics %>%
-        dplyr::mutate(SURVEY = "NCRMP")
+        dplyr::mutate(SURVEY = "NCRMP") %>%
+        dplyr::mutate(YEAR = 2014)
 
       tmp2 <- FLK_2016_coral_demographics %>%
         dplyr::mutate(SURVEY = "NCRMP")
 
-      tmp3 <- FRRP_FLK_2017_2stage_demo_data %>%
-        dplyr::mutate(SURVEY = "FRRP")
+      tmp3 <- DRM_FLK_2018_2stage_demo_data %>%
+        dplyr::mutate(SURVEY = "DRM")
+
+      tmp4 <- FLK_2018_coral_demographics %>%
+        dplyr::mutate(SURVEY = "NCRMP")
 
 
       if(species_filter == "FALSE" ||
          species_filter == "NULL") {
 
         #Combine 1 stage or 2 stage data
-        dat_1stage <- rbind(tmp1, tmp2)
+        dat_1stage <- rbind(tmp1, tmp2, tmp4)
 
         dat_2stage <- rbind(tmp3)
       }
 
       if(species_filter == "TRUE"){
         #Combine 1 stage or 2 stage data
-        dat_1stage <- rbind(tmp1, tmp2) %>%
+        dat_1stage <- rbind(tmp1, tmp2, tmp4) %>%
           dplyr::filter(SPECIES_CD %in% FLK_filter)
 
         dat_2stage <- rbind(tmp3) %>%
@@ -204,7 +206,7 @@ NCRMP_DRM_calculate_mortality <- function(project, region, species_filter = "NUL
         dat_2stage <- SEFCRI_2014_2stage_coral_demographics %>%
           dplyr::mutate(SURVEY = "NCRMP")
 
-        dat_1stage <- SEFCRI_2016_coral_demographics %>%
+        dat_1stage <- dplyr::bind_rows(SEFCRI_2016_coral_demographics, SEFCRI_2018_coral_demographics)%>%
           dplyr::mutate(SURVEY = "NCRMP")
       }
 
@@ -224,7 +226,7 @@ NCRMP_DRM_calculate_mortality <- function(project, region, species_filter = "NUL
       tmp1 <- FLK_2014_coral_demographics %>%
         dplyr::mutate(YEAR = 2014)
 
-      tmp2 <- FLK_2016_coral_demographics
+      tmp2 <- dplyr::bind_rows(FLK_2016_coral_demographics, FLK_2018_coral_demographics)
 
 
       if(species_filter == "FALSE" ||
@@ -257,7 +259,7 @@ NCRMP_DRM_calculate_mortality <- function(project, region, species_filter = "NUL
       if(species_filter == "FALSE" ||
          species_filter == "NULL"){
 
-         dat_1stage <- rbind(tmp1, tmp2) %>%
+        dat_1stage <- rbind(tmp1, tmp2) %>%
           dplyr::mutate(SURVEY = "NCRMP")
 
         dat_2stage <- tmp3 %>%
@@ -284,7 +286,7 @@ NCRMP_DRM_calculate_mortality <- function(project, region, species_filter = "NUL
 
     if(region == "STTSTJ"){
 
-      tmp1 <- USVI_2013_coral_demographics %>%
+        tmp1 <- USVI_2013_coral_demographics %>%
         dplyr::filter(REGION == "STTSTJ")
 
       tmp2 <- USVI_2015_coral_demographics %>%
@@ -293,17 +295,20 @@ NCRMP_DRM_calculate_mortality <- function(project, region, species_filter = "NUL
       tmp3 <- USVI_2017_coral_demographics %>%
         dplyr::filter(REGION == "STTSTJ")
 
+      tmp4 <- USVI_2019_coral_demographics %>%
+        dplyr::filter(REGION == "STTSTJ")
+
       if(species_filter == "FALSE" ||
          species_filter == "NULL"){
 
         #Combine 1 stage or 2 stage data
-        dat_1stage <- rbind(tmp1, tmp2, tmp3) %>%
+        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4) %>%
           dplyr::mutate(SURVEY = "NCRMP")
       }
 
       if(species_filter == "TRUE"){
         #Combine 1 stage or 2 stage data
-        dat_1stage <- rbind(tmp1, tmp2, tmp3) %>%
+        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4) %>%
           dplyr::mutate(SURVEY = "NCRMP") %>%
           dplyr::filter(SPECIES_CD %in% STTSTJ_filter)
       }
@@ -318,18 +323,21 @@ NCRMP_DRM_calculate_mortality <- function(project, region, species_filter = "NUL
       tmp2 <- USVI_2017_coral_demographics %>%
         dplyr::filter(REGION == "STX")
 
+      tmp3 <- USVI_2019_coral_demographics %>%
+        dplyr::filter(REGION == "STX")
+
       if(species_filter == "FALSE" ||
          species_filter == "NULL"){
 
         #Combine 1 stage or 2 stage data
-        dat_1stage <- rbind(tmp1, tmp2) %>%
+        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3) %>%
           dplyr::mutate(SURVEY = "NCRMP")
       }
 
       if(species_filter == "TRUE"){
 
         #Combine 1 stage or 2 stage data
-        dat_1stage <- rbind(tmp1, tmp2) %>%
+        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3) %>%
           dplyr::mutate(SURVEY = "NCRMP") %>%
           dplyr::filter(SPECIES_CD %in% STX_filter)
       }
@@ -343,11 +351,14 @@ NCRMP_DRM_calculate_mortality <- function(project, region, species_filter = "NUL
       tmp2 <- PRICO_2016_coral_demographics %>%
         dplyr::mutate(YEAR = 2016)
 
+      tmp3 <- PRICO_2019_coral_demographics
+
+
       if(species_filter == "FALSE"||
          species_filter == "NULL"){
 
         #Combine 1 stage or 2 stage data
-        dat_1stage <- rbind(tmp1, tmp2) %>%
+        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3) %>%
           dplyr::mutate(SURVEY = "NCRMP")
 
       }
@@ -355,7 +366,7 @@ NCRMP_DRM_calculate_mortality <- function(project, region, species_filter = "NUL
       if(species_filter == "TRUE"){
 
         #Combine 1 stage or 2 stage data
-        dat_1stage <- rbind(tmp1, tmp2) %>%
+        dat_1stage <- rbind(tmp1, tmp2, tmp3) %>%
           dplyr::mutate(SURVEY = "NCRMP") %>%
           dplyr::filter(SPECIES_CD %in% PR_filter)
 
@@ -400,7 +411,7 @@ NCRMP_DRM_calculate_mortality <- function(project, region, species_filter = "NUL
 
   # Old mortality
 
-  if(project == "NCRMP_FRRP" ||
+  if(project == "NCRMP_DRM" ||
      project == "NCRMP" && region == "SEFCRI" ||
      project == "NCRMP" && region == "Tortugas") {
 
@@ -463,39 +474,12 @@ NCRMP_DRM_calculate_mortality <- function(project, region, species_filter = "NUL
 
   # Apply weighting scheme and calculate strata and regional means
 
-  if(analysis_strat == "STRAT_PROT" ||
-     analysis_strat == "NULL"){
-
-    # FL Analysis strat = STRAT + PROT (default; will work for Carib and GOM regions if analysis_strat is not specified.)
-    tmp  <- NCRMP_make_weighted_demo_data(project, inputdata = old_mortality_site, region, datatype = "mortality")
-
-  }
-
-  if(analysis_strat == "STRAT"){
-
-    # FL Analysis strat = STRAT
-    tmp  <- NCRMP_make_weighted_demo_data_RC(project, inputdata = old_mortality_site, region, datatype = "mortality")
-
-  }
-
-  if(analysis_strat == "HABITAT_DEPTH"){
-
-    # Carib/GOM Analysis strat = HABITAT CODE + DEPTH STRAT
-    tmp  <- NCRMP_make_weighted_demo_data(project, inputdata = old_mortality_site, region, datatype = "mortality")
-
-  }
-
-  if(analysis_strat == "HABITAT"){
-
-    # Carib/GOM Analysis strat = HABITAT CODE
-    tmp  <- NCRMP_make_weighted_demo_data_RC(project, inputdata = old_mortality_site, region, datatype = "mortality")
-
-  }
+  tmp  <- NCRMP_make_weighted_demo_data(project, inputdata = old_mortality_site, region, datatype = "mortality")
 
   # unpack list
   for(k in 1:length(tmp))assign(names(tmp)[k], tmp[[k]])
 
-  unwh_old_mortality_strata <- unwh_mortality_strata %>%
+  old_mortality_strata <- mortality_strata %>%
     dplyr::mutate(MORT_TYPE = "Old")
   Domain_est_old_mort <- Domain_est %>%
     dplyr::mutate(MORT_TYPE = "Old")
@@ -503,7 +487,7 @@ NCRMP_DRM_calculate_mortality <- function(project, region, species_filter = "NUL
 
   # Recent mortality
 
-  if(project == "NCRMP_FRRP" ||
+  if(project == "NCRMP_DRM" ||
      project == "NCRMP" && region == "SEFCRI"||
      project == "NCRMP" && region == "Tortugas") {
 
@@ -566,40 +550,13 @@ NCRMP_DRM_calculate_mortality <- function(project, region, species_filter = "NUL
 
   # Apply weighting scheme and calculate strata and regional means
 
-  if(analysis_strat == "STRAT_PROT" ||
-     analysis_strat == "NULL"){
-
-    # FL Analysis strat = STRAT + PROT (default; will work for Carib and GOM regions if analysis_strat is not specified.)
-    tmp  <- NCRMP_make_weighted_demo_data(project, inputdata = recent_mortality_site, region, datatype = "mortality")
-
-  }
-
-  if(analysis_strat == "STRAT"){
-
-    # FL Analysis strat = STRAT
-    tmp  <- NCRMP_make_weighted_demo_data_RC(project, inputdata = recent_mortality_site, region, datatype = "mortality")
-
-  }
-
-  if(analysis_strat == "HABITAT_DEPTH"){
-
-    # Carib/GOM Analysis strat = HABITAT CODE + DEPTH STRAT
-    tmp  <- NCRMP_make_weighted_demo_data(project, inputdata = recent_mortality_site, region, datatype = "mortality")
-
-  }
-
-  if(analysis_strat == "HABITAT"){
-
-    # Carib/GOM Analysis strat = HABITAT CODE
-    tmp  <- NCRMP_make_weighted_demo_data_RC(project, inputdata = recent_mortality_site, region, datatype = "mortality")
-
-  }
+  tmp  <- NCRMP_make_weighted_demo_data(project, inputdata = recent_mortality_site, region, datatype = "mortality")
 
   # unpack list
   for(k in 1:length(tmp))assign(names(tmp)[k], tmp[[k]])
 
 
-  unwh_rec_mortality_strata <- unwh_mortality_strata %>%
+  rec_mortality_strata <- mortality_strata %>%
     dplyr::mutate(MORT_TYPE = "Recent")
   Domain_est_rec_mort <- Domain_est %>%
     dplyr::mutate(MORT_TYPE = "Recent")
@@ -614,8 +571,8 @@ NCRMP_DRM_calculate_mortality <- function(project, region, species_filter = "NUL
   output <- list(
     "old_mortality_site" = old_mortality_site,
     "recent_mortality_site" = recent_mortality_site,
-    "unwh_old_mortality_strata" = unwh_old_mortality_strata,
-    "unwh_rec_mortality_strata" = unwh_rec_mortality_strata,
+    "old_mortality_strata" =old_mortality_strata,
+    "rec_mortality_strata" = rec_mortality_strata,
     "Domain_est_old_mort" = Domain_est_old_mort,
     "Domain_est_rec_mort" = Domain_est_rec_mort)
 

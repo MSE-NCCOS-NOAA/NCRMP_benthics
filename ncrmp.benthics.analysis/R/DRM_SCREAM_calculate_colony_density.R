@@ -47,16 +47,26 @@ DRM_SCREAM_calculate_colony_density <- function(project = "NULL", species_filter
 
   ### Create species filters
 
-  # First 6 species are from sample allocation, remainder are ESA listed species
-  FLK_filter <- c("COL NATA", "MON CAVE", "ORB FAVE", "POR PORI", "SID SIDE", "SOL BOUR", "ACR CERV", "ACR PALM",
-                  "ORB ANNU", "ORB FRAN", "DEN CYLI", "MYC FERO")
+  FLK_filter <- c("ACR CERV", "MON CAVE", "ACR PALM","PSE STRI", "PSE CLIV",
+                  "ORB ANNU", "ORB FRAN", "ORB FAVE",  "COL NATA", "DIP LABY","STE INTE", "MEA MEAN"
+                  ,
+                  "SID SIDE",
+                  "POR PORI"
+  )
 
-  Tort_filter <- c("COL NATA", "MON CAVE", "ORB FAVE", "POR PORI", "ORB FRAN", "STE INTE", "ACR CERV", "ACR PALM",
-                   "ORB ANNU", "DEN CYLI", "MYC FERO")
+  Tort_filter <- c("ACR CERV", "MON CAVE", "ACR PALM", "PSE STRI", "PSE CLIV",
+                   "ORB ANNU", "ORB FRAN", "ORB FAVE",  "COL NATA", "DIP LABY","STE INTE", "MEA MEAN"
+                   ,
+                   "SID SIDE",
+                   "POR PORI"
+  )
 
-  SEFCRI_filter <- c("ACR CERV", "DIC STOK", "MON CAVE", "POR ASTR", "PSE STRI", "SID SIDE","ACR CERV", "ACR PALM",
-                     "ORB ANNU", "ORB FRAN", "ORB FAVE", "DEN CYLI", "MYC FERO")
-
+  SEFCRI_filter <- c("ACR CERV", "MON CAVE", "ACR PALM", "PSE STRI", "PSE CLIV",
+                     "ORB ANNU", "ORB FRAN", "ORB FAVE",  "COL NATA", "DIP LABY","STE INTE", "MEA MEAN"
+                     ,
+                     "SID SIDE",
+                     "POR PORI"
+  )
 
   if(project == "DRM_SCREAM"||
      project == "NULL"){
@@ -192,7 +202,7 @@ DRM_SCREAM_calculate_colony_density <- function(project = "NULL", species_filter
   # Create list to export
   output <- list(
     "density_site" = density_site,
-    "unwh_density_strata" = unwh_density_strata,
+    "density_strata" = density_strata,
     "Domain_est" = Domain_est)
 
   return(output)

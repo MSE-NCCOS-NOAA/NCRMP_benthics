@@ -24,7 +24,7 @@
 #
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman
-# Last update: Apr 2019
+# Last update: Mar 2020
 
 ##############################################################################################################################
 
@@ -53,12 +53,18 @@ NCRMP_calculate_ESA_corals_PresAbs <- function()
   tmp2 <- SEFCRI_2016_inverts_ESAcorals %>%
     dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
 
+  tmp2.1 <- SEFCRI_2018_inverts_ESAcorals %>%
+    dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
+
   # FLK
   tmp3 <- FLK_2014_2stage_inverts_ESAcorals %>%
     dplyr::mutate(YEAR = 2014,
                   ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
 
   tmp4 <- FLK_2016_inverts_ESAcorals %>%
+    dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
+
+  tmp4.1 <- FLK_2018_inverts_ESAcorals %>%
     dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
 
   # Tortugas
@@ -76,9 +82,11 @@ NCRMP_calculate_ESA_corals_PresAbs <- function()
     dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
     # Remove METERS_COMPLETED as it is missing from the other FL data
     dplyr::select(-METERS_COMPLETED)
-
   #Combine FL
-  FL <- rbind(tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7)
+  FL <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7, tmp2.1, tmp4.1)  %>%
+  # Change to factor - there are letters in the FGBNMS MAPGRID NRs
+  dplyr::mutate(MAPGRID_NR = as.factor(MAPGRID_NR))
+
 
   # Carib / GOM
   # St. Thomas, St. John, & St. Croix
@@ -90,6 +98,9 @@ NCRMP_calculate_ESA_corals_PresAbs <- function()
     dplyr::mutate(ANALYSIS_STRATUM = STRAT)
 
   tmp3 <- USVI_2017_inverts_ESAcorals %>%
+    dplyr::mutate(ANALYSIS_STRATUM = STRAT)
+
+  tmp3.1 <- USVI_2019_inverts_ESAcorals %>%
     dplyr::mutate(ANALYSIS_STRATUM = STRAT)
 
   # Puerto Rico
@@ -112,13 +123,17 @@ NCRMP_calculate_ESA_corals_PresAbs <- function()
     dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS")
 
   #Combine Carib and GOM
-  Carib_GOM <- rbind(tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7, tmp8) %>%
+  tmp9 <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4, tmp5, tmp8, tmp3.1) %>%
     # Remove METERS_COMPLETED as it is missing from the FL data
-    dplyr::select(-METERS_COMPLETED)
+    dplyr::select(-METERS_COMPLETED) %>%
+  # Combine and change to factor - there are letters in the FGBNMS MAPGRID NRs
+  dplyr::mutate(MAPGRID_NR = as.factor(MAPGRID_NR))
+
+  Carib_GOM <- dplyr::bind_rows(tmp9, tmp6, tmp7)
 
   # Combine FL, Carib, and GOM
 
-  dat <- rbind(FL, Carib_GOM)
+  dat <- dplyr::bind_rows(FL, Carib_GOM)
 
   strat_totals <-  dat %>%
     # convert sampling years to analyses years for FL 2014/15 and PR2016/2017
@@ -131,8 +146,10 @@ NCRMP_calculate_ESA_corals_PresAbs <- function()
     # convert A (Absence) to 0 and P (Presence) to 1
     dplyr::mutate_at(.vars = dplyr::vars ("A_PALMATA", "A_CERVICORNIS", "D_CYLINDRUS", "M_FEROX", "O_ANNULARIS", "O_FRANKSI", "O_FAVEOLATA"),
                      .funs = dplyr::funs(ifelse(. == "A", 0,
-                                                ifelse(. == "P", 1, NA_integer_))
-                     )) %>%
+                                                ifelse(. == "PT", 1,
+                                                       ifelse(. == "PS", 1,
+                                                              ifelse(. == "P", 1, NA_integer_)))))) %>%
+
     # sum ESA coral spp presence/absence by region, year, strat
     dplyr::group_by(REGION, ANALYSES_YEAR, ANALYSIS_STRATUM, STRAT) %>%
     dplyr::summarise_at(.vars = dplyr::vars ("A_PALMATA", "A_CERVICORNIS", "D_CYLINDRUS", "M_FEROX", "O_ANNULARIS", "O_FRANKSI", "O_FAVEOLATA"),

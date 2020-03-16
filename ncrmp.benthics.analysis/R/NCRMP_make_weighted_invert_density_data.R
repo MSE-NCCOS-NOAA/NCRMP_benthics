@@ -24,7 +24,7 @@
 #
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman
-# Last update: Apr 2019
+# Last update: Mar 2020
 
 
 ##############################################################################################################################
@@ -138,7 +138,7 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
 
   if(region == "STTSTJ"){
 
-    ntot13 <- USVI_2017_NTOT %>%
+  ntot13 <- USVI_2019_NTOT %>%
       dplyr::filter(REGION == "STTSTJ",
                     STRAT != "HARD_SHLW") %>% # Hard shlw was not sampled in 2013
       dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
@@ -149,7 +149,7 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
                     PROT = NA_character_,
                     ngrtot = sum(NTOT))
 
-    ntot15 <- USVI_2017_NTOT %>%
+    ntot15 <- USVI_2019_NTOT %>%
       dplyr::filter(REGION == "STTSTJ") %>%
       dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
       dplyr::summarise(NTOT = sum(NTOT)) %>%
@@ -160,7 +160,18 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
                     ngrtot = sum(NTOT)) %>%
       dplyr::ungroup()
 
-    ntot17 <- USVI_2017_NTOT %>%
+    ntot17 <- USVI_2019_NTOT %>%
+      dplyr::filter(REGION == "STTSTJ") %>%
+      dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
+      dplyr::summarise(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(YEAR = 2017,
+                    ANALYSIS_STRATUM = STRAT,
+                    PROT = NA_character_,
+                    ngrtot = sum(NTOT)) %>%
+      dplyr::ungroup()
+
+      ntot19 <- USVI_2019_NTOT %>%
       dplyr::filter(REGION == "STTSTJ") %>%
       dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
       dplyr::summarise(NTOT = sum(NTOT)) %>%
@@ -170,14 +181,15 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
                     ngrtot = sum(NTOT)) %>%
       dplyr::ungroup()
 
-    ntot <- rbind(ntot13, ntot15, ntot17)
+
+    ntot <- rbind(ntot13, ntot15, ntot17, ntot19)
 
 
   }
 
   if(region == "STX"){
 
-    ntot15 <- USVI_2017_NTOT %>%
+    ntot15 <- USVI_2019_NTOT %>%
       dplyr::filter(REGION == "STX",
                     STRAT != "HARD_SHLW", # Hard shlw was not sampled in 2015
                     STRAT != "HARD_DEEP") %>% # Hard deep was not sampled in 2015
@@ -189,9 +201,19 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
                     PROT = NA_character_,
                     ngrtot = sum(NTOT))
 
-    ntot17 <- USVI_2017_NTOT %>%
+    ntot17 <- USVI_2019_NTOT %>%
       dplyr::filter(REGION == "STX",
                     STRAT != "HARD_SHLW") %>%
+      dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
+      dplyr::summarise(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(YEAR = 2017,
+                    ANALYSIS_STRATUM = STRAT,
+                    PROT = NA_character_,
+                    ngrtot = sum(NTOT))
+
+    ntot19 <- USVI_2019_NTOT %>%
+      dplyr::filter(REGION == "STX") %>%
       dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
       dplyr::summarise(NTOT = sum(NTOT)) %>%
       dplyr::ungroup() %>%
@@ -199,7 +221,8 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
                     PROT = NA_character_,
                     ngrtot = sum(NTOT))
 
-    ntot <- rbind(ntot15, ntot17)
+
+    ntot <- rbind(ntot15, ntot17, ntot19)
 
   }
 
@@ -339,7 +362,7 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
     dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, NTOT, ngrtot, wh, n, avden, svar, std, whavden, whsvar, whstd)
 
   # cover, unweighted by strata
-  unwh_invert_strata <- dens_est %>%
+  invert_strata <- dens_est %>%
     dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, NTOT, ngrtot, wh, n, avden, svar, std)
 
 
@@ -358,7 +381,7 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
 
   # Create list to export
   output <- list(
-    "unwh_invert_strata" = unwh_invert_strata,
+    "invert_strata" = invert_strata,
     "Domain_est" = Domain_est
 
   )

@@ -4,14 +4,12 @@
 \alias{NCRMP_make_weighted_LPI_data}
 \title{Creates weighted LPI data}
 \usage{
-NCRMP_make_weighted_LPI_data(inputdata, region, year)
+NCRMP_make_weighted_LPI_data(inputdata, region)
 }
 \arguments{
 \item{inputdata}{A dataframe}
 
 \item{region}{A string indicating the region}
-
-\item{year}{A string indicating the year}
 }
 \value{
 A dataframe

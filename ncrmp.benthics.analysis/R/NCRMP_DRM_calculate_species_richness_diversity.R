@@ -45,7 +45,7 @@
 #'
 
 
-NCRMP_DRM_calculate_species_richness_diversity <- function(project, region, analysis_strat){
+NCRMP_DRM_calculate_species_richness_diversity <- function(project, region){
 
 
   # Define regional groups
@@ -183,22 +183,25 @@ NCRMP_DRM_calculate_species_richness_diversity <- function(project, region, anal
     if(region == "STTSTJ"){
 
       tmp1 <- USVI_2013_coral_demographics %>%
-        dplyr::filter(REGION == "STTSTJ") %>%
-        dplyr::mutate(SURVEY = "NCRMP")
+        dplyr::filter(REGION == "STTSTJ")
 
       tmp2 <- USVI_2015_coral_demographics %>%
-        dplyr::filter(REGION == "STTSTJ") %>%
-        dplyr::mutate(SURVEY = "NCRMP")
+        dplyr::filter(REGION == "STTSTJ")
 
       tmp3 <- USVI_2017_coral_demographics %>%
-        dplyr::filter(REGION == "STTSTJ") %>%
+        dplyr::filter(REGION == "STTSTJ")
+
+      tmp4 <- USVI_2019_coral_demographics %>%
+        dplyr::filter(REGION == "STTSTJ")
+
+      # this get used for diversity
+      dat <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4) %>%
         dplyr::mutate(SURVEY = "NCRMP")
 
-      dat <- rbind(tmp1, tmp2, tmp3)
-
+      # this get used for richness
       #Combine 1 stage or 2 stage data
-      dat_1stage <- rbind(tmp1, tmp2, tmp3) %>%
-        dplyr::mutate(REGION = "STTSTJ")
+      dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4) %>%
+        dplyr::mutate(SURVEY = "NCRMP")
 
 
     }
@@ -206,35 +209,39 @@ NCRMP_DRM_calculate_species_richness_diversity <- function(project, region, anal
     if(region == "STX"){
 
       tmp1 <- USVI_2015_coral_demographics %>%
-        dplyr::filter(REGION == "STX") %>%
-        dplyr::mutate(SURVEY = "NCRMP")
+        dplyr::filter(REGION == "STX")
 
       tmp2 <- USVI_2017_coral_demographics %>%
-        dplyr::filter(REGION == "STX") %>%
+        dplyr::filter(REGION == "STX")
+
+      tmp3 <- USVI_2019_coral_demographics %>%
+        dplyr::filter(REGION == "STX")
+
+      dat <- dplyr::bind_rows(tmp1, tmp2) %>%
         dplyr::mutate(SURVEY = "NCRMP")
 
-      dat <- rbind(tmp1, tmp2)
-
       #Combine 1 stage or 2 stage data
-      dat_1stage <- rbind(tmp1, tmp2) %>%
-        dplyr::mutate(REGION = "STX")
+      dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3) %>%
+        dplyr::mutate(SURVEY = "NCRMP")
 
 
     }
 
     if(region == "PRICO"){
 
-      tmp1 <- PRICO_2014_coral_demographics %>%
-        dplyr::mutate(SURVEY = "NCRMP")
+      tmp1 <- PRICO_2014_coral_demographics
 
       tmp2 <- PRICO_2016_coral_demographics %>%
-        dplyr::mutate(SURVEY = "NCRMP",
-                      YEAR = 2016)
+        dplyr::mutate(YEAR = 2016)
 
-      dat <- rbind(tmp1, tmp2)
+      tmp3 <- PRICO_2019_coral_demographics
+
+      dat <- dplyr::bind_rows(tmp1, tmp2, tmp3) %>%
+        dplyr::mutate(SURVEY = "NCRMP")
 
       #Combine 1 stage or 2 stage data
-      dat_1stage <- rbind(tmp1, tmp2)
+      dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3) %>%
+        dplyr::mutate(SURVEY = "NCRMP")
 
     }
 
@@ -264,6 +271,7 @@ NCRMP_DRM_calculate_species_richness_diversity <- function(project, region, anal
 
   # Clean up species names
 
+  # this get used later for diversity
   dat <- dat %>%
     dplyr::mutate(SPECIES_NAME = dplyr::case_when(SPECIES_CD == "MEAN JACK" ~ "Meandrina jacksoni", TRUE ~ as.character(SPECIES_NAME) ),
                   SPECIES_NAME = dplyr::case_when(SPECIES_CD == "DIP STRI" ~ "Pseudodiploria strigosa", TRUE ~ as.character(SPECIES_NAME)),
@@ -334,10 +342,10 @@ NCRMP_DRM_calculate_species_richness_diversity <- function(project, region, anal
                     !grepl('SPE.', SPECIES_CD),
                     !grepl('ANCX', SPECIES_CD)) %>% # Filter out SPE
       dplyr::mutate(PROT = as.factor(PROT)) %>% # Change PROT to factor for ggplot will recognize it as a grouping variable
-      dplyr::group_by(SURVEY, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT, SPECIES_NAME) %>% #No need to include region, will be added from ntot in wh. function
+      dplyr::group_by(REGION, SURVEY, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT, SPECIES_NAME) %>% #No need to include region, will be added from ntot in wh. function
       dplyr::summarise(SppSumSite = sum(N)) %>%
       dplyr::mutate(present = 1) %>%
-      dplyr::group_by(SURVEY, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT) %>%
+      dplyr::group_by(REGION, SURVEY, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT) %>%
       dplyr::summarise(SPP_RICHNESS = sum(present)) %>%
       dplyr::ungroup()
 
@@ -347,12 +355,12 @@ NCRMP_DRM_calculate_species_richness_diversity <- function(project, region, anal
                     !grepl('SPE.', SPECIES_CD),
                     !grepl('ANCX', SPECIES_CD)) %>% # Filter out SPE
       dplyr::mutate(PROT = as.factor(PROT)) %>% # Change PROT to factor for ggplot will recognize it as a grouping variable
-      dplyr::group_by(SURVEY, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, STATION_NR, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT, SPECIES_NAME) %>% #No need to include region, will be added from ntot in wh. function
+      dplyr::group_by(REGION, SURVEY, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, STATION_NR, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT, SPECIES_NAME) %>% #No need to include region, will be added from ntot in wh. function
       dplyr::summarise(IndSumSite = sum(N))  %>%
       dplyr::mutate(present = 1) %>%
-      dplyr::group_by(SURVEY, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, STATION_NR, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT) %>%
+      dplyr::group_by(REGION, SURVEY, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, STATION_NR, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT) %>%
       dplyr::summarise(SppSumSite = sum(present)) %>%
-      dplyr::group_by(SURVEY, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT) %>%
+      dplyr::group_by(REGION, SURVEY, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT) %>%
       dplyr::summarise(SPP_RICHNESS = mean(SppSumSite)) %>%
       dplyr::ungroup()
 
@@ -378,10 +386,10 @@ NCRMP_DRM_calculate_species_richness_diversity <- function(project, region, anal
                     !grepl('SPE.', SPECIES_CD),
                     !grepl('ANCX', SPECIES_CD)) %>% # Filter out SPE
       dplyr::mutate(PROT = as.factor(PROT)) %>% # Change PROT to factor for ggplot will recognize it as a grouping variable
-      dplyr::group_by(SURVEY, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT, SPECIES_NAME) %>% #No need to include region, will be added from ntot in wh. function
+      dplyr::group_by(REGION, SURVEY, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT, SPECIES_NAME) %>% #No need to include region, will be added from ntot in wh. function
       dplyr::summarise(SppSumSite = sum(N)) %>%
       dplyr::mutate(present = 1) %>%
-      dplyr::group_by(SURVEY, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT) %>%
+      dplyr::group_by(REGION, SURVEY, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT) %>%
       dplyr::summarise(SPP_RICHNESS = sum(present)) %>%
       dplyr::ungroup()
 
@@ -392,53 +400,19 @@ NCRMP_DRM_calculate_species_richness_diversity <- function(project, region, anal
 
   richness_site <- dat1
 
-  # Run through the weighting function based on what your analysis stratum is
-
-  if(analysis_strat == "STRAT_PROT" ||
-     analysis_strat == "NULL"){
-
-    # FL Analysis strat = STRAT + PROT (default; will work for Carib and GOM regions if analysis_strat is not specified.)
-    tmp  <- NCRMP_make_weighted_demo_data(project, inputdata = dat1, region, datatype = "richness")
-
-  }
-
-  if(analysis_strat == "STRAT"){
-
-    # FL Analysis strat = STRAT
-    tmp  <- NCRMP_make_weighted_demo_data_RC(project, inputdata = dat1, region, datatype = "richness")
-
-  }
-
-  if(analysis_strat == "HABITAT_DEPTH"){
-
-    # Carib/GOM Analysis strat = HABITAT CODE + DEPTH STRAT
-    tmp  <- NCRMP_make_weighted_demo_data(project, inputdata = dat1, region, datatype = "richness")
-
-  }
-
-  if(analysis_strat == "HABITAT"){
-
-    # Carib/GOM Analysis strat = HABITAT CODE
-    tmp  <- NCRMP_make_weighted_demo_data_RC(project, inputdata = dat1, region, datatype = "richness")
-
-  }
+ # Run through the weighting function
+  tmp  <- NCRMP_make_weighted_demo_data(project,
+                                        inputdata = richness_site,
+                                        region,
+                                        datatype = "richness",
+                                        species_filter = "FALSE")
 
   # unpack list
   for(k in 1:length(tmp))assign(names(tmp)[k], tmp[[k]])
 
+
   ###### Calculate coral diversity with Simpson, Inv. Simpson and Shannon Indices #####
 
-  if(analysis_strat == "STRAT_PROT" || analysis_strat == "HABITAT_DEPTH"){
-
-    if(region %in% FL) {
-
-      dat <- dat %>% dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
-
-    } else {
-
-      dat <- dat %>% dplyr::mutate(ANALYSIS_STRATUM = STRAT)
-
-    }
 
     # Site level
     sites <- dat %>%
@@ -449,7 +423,7 @@ NCRMP_DRM_calculate_species_richness_diversity <- function(project, region, anal
                     !grepl('ANCX', SPECIES_CD))  %>%
       dplyr::mutate(PRIMARY_SAMPLE_UNIT = as.character(PRIMARY_SAMPLE_UNIT),
                     REGION = region) %>%
-      dplyr::group_by(REGION, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, ANALYSIS_STRATUM, PROT) %>%
+      dplyr::group_by(REGION, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, PROT) %>%
       dplyr::summarize(PSU = unique(PRIMARY_SAMPLE_UNIT)) %>%
       dplyr::ungroup()
 
@@ -461,7 +435,7 @@ NCRMP_DRM_calculate_species_richness_diversity <- function(project, region, anal
                     !grepl('ANCX', SPECIES_CD)) %>%
       dplyr::mutate(PRIMARY_SAMPLE_UNIT = as.character(PRIMARY_SAMPLE_UNIT),
                     REGION = region) %>% #Convert PSU to character to make sure vegan::diversity does not use it as counts
-      dplyr::group_by(REGION, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, ANALYSIS_STRATUM, PROT, SPECIES_NAME) %>%
+      dplyr::group_by(REGION, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, PROT, SPECIES_NAME) %>%
       dplyr::summarise(SPP_Count = sum(N)) %>%
       tidyr::spread(., key = SPECIES_NAME, value = SPP_Count, fill = 0) %>%
       dplyr::ungroup()
@@ -474,53 +448,41 @@ NCRMP_DRM_calculate_species_richness_diversity <- function(project, region, anal
       dplyr::mutate(Shannon =  vegan::diversity(species_only_site[, -1], index = "shannon")) %>%
       dplyr::select(PRIMARY_SAMPLE_UNIT, Simpson, Inv_Simpson, Shannon ) %>%
       dplyr::inner_join(., sites) %>%
-      dplyr::select(REGION, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT,  ANALYSIS_STRATUM, PROT, Simpson, Inv_Simpson, Shannon) %>%
+      dplyr::select(REGION, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, PROT, Simpson, Inv_Simpson, Shannon) %>%
       dplyr::ungroup()
 
 
     # Calculate regional diversity using weighting function
 
-    tmp  <- NCRMP_make_weighted_demo_data(project, inputdata = species_diversity_site, region, datatype = "diversity")
+    tmp  <- NCRMP_make_weighted_demo_data(project,
+                                          inputdata = species_diversity_site,
+                                          region,
+                                          datatype = "diversity",
+                                          species_filter = "FALSE")
 
     # unpack list
     for(k in 1:length(tmp))assign(names(tmp)[k], tmp[[k]])
 
-  }
+
 
   ################
   # Export
   ################
 
 
-  if(analysis_strat == "STRAT_PROT" || analysis_strat == "HABITAT_DEPTH"){
-
-
     # Create list to export
     output <- list(
       "species_list" = species_list,
       "richness_site" = richness_site,
-      "unwh_richness_strata" = unwh_richness_strata,
+      "richness_strata" = richness_strata,
       "Domain_est" = Domain_est,
       "species_diversity_site" = species_diversity_site,
-      "unwh_diversity_strata" = unwh_diversity_strata,
+      "diversity_strata" = diversity_strata,
       "Domain_est_div" = Domain_est_div
     )
 
     return(output)
 
-  } else {
-
-    # Create list to export
-    output <- list(
-      "species_list" = species_list,
-      "richness_site" = richness_site,
-      "unwh_richness_strata" = unwh_richness_strata,
-      "Domain_est" = Domain_est
-    )
-
-    return(output)
-
-  }
 
 }
 

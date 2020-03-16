@@ -4,8 +4,10 @@
 \alias{DRM_SCREAM_calculate_disease_prevalence}
 \title{Creates species list, species richness and species diversity dataframes from NCRMP and FRRP data}
 \usage{
-DRM_SCREAM_calculate_disease_prevalence(project = "NULL",
-  species_filter = "NULL")
+DRM_SCREAM_calculate_disease_prevalence(
+  project = "NULL",
+  species_filter = "NULL"
+)
 }
 \arguments{
 \item{project}{A string indicating the project, DRM or DRM and SCREAM combined}

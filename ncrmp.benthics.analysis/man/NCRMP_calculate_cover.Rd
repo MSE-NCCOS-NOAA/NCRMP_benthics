@@ -4,14 +4,10 @@
 \alias{NCRMP_calculate_cover}
 \title{Creates percent cover dataframe}
 \usage{
-NCRMP_calculate_cover(region, year, analysis_strat = "NULL")
+NCRMP_calculate_cover(region)
 }
 \arguments{
 \item{region}{A string indicating the region}
-
-\item{year}{A string indicating the year}
-
-\item{analysis_strat}{A string indicating the analysis level strata}
 }
 \value{
 A dataframe

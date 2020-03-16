@@ -4,8 +4,11 @@
 \alias{NCRMP_DRM_calculate_disease_prevalence}
 \title{Creates species list, species richness and species diversity dataframes from NCRMP and FRRP data}
 \usage{
-NCRMP_DRM_calculate_disease_prevalence(project, region,
-  species_filter = "NULL")
+NCRMP_DRM_calculate_disease_prevalence(
+  project,
+  region,
+  species_filter = "NULL"
+)
 }
 \arguments{
 \item{project}{A string indicating the project, NCRMP or NCRMP and FRRP combined}
