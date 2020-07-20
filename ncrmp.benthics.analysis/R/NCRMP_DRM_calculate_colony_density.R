@@ -46,22 +46,19 @@ NCRMP_DRM_calculate_colony_density <- function(project = "NULL", region, species
   ### Create species filters - species selected during 2019 status report juridictional meetings
 
   FLK_filter <- c("ACR CERV", "MON CAVE", "ACR PALM", "PSE STRI", "PSE CLIV",
-                  "ORB ANNU", "ORB FRAN", "ORB FAVE",  "COL NATA", "DIP LABY","STE INTE", "MEA MEAN"
-                  ,
+                  "ORB ANNU", "ORB FRAN", "ORB FAVE",  "COL NATA", "DIP LABY","STE INTE", "MEA MEAN",
                   "SID SIDE",
                   "POR PORI"
   )
 
   Tort_filter <- c("ACR CERV", "MON CAVE", "ACR PALM", "PSE STRI", "PSE CLIV",
-                   "ORB ANNU", "ORB FRAN", "ORB FAVE",  "COL NATA", "DIP LABY","STE INTE", "MEA MEAN"
-                   ,
+                   "ORB ANNU", "ORB FRAN", "ORB FAVE",  "COL NATA", "DIP LABY","STE INTE", "MEA MEAN",
                    "SID SIDE",
                    "POR PORI"
   )
 
   SEFCRI_filter <- c("ACR CERV", "MON CAVE", "ACR PALM", "PSE STRI", "PSE CLIV",
-                     "ORB ANNU", "ORB FRAN", "ORB FAVE",  "COL NATA", "DIP LABY","STE INTE", "MEA MEAN"
-                     ,
+                     "ORB ANNU", "ORB FRAN", "ORB FAVE",  "COL NATA", "DIP LABY","STE INTE", "MEA MEAN",
                      "SID SIDE",
                      "POR PORI"
   )
@@ -443,12 +440,14 @@ NCRMP_DRM_calculate_colony_density <- function(project = "NULL", region, species
       dplyr::filter(N == 1,
                     JUV == 0) %>%
       dplyr::mutate(PROT = as.factor(PROT)) %>% # Change PROT to factor for ggplot will recognize it as a grouping variable
-      dplyr::group_by(REGION, SURVEY, YEAR, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, STATION_NR, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT, METERS_COMPLETED) %>%
+      dplyr::group_by(REGION, SURVEY, YEAR, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, STATION_NR, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, MIN_DEPTH, MAX_DEPTH, PROT, METERS_COMPLETED) %>%
       dplyr::summarise(ABUNDANCE = sum(N)) %>%
       dplyr::mutate(DENSITY_transect = ABUNDANCE/METERS_COMPLETED) %>%
       dplyr::ungroup() %>%
       dplyr::group_by(REGION, SURVEY, YEAR, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT, METERS_COMPLETED) %>%
-      dplyr::summarise(DENSITY = mean(DENSITY_transect)) %>%
+      dplyr::summarise(DENSITY = mean(DENSITY_transect),
+                       MIN_DEPTH = mean(MIN_DEPTH),
+                       MAX_DEPTH = mean(MAX_DEPTH)) %>%
       dplyr::ungroup() %>%
       dplyr::select(-METERS_COMPLETED) %>%
       dplyr::mutate(PRIMARY_SAMPLE_UNIT = as.factor(PRIMARY_SAMPLE_UNIT))
@@ -533,7 +532,10 @@ NCRMP_DRM_calculate_colony_density <- function(project = "NULL", region, species
       "Species_regional_means_CV" = Species_regional_CV,
       "density_site" = density_site,
       "density_strata" = density_strata,
-      "Domain_est" = Domain_est)
+      "Domain_est" = Domain_est,
+      'g1' = g1,
+      'g2' = g2,
+      'g.mid' = g.mid)
 
   } else {
 

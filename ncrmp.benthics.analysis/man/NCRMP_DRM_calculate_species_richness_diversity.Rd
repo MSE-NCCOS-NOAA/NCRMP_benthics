@@ -3,12 +3,12 @@
 %   R/NCRMP_DRM_calculate_species_richness_diversity.R
 \name{NCRMP_DRM_calculate_species_richness_diversity}
 \alias{NCRMP_DRM_calculate_species_richness_diversity}
-\title{Creates species list, species richness and species diversity dataframes from NCRMP and FRRP data}
+\title{Creates species list, species richness and species diversity dataframes from NCRMP and DRM data}
 \usage{
 NCRMP_DRM_calculate_species_richness_diversity(project, region)
 }
 \arguments{
-\item{project}{A string indicating the project, NCRMP or NCRMP and FRRP combined}
+\item{project}{A string indicating the project, NCRMP or NCRMP and DRM combined}
 
 \item{region}{A string indicating the region}
 
@@ -18,5 +18,5 @@ NCRMP_DRM_calculate_species_richness_diversity(project, region)
 A dataframe
 }
 \description{
-Creates species list, species richness and species diversity dataframes from NCRMP and FRRP data
+Creates species list, species richness and species diversity dataframes from NCRMP and DRM data
 }

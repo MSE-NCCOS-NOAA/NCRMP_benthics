@@ -2,7 +2,7 @@
 % Please edit documentation in R/NCRMP_DRM_calculate_disease_prevalence.R
 \name{NCRMP_DRM_calculate_disease_prevalence}
 \alias{NCRMP_DRM_calculate_disease_prevalence}
-\title{Creates species list, species richness and species diversity dataframes from NCRMP and FRRP data}
+\title{Creates species list, species richness and species diversity dataframes from NCRMP and DRM data}
 \usage{
 NCRMP_DRM_calculate_disease_prevalence(
   project,
@@ -11,7 +11,7 @@ NCRMP_DRM_calculate_disease_prevalence(
 )
 }
 \arguments{
-\item{project}{A string indicating the project, NCRMP or NCRMP and FRRP combined}
+\item{project}{A string indicating the project, NCRMP or NCRMP and DRM combined}
 
 \item{region}{A string indicating the region}
 }
@@ -19,5 +19,5 @@ NCRMP_DRM_calculate_disease_prevalence(
 A dataframe
 }
 \description{
-Creates species list, species richness and species diversity dataframes from NCRMP and FRRP data
+Creates species list, species richness and species diversity dataframes from NCRMP and DRM data
 }

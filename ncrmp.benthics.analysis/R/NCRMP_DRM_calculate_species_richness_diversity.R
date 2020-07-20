@@ -1,4 +1,4 @@
-## Function to create a complete species list, calculate species richness and species diversity for combined NCRMP and FRRP data (FL only)
+## Function to create a complete species list, calculate species richness and species diversity for combined NCRMP and DRM data (FL only)
 
 # Purpose:
 # creates csv files with species list, species richness and species diversity
@@ -29,12 +29,12 @@
 
 ##############################################################################################################################
 
-#' Creates species list, species richness and species diversity dataframes from NCRMP and FRRP data
+#' Creates species list, species richness and species diversity dataframes from NCRMP and DRM data
 #'
 #'
 #'
 #'
-#' @param project A string indicating the project, NCRMP or NCRMP and FRRP combined
+#' @param project A string indicating the project, NCRMP or NCRMP and DRM combined
 #' @param region A string indicating the region
 #' @param analysis_strat A string indicating the analysis level strata
 #' @return A dataframe
@@ -57,7 +57,7 @@ NCRMP_DRM_calculate_species_richness_diversity <- function(project, region){
 
   # Florida
 
-  if(project == "NCRMP_FRRP"){
+  if(project == "NCRMP_DRM"){
 
     if(region == "SEFCRI"){
 
@@ -68,14 +68,17 @@ NCRMP_DRM_calculate_species_richness_diversity <- function(project, region){
       tmp2 <- SEFCRI_2016_coral_demographics %>%
         dplyr::mutate(SURVEY = "NCRMP")
 
-      tmp3 <- FRRP_SEFCRI_2017_2stage_demo_data %>%
-        dplyr::mutate(SURVEY = "FRRP")
+      tmp3 <- DRM_SEFCRI_2018_2stage_demo_data %>%
+        dplyr::mutate(SURVEY = "DRM")
 
-      dat <- rbind(tmp1, tmp2, tmp3) %>%
+      tmp4 <- SEFCRI_2018_coral_demographics %>%
+        dplyr::mutate(SURVEY = "NCRMP")
+
+      dat <- rbind(tmp1, tmp2, tmp3, tmp4) %>%
         dplyr::mutate(PROT = as.factor(PROT))
 
       #Combine 1 stage or 2 stage data
-      dat_1stage <- rbind(tmp2)
+      dat_1stage <- rbind(tmp2, tmp4)
 
       dat_2stage <- rbind(tmp1, tmp3)
 
@@ -89,13 +92,16 @@ NCRMP_DRM_calculate_species_richness_diversity <- function(project, region){
       tmp2 <- FLK_2016_coral_demographics %>%
         dplyr::mutate(SURVEY = "NCRMP")
 
-      tmp3 <- FRRP_FLK_2017_2stage_demo_data %>%
-        dplyr::mutate(SURVEY = "FRRP")
+      tmp3 <- DRM_FLK_2018_2stage_demo_data %>%
+        dplyr::mutate(SURVEY = "DRM")
 
-      dat <- rbind(tmp1, tmp2, tmp3)
+      tmp4 <- FLK_2018_coral_demographics %>%
+        dplyr::mutate(SURVEY = "NCRMP")
+
+      dat <- rbind(tmp1, tmp2, tmp3, tmp4)
 
       #Combine 1 stage or 2 stage data
-      dat_1stage <- rbind(tmp1, tmp2)
+      dat_1stage <- rbind(tmp1, tmp2, tmp4)
 
       dat_2stage <- rbind(tmp3)
 
@@ -133,8 +139,9 @@ NCRMP_DRM_calculate_species_richness_diversity <- function(project, region){
       dat_2stage <- SEFCRI_2014_2stage_coral_demographics %>%
         dplyr::mutate(SURVEY = "NCRMP")
 
-      dat_1stage <- SEFCRI_2016_coral_demographics %>%
+      dat_1stage <- dplyr::bind_rows(SEFCRI_2016_coral_demographics, SEFCRI_2018_coral_demographics)  %>%
         dplyr::mutate(SURVEY = "NCRMP")
+
 
       dat <- rbind(dat_1stage, dat_2stage)
 
@@ -150,10 +157,13 @@ NCRMP_DRM_calculate_species_richness_diversity <- function(project, region){
       tmp2 <- FLK_2016_coral_demographics %>%
         dplyr::mutate(SURVEY = "NCRMP")
 
-      dat <- rbind(tmp1, tmp2)
+      tmp3 <- FLK_2018_coral_demographics %>%
+        dplyr::mutate(SURVEY = "NCRMP")
+
+      dat <- rbind(tmp1, tmp2, tmp3)
 
       #Combine 1 stage or 2 stage data
-      dat_1stage <- rbind(tmp1, tmp2)
+      dat_1stage <- rbind(tmp1, tmp2, tmp3)
 
     }
 
@@ -291,7 +301,7 @@ NCRMP_DRM_calculate_species_richness_diversity <- function(project, region){
                   SPECIES_CD = dplyr::case_when(SPECIES_NAME == "Meandrina jacksoni" ~ "MEA JACK", TRUE ~ as.character(SPECIES_CD)))
 
 
-  if(project == "NCRMP_FRRP" ||
+  if(project == "NCRMP_DRM" ||
      project == "NCRMP" && region == "SEFCRI" ||
      project == "NCRMP" && region == "Tortugas") {
 
@@ -311,7 +321,7 @@ NCRMP_DRM_calculate_species_richness_diversity <- function(project, region){
   # Create a list of species present
 
 
-  if(project == "NCRMP_FRRP" ||
+  if(project == "NCRMP_DRM" ||
      project == "NCRMP" && region == "SEFCRI"||
      project == "NCRMP" && region == "Tortugas") {
     # Clean up species

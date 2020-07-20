@@ -16,7 +16,8 @@ vignette: >
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  warning = FALSE
 )
 
 library(magrittr)
@@ -40,7 +41,7 @@ Note:
 
 * Where indicated in file names by NCRMP_FRRP or NCRMP_DRM, NCRMP and Disturbrance Response Monitoring (DRM; formerly known as Florida Reef Resilience Program or FRRP) data from 2014 to present have been combined during co-sampling (even) years. DRM only data are used for non-NCRMP (odd) years. We are in the process of changing the naming convention from FRRP to DRM but at present DRM and FRRP are used interchangeably. Please be patient while we complete this transition. 
 
-* SEFCRI 2014 coral demographics, benthic cover and invertebrates/ESA corals data, FLK 2014 benthic cover and invertebrates/ESA corals data, and Tortugas 2018 coral demographic data are 2 stage (2 transects per site). Site level metrics for these regions and years are the mean of transect 1 and transect 2. Strata and regional means are then calculated from this site level data. 
+* SEFCRI 2014 coral demographics, benthic cover and invertebrates/ESA corals data, FLK 2014 benthic cover and invertebrates/ESA corals data, and Tortugas 2018 coral demographic data are 2 stage (2 transects per site). Site level metrics for these regions and years are the mean of transect 1 and transect 2. Strata and regional means are then calculated from these site level data. 
 
 
 For questions, please contact the repository owner, Sarah Groves, sarah.groves@noaa.gov 
@@ -49,24 +50,24 @@ For questions, please contact the repository owner, Sarah Groves, sarah.groves@n
 ### NCRMP Regions and sampling years
 
 * Florida:  
-    * Southeast Florida (SEFCRI; 2014, 2016, 2018)
-    * Florida Keys (FLK; 2014, 2016, 2018)
+    * Southeast Florida (SEFCRI; 2014, 2016)
+    * Florida Keys (FLK; 2014, 2016)
     * Dry Tortugas (Tortugas; 2014, 2016, 2018) 
 
 * Caribbean:
-    * St. Thomas & St. John (STTSTJ; 2013, 2015, 2017, 2019)
-    * St. Croix (STX; 2015, 2017, 2019)
+    * St. Thomas & St. John (STTSTJ; 2013, 2015, 2017)
+    * St. Croix (STX; 2015, 2017)
     * Puerto Rico (PRICO; 2014, 2016)
 
 * Gulf of Mexico:
     * Flower Garden Banks National Marine Sanctuary (GOM; 2013, 2015, 2018)
     
-Upcoming data additions: Puerto Rico 2019 (in 2020), Florida and GOM 2020 (in 2021)
+Upcoming data additions: Southeast Florida and Florida Keys 2018 (in 2019), Caribbean 2019 (in 2020)
 
 
 ## Installation 
 
-1. Download the zipped R package using the green "Clone or download" button.
+1. Download the zipped R package using the green "Clone or download" button. Unzip the file. 
 
 2. In R studio, open the ncrmp.benthics.analysis R project in the folder of the same name and use the following code to install the pacakge. You must be in the in the ncrmp.benthics.analysis R project. If you aleady have devtools installed you can skip the first line. 
 
@@ -128,7 +129,7 @@ ggplot(Hardcoral, aes(x = YEAR, y = avCvr, group = YEAR)) +
            position=position_dodge(),
            size=.3) +
 # Add error bars
-  geom_errorbar(aes(ymax = avCvr+std, ymin = avCvr-std), width = .5, position=position_dodge(1)) +
+  geom_errorbar(aes(ymax = avCvr+SE, ymin = avCvr-SE), width = .5, position=position_dodge(1)) +
 # Set the y axis scale
   scale_y_continuous(limits = c(0,25), expand = c(0, 0)) +
 # Add axis labels
@@ -161,21 +162,21 @@ __Add dataframe to the Global Environment__
 Datasets contained within the package at the strata and regional level are created using the default function parameters: 
 
   * For Florida regions:
-      * project = "NCRMP" (NCRMP only) or "NCRMP_FRRP" (NCRMP and DRM combined)
+      * project = "NCRMP" (NCRMP only) or "NCRMP_DRM" (NCRMP and DRM combined)
       * species filter = FALSE (filter not applied)
-      * analysis_strat = "STRAT_PROT"
+     
       
       
   * For all Carib regions: 
       * project = "NCRMP" 
       * species filter = FALSE 
-      * analysis_strat = "HABITAT_DEPTH" (DEPTH refers to depth stratification, deep or shallow)
+      
       
       
   * For GOM:
       * project = "NCRMP" 
       * species filter = FALSE 
-      * analysis_strat = "HABITAT_DEPTH" (There is currently only one strata in the GOM region - FGBNMS. This means strata level means will be identical to regional means and neither value is weighted.)
+      
   
 ### Analysis Ready (AR) data 
 
@@ -193,9 +194,9 @@ Analysis ready NCRMP datasets for all regions and years are contained within thi
 In addition, the following AR Florida DRM and Sanctuary Coral Reef Ecosystem Assessment Monitoring (SCREAM) datasets in NCRMP format are stored in the package. Combined DRM and SCREAM data are from 1999 to 2013 (not all regions are sampled each year) and individual DRM regions are 2014 to the most recent year of sampling.
 
 * preNCRMP_SCREAM_DRM_coral_demographics  
-* FRRP_SEFCRI_2017_2stage_demo_data - includes data from 2014 - 2017 
-* FRRP_FLK_2017_2stage_demo_data 
-* FRRP_Tort_2017_2stage_demo_data 
+* DRM_SEFCRI_2017_2stage_demo_data - includes data from 2014 - 2017 
+* DRM_FLK_2017_2stage_demo_data 
+* DRM_Tort_2017_2stage_demo_data 
 
 ### Summary dataframes 
 
@@ -213,10 +214,10 @@ Summary dataframes are provided for site, strata and weighted regional means. Ev
   
 * Examples: 
     * NCRMP_DRM_FLK_2014_18_dis_prev_site, 
-    * NCRMP_FGBNMS_2013_18_unwh_density_strata,                     
-    * NCRMP_FLK_2014_18_wh_rec_mort_region,
-    * NCRMP_PRICO_2014_16_unwh_richness_strata,
-    * NCRMP_STX_2015_19_wh_cover_region
+    * NCRMP_FGBNMS_2013_18_density_strata,                     
+    * NCRMP_FLK_2014_18_rec_mort_region,
+    * NCRMP_PRICO_2014_16_richness_strata,
+    * NCRMP_STX_2015_17_cover_region
     
 In addition, there are two dataframes that contain all regions and years
 
@@ -228,12 +229,12 @@ In addition, there are two dataframes that contain all regions and years
 The most recent sampling grid shapefiles used for site allocation and associated NTOT (grid summary) files are also contained in the package. Grids can be used in R or exported as shapefiles. The NTOT files are required to properly apply the weighting scheme to summary data. The Florida Keys National Marine Sanctuary (FKNMS) and the Flower Garden Banks National Marine Sanctuary (FGBNMS) boundary polygons are also contained in the package. More boundary polygons for other regions will be added in future updates.
 
 * Sampling grids:
-    * SEFCRI_2018_sample_frame
+    * SEFCRI_2016_sample_frame
     * FLK_TORT_2018_sample_frame
-    * STTSTJ_2019_sample_frame_WGS1984
-    * STX_2019_sample_frame_WGS1984
+    * STTSTJ_2017_sample_frame_WGS1984
+    * STX_2017_sample_frame_WGS1984
     * PRICO_2016_sample_frame_WGS1984
-    * FGBNMS_2018_sample_frame_WGS1984
+    * FGBNMS_2015_sample_frame_WGS1984
 
 * NTOT files:
     * USVI_2019_NTOT (STTSTJ & STX)
@@ -293,17 +294,14 @@ Example:
 require(ncrmp.benthics.analysis)
 
 # Run function and assign names to dataframes 
-tmp <- NCRMP_calculate_cover(region = "SEFCRI",
-                             year = 2014,
-                             analysis_strat = "STRAT")
+tmp <- NCRMP_calculate_cover(region = "SEFCRI")
 
 # The function will store all of the function outputs as a list in tmp
 # Convert list objects to dataframes and rename 
-NCRMP_SEFCRI_2014_percent_cover_site <- tmp$percent_cover_site
-NCRMP_SEFCRI_2014_cover_group_key <- tmp$cover_group_key
-NCRMP_SEFCRI_2014_unwh_cover_strata <- tmp$unwh_cover_strata
-NCRMP_SEFCRI_2014_wh_cover_region <- tmp$Domain_est
-NCRMP_SEFCRI_2014_Domain_check <- tmp$Domain_check 
+NCRMP_SEFCRI_2014_18_percent_cover_site <- tmp$percent_cover_site
+NCRMP_SEFCRI_2014_18_cover_group_key <- tmp$cover_group_key
+NCRMP_SEFCRI_2014_18_cover_strata <- tmp$cover_strata
+NCRMP_SEFCRI_2014_18_cover_region <- tmp$Domain_est
 
 ```
 
@@ -321,63 +319,51 @@ Example of weighting application for Florida:
 
 #Calculate average cover (avcvr), stratum variance (svar), n and std at the strata and regional level using STRAT + PROT as the analysis strata. Inputdata = 1 stage site level cover for major benthic categories and ntot = the most recent NTOT file for the region, regardless of sampling year. 
 
-# #### Calculate avcvr, svar, n and std at the strata + PROT level ####
-#  cover_est <- inputdata %>%
-#    # make avcvr
-#    dplyr::group_by(ANALYSIS_STRATUM, STRAT, PROT, cover_group) %>% # Modify this line to changes analysis stratum
-#    dplyr::summarise(
-#      # calculate mean cover
-#      avcvr = mean(Percent_Cvr),
-#      # calculate stratum variance
-#      svar = var(Percent_Cvr),
-#      # calculate N
-#      n = length(Percent_Cvr),
-#      # calculate mean stratum depth
-#      MIN_DEPTH = mean(MIN_DEPTH, na.rm = T),
-#      MAX_DEPTH = mean(MAX_DEPTH, na.rm = T),
-#      DEPTH_M = (MIN_DEPTH+MAX_DEPTH)/2) %>%
+# cover_est <- inputdata %>%
+#    # group by analysis level strata
+#   dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
+#   dplyr::group_by(ANALYSIS_STRATUM, STRAT, PROT, cover_group) %>% 
+#   dplyr::summarise(
+#     # calculate mean cover
+#     avcvr = mean(Percent_Cvr),
+#     # calculate stratum variance
+#     svar = var(Percent_Cvr),
+#     # calculate N
+#     n = sum(n),
+#     # calculate mean stratum depth
+#     MIN_DEPTH = mean(MIN_DEPTH),
+#     MAX_DEPTH = mean(MAX_DEPTH),
+#     DEPTH_M = (MIN_DEPTH+MAX_DEPTH)/2) %>%
+#   
+#   # convert 0 for stratum variance so that the sqrt is a small # but not a 0
+#   dplyr::mutate(svar = dplyr::case_when(svar == 0 ~ 0.00000001,
+#                                         TRUE ~ svar)) %>%
+#   dplyr::mutate(std = sqrt(svar))
 # 
-#    # convert 0 for stratum variance so that the sqrt is a small # but not a 0
-#    dplyr::mutate(svar = dplyr::case_when(svar == 0 ~ 0.00000001,
-#                                          TRUE ~ svar)) %>%
-#    dplyr::mutate(Var=svar/n, #variance of mean density in stratum
-#                  std = sqrt(svar), # std dev of density in stratum
-#                  SE=sqrt(Var), #SE of the mean density in stratum
-#                  CV_perc=(SE/avcvr)*100)
+# cover_est <- cover_est %>%
+#   # Merge ntot with cover_est
+#   dplyr::full_join(., ntot) %>%
+#   # stratum estimates
+#   dplyr::mutate(whavcvr = wh * avcvr,
+#                 whsvar = wh^2 * svar,
+#                 whstd = wh * std,
+#                 n = tidyr::replace_na(n, 0))
 # 
-#  cover_est <- cover_est %>%
-#    # Merge ntot with coral_est
-#    dplyr::full_join(., ntot) %>%
-#    # stratum estimates
-#    dplyr::mutate(whavcvr = wh * avcvr,
-#                  whsvar = wh^2 * Var,
-#                  n = tidyr::replace_na(n, 0)) %>%
-#    dplyr::filter(cover_group != "NA") 
-    
-# # Reformat output
+# # Reformat data
 # 
-# # strata_means
+# # cover, unweighted by strata
 # cover_strata <- cover_est %>%
-#   dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, DEPTH_M, cover_group, n, avcvr, Var, SE, CV_perc) %>%
-#   dplyr::mutate(n = tidyr::replace_na(n, 0),
-#                 RUG_CD = as.factor(RUG_CD)) %>%
-#   # replace inf values so we can add the strata means
-#   dplyr::mutate_if(is.numeric, list(~dplyr::na_if(., Inf)))
+#   dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, DEPTH_M, NTOT, ngrtot, wh, cover_group, n, avcvr, svar, std) %>%
+#   dplyr::mutate(METHOD = "UNWEIGHTED") %>%
+#   dplyr::mutate(n = tidyr::replace_na(n, 0))
 # 
-# 
-# ## Domain Estimates
-# Domain_est <- cover_est %>%
-#   # replace inf values so we can add the strata means
-#   dplyr::mutate_if(is.numeric, list(~dplyr::na_if(., Inf))) %>%
-#   dplyr::group_by(REGION, YEAR, cover_group) %>%
-#   dplyr::summarise(avCvr = sum(whavcvr),
-#                    Var = sum(whsvar, na.rm = T),
-#                    SE=sqrt(Var),
-#                    CV_perc=(SE/avCvr)*100,
-#                    n_sites = sum(n),
-#                    n_strat = length(unique(ANALYSIS_STRATUM)),
-#                    ngrtot = sum(NTOT) )  %>%
-#   dplyr::ungroup()
+# # Calculate Domain Estimates
+#   Domain_est <- cover_est %>%
+#     dplyr::group_by(REGION, YEAR, cover_group) %>%
+#     dplyr::summarise(avCvr = sum(whavcvr),
+#                      var = sum(whsvar, na.rm = T),
+#                      std = sqrt(var),
+#                      ngrtot = sum(NTOT) )
 
 
 
@@ -388,84 +374,192 @@ Example of weighting application for Florida:
 ```{r}
 
 # Calculate average cover (avcvr), stratum variance (svar), n and std at the strata and regional level using HABITAT + DEPTH_STRAT as the analysis strata. Inputdata = 1 stage site level cover for major benthic categories and ntot = the most recent NTOT file for the region, regardless of sampling year. 
-
-# #### Calculate avcvr, svar, n and std at the strata + PROT level ####
-#  cover_est <- inputdata %>%
-#    # make avcvr
-#    dplyr::group_by(YEAR, ANALYSIS_STRATUM, STRAT, cover_group) %>% # Modify this line to changes analysis stratum
-#    dplyr::summarise(
-#      # compute average cover
-#      avcvr = mean(Percent_Cvr),
-#      # compute stratum variance
-#      svar = var(Percent_Cvr),
-#      # calculate N
-#      n = length(unique(PRIMARY_SAMPLE_UNIT)),
-#      # calculate mean stratum depth
-#      MIN_DEPTH = mean(MIN_DEPTH, na.rm = T),
-#      MAX_DEPTH = mean(MAX_DEPTH, na.rm = T),
-#      DEPTH_M = (MIN_DEPTH+MAX_DEPTH)/2) %>%
-#    # convert 0 for stratum variance so that the sqrt is a small # but not a 0
-#    dplyr::mutate(svar = dplyr::case_when(svar == 0 ~ 0.00000001,
-#                                          TRUE ~ svar)) %>%
-#    dplyr::mutate(Var=svar/n, #variance of mean density in stratum
-#                  std = sqrt(svar), # std dev of density in stratum
-#                  SE=sqrt(Var), #SE of the mean density in stratum
-#                  CV_perc=(SE/avcvr)*100)
 # 
-#  cover_est <- cover_est %>%
-#    # Merge ntot with cover_est
-#    dplyr::full_join(., ntot) %>%
-#    # stratum estimates
-#    dplyr::mutate(whavcvr = wh * avcvr,
-#                  whsvar = wh^2 * Var,
-#                  n = tidyr::replace_na(n, 0),
-#                  # Add the following to match FL format
-#                  PROT = NA,
-#                  RUG_CD = NA)  %>%
-#    dplyr::ungroup()
+# cover_est <- inputdata %>%
+#   # group by analysis level strata
+#   dplyr::group_by(YEAR, ANALYSIS_STRATUM, STRAT, cover_group) %>% 
+#   dplyr::summarise(
+#     # compute average cover
+#     avcvr = mean(Percent_Cvr),
+#     # compute stratum variance
+#     svar = var(Percent_Cvr),
+#     # calculate N
+#     n = sum(n),
+#     # calculate mean stratum depth
+#     MIN_DEPTH = mean(MIN_DEPTH),
+#     MAX_DEPTH = mean(MAX_DEPTH),
+#     DEPTH_M = (MIN_DEPTH+MAX_DEPTH)/2) %>%
+#   # convert 0 for stratum variance so that the sqrt is a small # but not a 0
+#   dplyr::mutate(svar = dplyr::case_when(svar == 0 ~ 0.00000001,
+#                                         TRUE ~ svar)) %>%
+#   dplyr::mutate(std = sqrt(svar))
+# 
+# cover_est <- cover_est %>%
+#   # Merge ntot with cover_est
+#   dplyr::full_join(., ntot) %>%
+#   # stratum estimates
+#   dplyr::mutate(whavcvr = wh * avcvr,
+#                 whsvar = wh^2 * svar,
+#                 whstd = wh * std,
+#                 n = tidyr::replace_na(n, 0),
+#                 # Add the following to match FL format
+#                 PROT = NA,
+#                 RUG_CD = NA)
 # 
 # # Reformat data
 # 
-# # strata_means
+# # cover, unweighted by strata
 # cover_strata <- cover_est %>%
-#   dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, DEPTH_M, cover_group, n, avcvr, Var, SE, CV_perc) %>%
-#   dplyr::mutate(n = tidyr::replace_na(n, 0),
-#                 RUG_CD = as.factor(RUG_CD)) %>%
-#   # replace inf values so we can add the strata means
-#   dplyr::mutate_if(is.numeric, list(~dplyr::na_if(., Inf)))
+#   dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, DEPTH_M, NTOT, ngrtot, wh, cover_group, n, avcvr, svar, std) %>%
+#   dplyr::mutate(METHOD = "UNWEIGHTED") %>%
+#   dplyr::mutate(n = tidyr::replace_na(n, 0))
 # 
 # 
-# ## Domain Estimates
+# ## Calculate Domain Estimates
 # Domain_est <- cover_est %>%
-#   # replace inf values so we can add the strata means
-#   dplyr::mutate_if(is.numeric, list(~dplyr::na_if(., Inf))) %>%
 #   dplyr::group_by(REGION, YEAR, cover_group) %>%
 #   dplyr::summarise(avCvr = sum(whavcvr),
-#                    Var = sum(whsvar, na.rm = T),
-#                    SE=sqrt(Var),
-#                    CV_perc=(SE/avCvr)*100,
-#                    n_sites = sum(n),
-#                    n_strat = length(unique(ANALYSIS_STRATUM)),
-#                    ngrtot = sum(NTOT) )  %>%
-#   dplyr::ungroup()
+#                    var = sum(whsvar, na.rm = T),
+#                    std = sqrt(var),
+#                    ngrtot = sum(NTOT) )
+
+```
+
+
+### 3. NCRMP_make_weighted_LPI_data_RC
+
+__Applies weighting scheme to benthic cover data__
+
+Analysis level strata = STRAT for Florida regions and HABITAT CODE for the Caribbean regions.
+
+This function is called within NCRMP_calculate_cover so the initial parameters you provide for region and year will be passed on. 
+
+Example of weighting application for Florida: 
+
+```{r}
+
+# Calculate average cover (avcvr), stratum variance (svar), n and std aat the strata and regional level using STRAT as the analysis strata. Inputdata = 1 stage site level cover for major benthic categories and ntot = the most recent NTOT file for the region, regardless of sampling year. 
+# 
+# cover_est <- inputdata %>%
+#   # group by analysis level strata
+#   dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
+#   dplyr::mutate(ANALYSIS_STRATUM = STRAT) %>%
+#   dplyr::group_by(YEAR, ANALYSIS_STRATUM, STRAT, cover_group) %>% 
+#   dplyr::summarise(
+#     # calculate mean cover
+#     avcvr = mean(Percent_Cvr),
+#     # calculate stratum variance
+#     svar = var(Percent_Cvr),
+#     # calculate N
+#     n = sum(n),
+#     # calculate mean stratum depth
+#     MIN_DEPTH = mean(MIN_DEPTH),
+#     MAX_DEPTH = mean(MAX_DEPTH),
+#     DEPTH_M = (MIN_DEPTH+MAX_DEPTH)/2) %>%
+#   
+#   # convert 0 for stratum variance so that the sqrt is a small # but not a 0
+#   dplyr::mutate(svar = dplyr::case_when(svar == 0 ~ 0.00000001,
+#                                         TRUE ~ svar)) %>%
+#   dplyr::mutate(std = sqrt(svar))
+# 
+# cover_est <- cover_est %>%
+#   # Merge ntot with coral_est_spp
+#   dplyr::full_join(., ntot) %>%
+#   # stratum estimates
+#   dplyr::mutate(whavcvr = wh * avcvr,
+#                 whsvar = wh^2 * svar,
+#                 whstd = wh * std,
+#                 n = tidyr::replace_na(n, 0))
+# # Reformat data 
+# 
+# # cover, unweighted by strata
+# cover_strata <- cover_est %>%
+#   dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD,  DEPTH_M, NTOT, ngrtot, wh, cover_group, n, avcvr, svar, std) %>%
+#   dplyr::mutate(METHOD = "UNWEIGHTED") %>%
+#   dplyr::mutate(n = tidyr::replace_na(n, 0))
+# 
+# 
+# # Calculate Domain Estimates
+# Domain_est <- cover_est %>%
+#   dplyr::group_by(REGION, YEAR, cover_group) %>%
+#   dplyr::summarise(avCvr = sum(whavcvr),
+#                    var = sum(whsvar, na.rm = T),
+#                    std = sqrt(var),
+#                    ngrtot = sum(NTOT) )
+
+```
+
+  Example of weighting application for Caribbean and GOM:
+
+```{r}
+
+# Calculate average cover (avcvr), stratum variance (svar), n and std at the strata and regional level using HABITAT as the analysis strata. Inputdata = 1 stage site level cover for major benthic categories and ntot = the most recent NTOT file for the region, regardless of sampling year. 
+# 
+# cover_est <- inputdata %>%
+#   #group by analysis level strata
+#    dplyr::mutate(ANALYSIS_STRATUM = HABITAT_CD) %>%
+#   dplyr::group_by(YEAR, ANALYSIS_STRATUM, STRAT, cover_group) %>% 
+#   dplyr::summarise(
+#     # compute average cover
+#     avcvr = mean(Percent_Cvr),
+#     # compute stratum variance
+#     svar = var(Percent_Cvr),
+#     # calculate N
+#     n = sum(n),
+#     # calculate mean stratum depth
+#     MIN_DEPTH = mean(MIN_DEPTH),
+#     MAX_DEPTH = mean(MAX_DEPTH),
+#     DEPTH_M = (MIN_DEPTH+MAX_DEPTH)/2) %>%
+#   # convert 0 for stratum variance so that the sqrt is a small # but not a 0
+#   dplyr::mutate(svar = dplyr::case_when(svar == 0 ~ 0.00000001,
+#                                         TRUE ~ svar)) %>%
+#   dplyr::mutate(std = sqrt(svar))
+# 
+# cover_est <- cover_est %>%
+#   # Merge ntot with cover_est
+#   dplyr::full_join(., ntot) %>%
+#   # stratum estimates
+#   dplyr::mutate(whavcvr = wh * avcvr,
+#                 whsvar = wh^2 * svar,
+#                 whstd = wh * std,
+#                 n = tidyr::replace_na(n, 0),
+#                 # Add the following to match FL format
+#                 PROT = NA,
+#                 RUG_CD = NA)
+
+# Reformat data 
+# 
+# cover, unweighted by strata
+# cover_strata <- cover_est %>%
+#   dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD,  DEPTH_M, NTOT, ngrtot, wh, cover_group, n, avcvr, svar, std) %>%
+#   dplyr::mutate(METHOD = "UNWEIGHTED") %>%
+#   dplyr::mutate(n = tidyr::replace_na(n, 0))
+# 
+# 
+# # Calculate Domain Estimates
+# Domain_est <- cover_est %>%
+#   dplyr::group_by(REGION, YEAR, cover_group) %>%
+#   dplyr::summarise(avCvr = sum(whavcvr),
+#                    var = sum(whsvar, na.rm = T),
+#                    std = sqrt(var),
+#                    ngrtot = sum(NTOT) )
 
 ```
 
 
 ## Coral density
 
-### 3. NCRMP_DRM_calculate_colony_density
+### 4. NCRMP_DRM_calculate_colony_density
 
 __Calculates colony density from site to regional level for all sampling years__
 
 
 * parameters:
-    * project: "NCRMP_FRRP" (Florida regions only), "NCRMP" (All regions)
+    * project: "NCRMP_DRM" (Florida regions only), "NCRMP" (All regions)
 
     * region: "SEFCRI", "FLK", "Tortugas", "STTSTJ", "STX", "PRICO", "GOM" 
 
     * species_filter: A boolean string indicating whether a region-specific preset species filter should be applied to density calculations (TRUE) or all species should be included (FALSE; the default).
-
 
 * outputs (dataframes):
 
@@ -484,7 +578,7 @@ Example:
 require(ncrmp.benthics.analysis)
 
 # Run function 
-tmp <- NCRMP_DRM_calculate_colony_density(project = "NCRMP_FRRP", 
+tmp <- NCRMP_DRM_calculate_colony_density(project = "NCRMP_DRM", 
                                            region = "FLK",
                                            species_filter = "FALSE")
 
@@ -493,7 +587,7 @@ tmp <- NCRMP_DRM_calculate_colony_density(project = "NCRMP_FRRP",
 
 NCRMP_DRM_FLK_2014_18_density_site <- tmp$density_site
 NCRMP_DRM_FLK_2014_18_density_strata <- tmp$density_strata
-NCRMP_DRM_FLK_2014_18_wh_density_region <- tmp$Domain_est
+NCRMP_DRM_FLK_2014_18_density_region <- tmp$Domain_est
 
 
 ```
@@ -539,7 +633,7 @@ Example of weighting application for Florida:
 # 
 # # Reformat output
 # 
-# unwh_density_strata <-  density_est %>%
+# density_strata <-  density_est %>%
 #   dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, NTOT, ngrtot, wh, n, avden, svar, std)
 # 
 # # Calculate Domain Estimates
@@ -591,7 +685,7 @@ Example of weighting application for Caribbean:
 # 
 # # Reformat output
 # 
-# unwh_density_strata <-  density_est %>%
+# density_strata <-  density_est %>%
 #   dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, NTOT, ngrtot, wh, n, avden, svar, std)
 # 
 # # Calculate Domain Estimates
@@ -606,15 +700,123 @@ Example of weighting application for Caribbean:
 ```
 
        
+### 6. NCRMP_make_weighted_demo_data_RC
+
+__Applies weighting scheme to coral demographic data (coral density, species richness, and mortality).__
+
+Analysis level strata = STRAT for Florida regions and HABITAT CODE for the Caribbean and GOM regions. 
+
+This function is called within NCRMP_DRM_calculate_colony_density so the initial parameters you provide for region and year will be passed on. 
+
+Example of weighting application for Florida:
+
+```{r}
+
+# # Calculate average density (avden), stratum variance (svar), n and std at the strata and regional level using STRAT as the analysis strata. Inputdata = 1 stage site level coral density and ntot = the most recent NTOT file for the region, regardless of sampling year. 
+
+# 
+# # Calculate avdns, svar, n and std
+# density_est <- inputdata %>%
+#   # group by analysis level strata
+#   dplyr::mutate(ANALYSIS_STRATUM = STRAT) %>%
+#   dplyr::group_by(YEAR, ANALYSIS_STRATUM, STRAT) %>% 
+#   dplyr::summarise(
+#     # compute average density
+#     avden = mean(DENSITY),
+#     # compute stratum variance
+#     svar = var(DENSITY),
+#     n = length(DENSITY)) %>%
+#   # convert 0 for stratum variance so that the sqrt is a small # but not a 0
+#   dplyr::mutate(svar = dplyr::case_when(svar == 0 ~ 0.00000001,
+#                                         TRUE ~ svar)) %>%
+#   dplyr::mutate(std = sqrt(svar))
+# 
+# density_est <- density_est %>%
+#   # Merge ntot with coral_est_spp
+#   dplyr::full_join(., ntot) %>%
+#   # stratum estimates
+#   dplyr::mutate(whavden = wh * avden,
+#                 whsvar = wh^2 * svar,
+#                 whstd = wh * std,
+#                 n = tidyr::replace_na(n, 0))
+# 
+# # Reformat output
+# 
+# density_strata <-  density_est %>%
+#   dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, RUG_CD, NTOT, ngrtot, wh, n, avden, svar, std)
+# 
+# # Domain Estimates
+# Domain_est <- density_est %>%
+#   dplyr::group_by(REGION, YEAR) %>%
+#   dplyr::summarise(avDen = sum(whavden),
+#                    var = sum(whsvar, na.rm = T),
+#                    std = sqrt(var),
+#                    ngrtot = sum(NTOT) )
+
+
+
+```
+
+
+Example of weighting application for Caribbean:
+
+```{r}
+
+# #  Calculate average density (avden), stratum variance (svar), n and std at the strata and regional level using HABITAT_CD as the analysis strata. Inputdata = 1 stage site level coral density and ntot = the most recent NTOT file for the region, regardless of sampling year. 
+# 
+# # Calculate avdns, svar, n and std
+# density_est <- inputdata %>%
+#   # group by analysis level strata
+#   dplyr::mutate(ANALYSIS_STRATUM = HABITAT_CD) %>%
+#   dplyr::group_by(YEAR, ANALYSIS_STRATUM, HABITAT_CD) %>% 
+#   dplyr::summarise(# compute average density
+#     avden = mean(DENSITY),
+#     # compute stratum variance
+#     svar = var(DENSITY),
+#     n = length(DENSITY)) %>%
+#   # convert 0 for stratum variance so that the sqrt is a small # but not a 0
+#   dplyr::mutate(svar = dplyr::case_when(svar == 0 ~ 0.00000001,
+#                                         TRUE ~ svar)) %>%
+#   dplyr::mutate(std = sqrt(svar))
+# 
+# density_est <- density_est %>%
+#   # Merge ntot with coral_est_spp
+#   dplyr::full_join(., ntot) %>%
+#   # stratum estimates
+#   dplyr::mutate(whavden = wh * avden,
+#                 whsvar = wh^2 * svar,
+#                 whstd = wh * std,
+#                 n = tidyr::replace_na(n, 0),
+#                 # Add the following to match FL format
+#                 RUG_CD = NA)
+# 
+# # Reformat output
+# 
+# density_strata <-  density_est %>%
+#   dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, RUG_CD, NTOT, ngrtot, wh, n, avden, svar, std)
+# 
+# # Domain Estimates
+# Domain_est <- density_est %>%
+#   dplyr::group_by(REGION, YEAR) %>%
+#   dplyr::summarise(avDen = sum(whavden),
+#                    var = sum(whsvar, na.rm = T),
+#                    std = sqrt(var),
+#                    ngrtot = sum(NTOT) )
+
+
+
+```
+
+
 ## Species richness and diversity
 
-### 6. NCRMP_DRM_calculate_species_richness_diversity
+### 7. NCRMP_DRM_calculate_species_richness_diversity
 
 __Calculates species richness from site to regional level for all sampling years. Calculates Simpson, Inverse Simpson and Shannon–Wiener diversity indices from site to regional level for all sampling years using the R package vegan.__
 
 
 * parameters:
-    * project: "NCRMP_FRRP" (Florida regions only), "NCRMP" (All regions)
+    * project: "NCRMP_DRM" (Florida regions only), "NCRMP" (All regions)
 
     * region: "SEFCRI", "FLK", "Tortugas", "STTSTJ", "STX", "PRICO", "GOM" 
 
@@ -649,14 +851,14 @@ tmp <- NCRMP_DRM_calculate_species_richness_diversity(project = "NCRMP",
 # The function will store all of the function outputs as a list in tmp
 # Convert list objects to dataframes and rename 
 
-NCRMP_Tort_2014_18_spp_list <- tmp$species_list 
-NCRMP_Tort_2014_18_richness_site <- tmp$richness_site
-NCRMP_Tort_2014_18_unwh_richness_strata <- tmp$richness_strata
-NCRMP_Tort_2014_18_wh_richness_region <- tmp$Domain_est
+NCRMP_Tort_2014_16_spp_list <- tmp$species_list 
+NCRMP_Tort_2014_16_richness_site <- tmp$richness_site
+NCRMP_Tort_2014_16_richness_strata <- tmp$richness_strata
+NCRMP_Tort_2014_16_richness_region <- tmp$Domain_est
 
-NCRMP_Tort_2014_18_diversity_site <- tmp$species_diversity_site
-NCRMP_Tort_2014_18_diversity_strata <- tmp$diversity_strata
-NCRMP_Tort_2014_18_diversity_region <- tmp$Domain_est_div
+NCRMP_Tort_2014_16_diversity_site <- tmp$species_diversity_site
+NCRMP_Tort_2014_16_diversity_strata <- tmp$diversity_strata
+NCRMP_Tort_2014_16_diversity_region <- tmp$Domain_est_div
 
 ```
 
@@ -670,7 +872,7 @@ Regional species richness and diversity are calculated using the same weighting 
 __Calculates old and recent mortality (percent of colony surface)   from species to regional level for all sampling years__
 
 * parameters:
-    * project: "NCRMP_FRRP" (Florida regions only), "NCRMP" (All regions)
+    * project: "NCRMP_DRM" (Florida regions only), "NCRMP" (All regions)
 
     * region: "SEFCRI", "FLK", "Tortugas", "STTSTJ", "STX", "PRICO", "GOM" 
 
@@ -700,14 +902,14 @@ tmp <- NCRMP_DRM_calculate_mortality(project = "NCRMP",
 # The function will store all of the function outputs as a list in tmp
 # Convert list objects to dataframes and rename
 
-NCRMP_FGBNMS_2013_18_old_mort_site <- tmp$old_mortality_site
-NCRMP_FGBNMS_2013_18_rec_mort_site <- tmp$recent_mortality_site
+NCRMP_FGBNMS_2013_15_old_mort_site <- tmp$old_mortality_site
+NCRMP_FGBNMS_2013_15_rec_mort_site <- tmp$recent_mortality_site
 
-NCRMP_FGBNMS_2013_18_old_mort_strata <- tmp$old_mortality_strata
-NCRMP_FGBNMS_2013_18_rec_mort_strata <- tmp$rec_mortality_strata
+NCRMP_FGBNMS_2013_15_old_mort_strata <- tmp$old_mortality_strata
+NCRMP_FGBNMS_2013_15_rec_mort_strata <- tmp$rec_mortality_strata
 
-NCRMP_FGBNMS_2013_18_wh_old_mort_region <- tmp$Domain_est_old_mort
-NCRMP_FGBNMS_2013_18_wh_rec_mort_region <- tmp$Domain_est_rec_mort
+NCRMP_FGBNMS_2013_15_old_mort_region <- tmp$Domain_est_old_mort
+NCRMP_FGBNMS_2013_15_rec_mort_region <- tmp$Domain_est_rec_mort
 
 
 ```
@@ -730,7 +932,7 @@ __Calculates *Diadema antillarum* density from site to regional level for all sa
 
     * diadema_density_site: site level Diadema density
 
-    * unwh_invert_strata: strata level Diadema density (unweighted)
+    * invert_strata: strata level Diadema density (unweighted)
 
     * Domain estimates: weighted regional (domain level) Diadema density
 
@@ -751,8 +953,8 @@ tmp <- NCRMP_calculate_invert_density(region = "PRICO")
 # Convert list objects to dataframes and rename 
 
 NCRMP_PRICO_2014_16_invert_den_site <- tmp$diadema_density_site
-NCRMP_PRICO_2014_16_unwh_invert_den_strata <- tmp$unwh_invert_strata # Right now just Diadema
-NCRMP_PRICO_2014_16_wh_invert_den_region <- tmp$Domain_est
+NCRMP_PRICO_2014_16_invert_den_strata <- tmp$invert_strata # Right now just Diadema
+NCRMP_PRICO_2014_16_invert_den_region <- tmp$Domain_est
 
 
 
@@ -767,7 +969,7 @@ Regional *Diadema* density is calculated using the same weighting scheme as cora
 __Calculates disease prevalence at the site (% colonies per site), strata (mean of % colonies per site), and regional (weighted mean of % colonies per site) level for all sampling years__
 
 * parameters:
-    * project: "NCRMP_FRRP" (Florida regions only), "NCRMP" (All regions)
+    * project: "NCRMP_DRM" (Florida regions only), "NCRMP" (All regions)
 
     * region: "SEFCRI", "FLK", "Tortugas", "STTSTJ", "STX", "PRICO", "GOM" 
 
@@ -777,11 +979,11 @@ __Calculates disease prevalence at the site (% colonies per site), strata (mean 
 
     * disease_prev_site: site level disease prevalence 
 
-    * unwh_dis_prev_strata: strata level disease prevalence (unweighted)
+    * dis_prev_strata: strata level disease prevalence (unweighted)
 
     * Domain estimates: weighted regional (domain level) disease prevalence
 
-Associated functions: NCRMP_make_weighted_demo_data
+Associated functions: NCRMP_make_weighted_demo_data, NCRMP_make_weighted_demo_data_RC
 
 Example:
 
@@ -791,7 +993,7 @@ require(ncrmp.benthics.analysis)
 
 # Run function 
 
-tmp <- NCRMP_DRM_calculate_disease_prevalence(project = "NCRMP_FRRP",
+tmp <- NCRMP_DRM_calculate_disease_prevalence(project = "NCRMP_DRM",
                                         region = "SEFCRI",
                                         species_filter = "FALSE")
 
@@ -799,8 +1001,8 @@ tmp <- NCRMP_DRM_calculate_disease_prevalence(project = "NCRMP_FRRP",
 # Convert list objects to dataframes and rename 
 
 NCRMP_DRM_SEFCRI_2014_18_dis_prev_site <- tmp$disease_prev_site
-NCRMP_DRM_SEFCRI_2014_18_unwh_dis_prev_strata <- tmp$unwh_dis_prev_strata
-NCRMP_DRM_SEFCRI_2014_18_wh_dis_prev_region <- tmp$Domain_est
+NCRMP_DRM_SEFCRI_2014_18_dis_prev_strata <- tmp$dis_prev_strata
+NCRMP_DRM_SEFCRI_2014_18_dis_prev_region <- tmp$Domain_est
 
 
 ```
@@ -889,9 +1091,10 @@ ________________________________________________________________________________
 
 ### 1. What species are used when you filter the species in NCRMP_DRM_calculate_colony_density, NCRMP_DRM_calculate_disease_prevalence or NCRMP_DRM_calculate_mortality?
 
-# NCRMP species filter were developed in status report meetings and are region specific, please see the functions listed above for each list. 
+# NCRMP species filter developed in status report meetings
 
-   
+   Report_card_filter <- c("ACR CERV", "ACR PALM", "COL NATA", "DIP LABY", "MON CAVE", "ORB ANNU", "ORB FRAN", "ORB FAVE",
+                           "POR PORI", "PSE STRI", "PSE CLIV", "SID SIDE", "STE INTE")
                            
 ### 2. Which benthic categories are combined into "OTHER" in NCRMP_calculate_cover?
 

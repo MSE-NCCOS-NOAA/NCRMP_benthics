@@ -45,6 +45,7 @@
 #' @param datatype A string indicating the datatype
 #' @return A dataframe
 #' @importFrom magrittr "%>%"
+#' @importFrom magrittr "%>%"
 #' @export
 #'
 #'
@@ -115,7 +116,7 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype, 
         assign(paste("Filter", i, sep = "_"), Filter[[i]])
       }
 
-       ntot18 <- FL_2018_NTOT %>%
+      ntot18 <- FL_2018_NTOT %>%
         # Subet to region of interest
         dplyr::filter(REGION == "SEFCRI") %>%
         # Add rugosity code to strat, YEAR to sampling year and create ANALYSIS STRATUM column
@@ -399,7 +400,7 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype, 
                     ngrtot = sum(NTOT)) %>%
       dplyr::ungroup()
 
-      ntot19 <- USVI_2019_NTOT %>%
+    ntot19 <- USVI_2019_NTOT %>%
       dplyr::filter(REGION == "STTSTJ") %>%
       dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
       dplyr::summarise(NTOT = sum(NTOT)) %>%
@@ -806,11 +807,11 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype, 
             # compute stratum variance
             svar = var(DENSITY),
             # calculate N
-            n = length(unique(PRIMARY_SAMPLE_UNIT))) %>%
+            n_sites = length(unique(PRIMARY_SAMPLE_UNIT))) %>%
           # convert 0 for stratum variance so that the sqrt is a small # but not a 0
           dplyr::mutate(svar = dplyr::case_when(svar == 0 ~ 0.00000001,
                                                 TRUE ~ svar)) %>%
-          dplyr::mutate(Var=svar/n, #variance of mean density in stratum
+          dplyr::mutate(Var=svar/n_sites, #variance of mean density in stratum
                         std = sqrt(svar), # std dev of density in stratum
                         SE=sqrt(Var), #SE of the mean density in stratum
                         CV_perc=(SE/avden)*100)
@@ -821,7 +822,7 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype, 
           # stratum estimates
           dplyr::mutate(whavden = wh * avden,
                         whvar = wh^2 * Var,
-                        n = tidyr::replace_na(n, 0),
+                        n_sites = tidyr::replace_na(n_sites, 0),
                         # Add the following to match FL format
                         PROT = NA,
                         RUG_CD = NA)  %>%
@@ -830,18 +831,20 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype, 
         # calculate species CVS
         strata_CV <- species_data %>%
           dplyr::mutate(ANALYSIS_STRATUM = STRAT) %>%
-          dplyr::group_by(YEAR, SPECIES_CD, ANALYSIS_STRATUM, STRAT, PROT) %>%
+          dplyr::group_by(YEAR, SPECIES_CD, ANALYSIS_STRATUM, STRAT) %>%
           dplyr::summarize(mean=mean(DENSITY),
                            svar=var(DENSITY),
-                           N_species=length(DENSITY)) %>% # sample variance of density in stratum
+                           n_colonies = sum(ABUNDANCE),
+                           n_sites_present=length(DENSITY)) %>% # sample variance of density in stratum
           dplyr::mutate(svar=dplyr::case_when(svar==0 ~ 0.00000001, # replace zeros with very small number
                                               TRUE ~ svar)) %>%
-          dplyr::left_join(., density_est %>% dplyr::select(YEAR, ANALYSIS_STRATUM, n)) %>%
+          dplyr::left_join(., density_est %>% dplyr::select(YEAR, ANALYSIS_STRATUM, n_sites)) %>%
 
-          dplyr::mutate(Var=svar/n, #variance of mean density in stratum
+          dplyr::mutate(Var=svar/n_sites, #variance of mean density in stratum
                         std = sqrt(svar), # std dev of density in stratum
                         SE=sqrt(Var), #SE of the mean density in stratum
-                        CV_perc=(SE/mean)*100)
+                        CV_perc=(SE/mean)*100,
+                        Occurrence = n_sites_present/n_sites)
 
         if(region %in% GOM) {
 
@@ -851,18 +854,60 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype, 
 
         } else {
 
+          Total_N <- density_est %>%
+            dplyr::group_by(REGION) %>%
+            dplyr::summarise(n_sites = sum(n_sites),
+                             n_strat = length(unique(ANALYSIS_STRATUM)))  %>%
+            dplyr::ungroup()
+
           # region/population means
           region_CV <- strata_CV %>%
-            dplyr::full_join(., ntot) %>%
+            dplyr::full_join(., ntot, by=c("YEAR", "ANALYSIS_STRATUM")) %>%
             dplyr::mutate(wh_mean=wh*mean, wh_var = wh^2*Var) %>%
-            dplyr::group_by(REGION, YEAR, SPECIES_CD) %>%
-            dplyr::summarize(mean=sum(wh_mean), Var=sum(wh_var, na.rm=TRUE),
-                             SE=sqrt(Var), CV_perc=(SE/mean)*100, n=sum(N_species)) %>%
-            dplyr::mutate(ANALYSIS_STRATUM="ALL_STRAT", STRAT="ALL_HABS", PROT="ALL_PROT") %>%  #add svar variable
-            dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, SPECIES_CD, n, mean, Var, SE, CV_perc, STRAT, PROT)
+            dplyr::group_by(REGION, SPECIES_CD) %>%
+            dplyr::summarize(avDen=sum(wh_mean), Var=sum(wh_var, na.rm=TRUE),
+                             SE=sqrt(Var), CV_perc=(SE/avDen), n_colonies=sum(n_colonies), n_sites_present = sum(n_sites_present)) %>%
+            dplyr::mutate(YEAR = "ALL_YEARS", ANALYSIS_STRATUM="ALL_STRAT", STRAT="ALL_HABS", PROT="ALL_PROT", n_sites = Total_N$n_sites,
+                          Occurrence = n_sites_present/n_sites) %>%
+            dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, SPECIES_CD, n_colonies, n_sites_present, n_sites, avDen, Var, SE, CV_perc, Occurrence, STRAT, PROT)
+
 
 
         }
+
+         g.mid <- ggplot(region_CV, aes(x=1,y=reorder(SPECIES_CD, CV_perc)))+geom_text(aes(label=SPECIES_CD))+
+            geom_segment(aes(x=0.94,xend=0.96,yend=SPECIES_CD))+
+            geom_segment(aes(x=1.04,xend=1.065,yend=SPECIES_CD))+
+            ggtitle(region_CV$REGION)+
+            ylab(NULL)+
+            scale_x_continuous(expand=c(0,0),limits=c(0.94,1.065))+
+            theme(axis.title=element_blank(),
+                  panel.grid=element_blank(),
+                  axis.text.y=element_blank(),
+                  axis.ticks.y=element_blank(),
+                  panel.background=element_blank(),
+                  axis.text.x=element_text(color=NA),
+                  axis.ticks.x=element_line(color=NA),
+                  plot.margin = unit(c(1,-1,1,-1), "mm"),
+                  plot.title = element_text(hjust = 0.5))
+
+          g1 <- ggplot(data = region_CV, aes(x = reorder(SPECIES_CD, CV_perc), y = Occurrence, fill = 'even')) +
+            geom_bar(stat = "identity") + ggtitle("Occurrence") +
+            theme(axis.title.x = element_blank(),
+                  axis.title.y = element_blank(),
+                  axis.text.y = element_blank(),
+                  axis.ticks.y = element_blank(),
+                  plot.margin = unit(c(1,-1,1,0), "mm"),
+                  plot.title = element_text(hjust = 0.5)) +
+            scale_y_reverse() + coord_flip() + guides(fill = FALSE) + scale_fill_manual(values= c( "#0a4595"))
+
+          g2 <- ggplot(data = region_CV, aes(x = reorder(SPECIES_CD, CV_perc), y = CV_perc, fill = 'even')) +xlab(NULL)+
+            geom_bar(stat = "identity") + ggtitle("Coefficient of Variation of mean density") +
+            theme(axis.title.x = element_blank(), axis.title.y = element_blank(),
+                  axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+                  plot.margin = unit(c(1,0,1,-1), "mm"), plot.title = element_text(hjust = 0.5)) +
+            coord_flip() + guides(fill = FALSE) + scale_fill_manual(values= c( "#58babb"))
+
 
       }
 
@@ -870,8 +915,8 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype, 
       # Reformat output
 
       # strata_means
-     density_strata <-  density_est %>%
-        dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, n, avden, Var, SE, CV_perc) %>%
+      density_strata <-  density_est %>%
+        dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, n_sites, avden, Var, SE, CV_perc) %>%
         dplyr::mutate(RUG_CD = as.factor(RUG_CD))
 
       ## Domain Estimates
@@ -882,7 +927,7 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype, 
                          Var = sum(whvar, na.rm = T),    # This accounts for strata with N = 1
                          SE=sqrt(Var),
                          CV_perc=(SE/avDen)*100,
-                         n_sites = sum(n),
+                         n_sites = sum(n_sites),
                          n_strat = length(unique(ANALYSIS_STRATUM)),
                          ngrtot = sum(NTOT) )  %>%
         dplyr::ungroup()
@@ -896,7 +941,10 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype, 
       output <- list(
         "Species_regional_CV" = region_CV,
         "density_strata" = density_strata,
-        "Domain_est" = Domain_est)
+        "Domain_est" = Domain_est,
+        'g1' = g1,
+        'g2' = g2,
+        'g.mid' = g.mid)
 
       return(output)
 

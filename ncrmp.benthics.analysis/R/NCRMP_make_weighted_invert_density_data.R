@@ -57,7 +57,7 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
   # SE FL
   if(region == "SEFCRI") {
 
-    ntot14 <- FL_2016_NTOT %>%
+    ntot14 <- FL_2018_NTOT %>%
       # Filter to region of interest
       dplyr::filter(REGION == "SEFCRI") %>%
       # Create a STRAT column
@@ -71,14 +71,21 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
       dplyr::mutate(ngrtot = sum(NTOT))
 
 
-    ntot16 <- FL_2016_NTOT %>%
+    ntot16 <- FL_2018_NTOT %>%
+      dplyr::filter(REGION == "SEFCRI") %>%
+      dplyr::mutate(STRAT = paste(STRAT, RUG_CD, sep = ""),
+                    YEAR = 2016) %>%
+      dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
+      dplyr::mutate(ngrtot = sum(NTOT))
+
+    ntot18 <- FL_2018_NTOT %>%
       dplyr::filter(REGION == "SEFCRI") %>%
       dplyr::mutate(STRAT = paste(STRAT, RUG_CD, sep = "")) %>%
       dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
       dplyr::mutate(ngrtot = sum(NTOT))
 
     # Combine NTOT files
-    ntot <- rbind(ntot16, ntot14)
+    ntot <- rbind(ntot16, ntot14, ntot18)
 
   }
 
@@ -86,6 +93,11 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
   if(region == "FLK") {
 
     # Filter NTOT to only strata sampled that year - this is done manually for NCRMP only for now
+
+    ntot18 <- FL_2018_NTOT %>%
+      dplyr::filter(REGION == "FLK") %>%
+      dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
+      dplyr::mutate(ngrtot = sum(NTOT))
 
     ntot16 <- FL_2018_NTOT %>%
       dplyr::filter(REGION == "FLK") %>%
@@ -104,7 +116,7 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
       dplyr::mutate(ngrtot = sum(NTOT))
 
     # Combine NTOT files
-    ntot <- rbind(ntot16, ntot14)
+    ntot <- rbind(ntot16, ntot14, ntot18)
 
   }
 
