@@ -141,7 +141,7 @@ NCRMP_DRM_calculate_disease_prevalence <- function(project, region, species_filt
         dplyr::mutate(SURVEY = "DRM",
                       DATE = paste(MONTH, DAY, YEAR, sep = "/" ))
 
-       tmp4 <- FLK_2018_coral_demographics %>%
+      tmp4 <- FLK_2018_coral_demographics %>%
         dplyr::mutate(SURVEY = "NCRMP",
                       DATE = paste(MONTH, DAY, YEAR, sep = "/" ))
 
@@ -150,17 +150,33 @@ NCRMP_DRM_calculate_disease_prevalence <- function(project, region, species_filt
          species_filter == "NULL") {
 
         #Combine 1 stage or 2 stage data
-        dat_1stage <- rbind(tmp1, tmp2, tmp4)
+        dat_1stage <- rbind(tmp1, tmp2, tmp4) %>%
+          dplyr::mutate(SPECIES_CD = dplyr::recode(SPECIES_CD,
+                                                   "DIP CLIV" = "PSE CLIV",
+                                                   "DIP STRI" = "PSE STRI",
+                                                   'CLA ARBU' = "CLA ABRU"))
 
-        dat_2stage <- rbind(tmp3)
+        dat_2stage <- rbind(tmp3) %>%
+          dplyr::mutate(SPECIES_CD = dplyr::recode(SPECIES_CD,
+                                                   "DIP CLIV" = "PSE CLIV",
+                                                   "DIP STRI" = "PSE STRI",
+                                                   'CLA ARBU' = "CLA ABRU"))
       }
 
       if(species_filter == "TRUE"){
         #Combine 1 stage or 2 stage data
         dat_1stage <- rbind(tmp1, tmp2, tmp4) %>%
+          dplyr::mutate(SPECIES_CD = dplyr::recode(SPECIES_CD,
+                                            "DIP CLIV" = "PSE CLIV",
+                                            "DIP STRI" = "PSE STRI",
+                                            'CLA ARBU' = "CLA ABRU"))%>%
           dplyr::filter(SPECIES_CD %in% FLK_filter)
 
         dat_2stage <- rbind(tmp3) %>%
+          dplyr::mutate(SPECIES_CD = dplyr::recode(SPECIES_CD,
+                                            "DIP CLIV" = "PSE CLIV",
+                                            "DIP STRI" = "PSE STRI",
+                                            'CLA ARBU' = "CLA ABRU"))%>%
           dplyr::filter(SPECIES_CD %in% FLK_filter)
       }
     }
@@ -223,7 +239,7 @@ NCRMP_DRM_calculate_disease_prevalence <- function(project, region, species_filt
           dplyr::mutate(SURVEY = "NCRMP",
                         DATE = paste(MONTH, DAY, YEAR, sep = "/" ))
 
-         dat_1stage <- dplyr::bind_rows(tmp2, tmp3) %>%
+        dat_1stage <- dplyr::bind_rows(tmp2, tmp3) %>%
           dplyr::mutate(SURVEY = "NCRMP",
                         DATE = paste(MONTH, DAY, YEAR, sep = "/" ))
 
@@ -255,7 +271,7 @@ NCRMP_DRM_calculate_disease_prevalence <- function(project, region, species_filt
         dplyr::mutate(SURVEY = "NCRMP",
                       DATE = paste(MONTH, DAY, YEAR, sep = "/" ))
 
-       tmp3 <- FLK_2018_coral_demographics %>%
+      tmp3 <- FLK_2018_coral_demographics %>%
         dplyr::mutate(SURVEY = "NCRMP",
                       DATE = paste(MONTH, DAY, YEAR, sep = "/" ))
 
@@ -264,13 +280,21 @@ NCRMP_DRM_calculate_disease_prevalence <- function(project, region, species_filt
          species_filter == "NULL"){
 
         #Combine 1 stage or 2 stage data
-        dat_1stage <- rbind(tmp1, tmp2, tmp3)
+        dat_1stage <- rbind(tmp1, tmp2, tmp3) %>%
+          dplyr::mutate(SPECIES_CD = dplyr::recode(SPECIES_CD,
+                                                   "DIP CLIV" = "PSE CLIV",
+                                                   "DIP STRI" = "PSE STRI",
+                                                   'CLA ARBU' = "CLA ABRU"))
       }
 
       if(species_filter == "TRUE"){
 
         #Combine 1 stage or 2 stage data
-        dat_1stage <- rbind(tmp1, tmp2, tmp3)  %>%
+        dat_1stage <- rbind(tmp1, tmp2, tmp3)%>%
+          dplyr::mutate(SPECIES_CD = dplyr::recode(SPECIES_CD,
+                                                   "DIP CLIV" = "PSE CLIV",
+                                                   "DIP STRI" = "PSE STRI",
+                                                   'CLA ARBU' = "CLA ABRU")) %>%
           dplyr::filter(SPECIES_CD %in% FLK_filter)
 
       }
@@ -464,6 +488,21 @@ NCRMP_DRM_calculate_disease_prevalence <- function(project, region, species_filt
       dplyr::mutate(DIS_PREV = as.numeric(sprintf("%0.1f", DIS_PREV))) %>%
       dplyr::ungroup()
 
+    dis_species_1stage <- dat_1stage %>%
+      dplyr::filter(N == 1,
+                    DISEASE != "NA",
+                    SUB_REGION_NAME != "Marquesas",
+                    SUB_REGION_NAME != "Marquesas-Tortugas Trans") %>%
+      dplyr::mutate(PROT = as.factor(PROT),
+                    DISEASE = dplyr::case_when(DISEASE == "A" ~ 0,
+                                               DISEASE == "P" ~ 1)) %>%
+      dplyr::group_by(SURVEY, REGION, YEAR, DATE, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT, SPECIES_CD) %>%
+      dplyr::summarise(Total_dis = sum(DISEASE),
+                       Total_col = sum(N),
+                       DIS_PREV = (Total_dis/Total_col)*100) %>%
+      dplyr::mutate(DIS_PREV = as.numeric(sprintf("%0.1f", DIS_PREV))) %>%
+      dplyr::ungroup()
+
 
     dat1_2stage <- dat_2stage %>%
       dplyr::filter(N == 1,
@@ -483,6 +522,26 @@ NCRMP_DRM_calculate_disease_prevalence <- function(project, region, species_filt
                        DIS_PREV = mean(DIS_PREV)) %>%
       dplyr::mutate(DIS_PREV = as.numeric(sprintf("%0.1f", DIS_PREV)) )
 
+    dis_species_2stage <- dat_2stage %>%
+      dplyr::filter(N == 1,
+                    DISEASE != "NA",
+                    SUB_REGION_NAME != "Marquesas",
+                    SUB_REGION_NAME != "Marquesas-Tortugas Trans") %>%
+      dplyr::mutate(PROT = as.factor(PROT),
+                    DISEASE = dplyr::case_when(DISEASE == "A" ~ 0,
+                                               DISEASE == "P" ~ 1)) %>%
+      dplyr::group_by(SURVEY, REGION, YEAR, DATE, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, STATION_NR, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT, SPECIES_CD) %>%
+      dplyr::summarise(Total_dis = sum(DISEASE),
+                       Total_col = sum(N),
+                       DIS_PREV = (Total_dis/Total_col)*100) %>%
+      dplyr::group_by(SURVEY, REGION, YEAR, DATE, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT, SPECIES_CD) %>%
+      dplyr::summarise(Total_dis = mean(Total_dis),
+                       Total_col = mean(Total_col),
+                       DIS_PREV = mean(DIS_PREV)) %>%
+      dplyr::mutate(DIS_PREV = as.numeric(sprintf("%0.1f", DIS_PREV)) )
+
+    disease_prev_species <-dplyr::bind_rows(dis_species_1stage, dis_species_2stage)
+
     disease_prev_site <-dplyr::bind_rows(dat1_1stage, dat1_2stage)
 
   } else {
@@ -496,6 +555,20 @@ NCRMP_DRM_calculate_disease_prevalence <- function(project, region, species_filt
                     DISEASE = dplyr::case_when(DISEASE == "A" ~ 0,
                                                DISEASE == "P" ~ 1)) %>%
       dplyr::group_by(REGION, YEAR, DATE, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT) %>%
+      dplyr::summarise(Total_dis = sum(DISEASE),
+                       Total_col = sum(N),
+                       DIS_PREV = (Total_dis/Total_col)*100) %>%
+      dplyr::mutate(DIS_PREV = as.numeric(sprintf("%0.1f", DIS_PREV)) )
+
+    disease_prev_species <- dat_1stage %>%
+      dplyr::filter(N == 1,
+                    DISEASE != "NA",
+                    SUB_REGION_NAME != "Marquesas",
+                    SUB_REGION_NAME != "Marquesas-Tortugas Trans") %>%
+      dplyr::mutate(PROT = as.factor(PROT),
+                    DISEASE = dplyr::case_when(DISEASE == "A" ~ 0,
+                                               DISEASE == "P" ~ 1)) %>%
+      dplyr::group_by(REGION, YEAR, DATE, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT, SPECIES_CD) %>%
       dplyr::summarise(Total_dis = sum(DISEASE),
                        Total_col = sum(N),
                        DIS_PREV = (Total_dis/Total_col)*100) %>%
@@ -520,6 +593,7 @@ NCRMP_DRM_calculate_disease_prevalence <- function(project, region, species_filt
 
   # Create list to export
   output <- list(
+    'disease_prev_species' = disease_prev_species,
     "disease_prev_site" = disease_prev_site,
     "dis_prev_strata" = dis_prev_strata,
     "Domain_est" = Domain_est)
