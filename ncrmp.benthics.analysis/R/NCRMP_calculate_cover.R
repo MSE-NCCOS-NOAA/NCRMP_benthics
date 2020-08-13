@@ -130,18 +130,15 @@ NCRMP_calculate_cover <- function(region){
 
   if(region == "PRICO"){
 
-    if(year == 2014){
+      dat1 <- PRICO_2014_benthic_cover
 
-      dat <- PRICO_2014_benthic_cover %>%
-        dplyr::mutate(ANALYSIS_STRATUM = STRAT)
+      dat2 <- PRICO_2016_benthic_cover %>%
+        dplyr::mutate(YEAR = 2016)
 
-    }
+      dat3 <- PRICO_2019_benthic_cover
 
-    if(year == 2016)
-
-      dat <- PRICO_2016_benthic_cover %>%
-        dplyr::mutate(ANALYSIS_STRATUM = STRAT,
-                      YEAR = 2016)
+      dat <- dplyr::bind_rows(dat1, dat2, dat3) %>%
+          dplyr::mutate(ANALYSIS_STRATUM = STRAT)
 
   }
 

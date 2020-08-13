@@ -111,6 +111,9 @@ NCRMP_calculate_ESA_corals_PresAbs <- function()
     dplyr::mutate(ANALYSIS_STRATUM = STRAT,
                   YEAR = 2016)
 
+  tmp5.1 <- PRICO_2019_inverts_ESAcorals %>%
+    dplyr::mutate(ANALYSIS_STRATUM = STRAT)
+
   ## Flower Garden Banks National Marine Sanctuary (GOM)
 
   tmp6 <- FGBNMS_2013_inverts_ESAcorals %>%
@@ -123,7 +126,7 @@ NCRMP_calculate_ESA_corals_PresAbs <- function()
     dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS")
 
   #Combine Carib and GOM
-  tmp9 <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4, tmp5, tmp8, tmp3.1) %>%
+  tmp9 <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4, tmp5, tmp8, tmp3.1, tmp5.1) %>%
     # Remove METERS_COMPLETED as it is missing from the FL data
     dplyr::select(-METERS_COMPLETED) %>%
   # Combine and change to factor - there are letters in the FGBNMS MAPGRID NRs

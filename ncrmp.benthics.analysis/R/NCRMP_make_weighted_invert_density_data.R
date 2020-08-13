@@ -240,7 +240,7 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
 
   if(region == "PRICO"){
 
-    ntot14 <- PRICO_2016_NTOT %>%
+    ntot14 <- PRICO_2019_NTOT %>%
       dplyr::filter(STRAT != "HARD_DEEP", # Hard shlw was not sampled in 2014
                     STRAT != "HARD_SHLW") %>% # Hard deep was not sampled in 2014
       dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
@@ -251,7 +251,16 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
                     PROT = NA_character_,
                     ngrtot = sum(NTOT))
 
-    ntot16 <- PRICO_2016_NTOT %>%
+    ntot16 <- PRICO_2019_NTOT %>%
+      dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
+      dplyr::summarise(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(YEAR = 2016,
+                    ANALYSIS_STRATUM = STRAT,
+                    PROT = NA_character_,
+                    ngrtot = sum(NTOT))
+
+    ntot19 <- PRICO_2019_NTOT %>%
       dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
       dplyr::summarise(NTOT = sum(NTOT)) %>%
       dplyr::ungroup() %>%
@@ -259,7 +268,7 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
                     PROT = NA_character_,
                     ngrtot = sum(NTOT))
 
-    ntot <- rbind(ntot14, ntot16)
+    ntot <- rbind(ntot14, ntot16, ntot19)
 
   }
 

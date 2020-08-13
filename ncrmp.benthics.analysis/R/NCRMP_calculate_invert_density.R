@@ -129,15 +129,16 @@ NCRMP_calculate_invert_density <- function(region) {
   # Puerto Rico
   if(region == "PRICO"){
 
-    tmp1 <- PRICO_2014_inverts_ESAcorals %>%
-      dplyr::mutate(ANALYSIS_STRATUM = STRAT)
+    tmp1 <- PRICO_2014_inverts_ESAcorals
 
     tmp2 <- PRICO_2016_inverts_ESAcorals %>%
-      dplyr::mutate(ANALYSIS_STRATUM = STRAT,
-                    YEAR = 2016)
+      dplyr::mutate(YEAR = 2016)
+
+    tmp3 <- PRICO_2019_inverts_ESAcorals
 
     #Combine data
-    dat_1stage <- rbind(tmp1, tmp2)
+    dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3) %>%
+      dplyr::mutate(ANALYSIS_STRATUM = STRAT)
 
   }
 
