@@ -1223,23 +1223,32 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype, 
         dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
         dplyr::group_by(YEAR, ANALYSIS_STRATUM, STRAT, PROT) %>% # Modify this line to changes analysis substrate
         dplyr::summarise(# compute average density
-          avprev = mean(DIS_PREV),
+          avDprev = mean(DIS_PREV),
+          avBprev = mean(BLE_PREV),
           # compute stratum variance
-          svar = var(DIS_PREV),
+          svarD = var(DIS_PREV),
+          svarB = var(BLE_PREV),
           # calculate N
-          n = length(DIS_PREV)) %>%
+          n = length(PRIMARY_SAMPLE_UNIT)) %>%
         # convert 0 for stratum variance so that the sqrt is a small # but not a 0
-        dplyr::mutate(svar = dplyr::case_when(svar == 0 ~ 0.00000001,
-                                              TRUE ~ svar)) %>%
-        dplyr::mutate(std = sqrt(svar))
+        dplyr::mutate(svarD = dplyr::case_when(svarD == 0 ~ 0.00000001,
+                                              TRUE ~ svarD)) %>%
+        dplyr::mutate(stdD = sqrt(svarD))%>%
+        # convert 0 for stratum variance so that the sqrt is a small # but not a 0
+        dplyr::mutate(svarB = dplyr::case_when(svarB == 0 ~ 0.00000001,
+                                              TRUE ~ svarB)) %>%
+        dplyr::mutate(stdB = sqrt(svarB))
 
       disease_est <- disease_est %>%
         # Merge ntot with coral_est_spp
         dplyr::full_join(., ntot) %>%
         # stratum estimates
-        dplyr::mutate(whavprev = wh * avprev,
-                      whsvar = wh^2 * svar,
-                      whstd = wh * std,
+        dplyr::mutate(whavDprev = wh * avDprev,
+                      whavBprev = wh * avBprev,
+                      whsvarD = wh^2 * svarD,
+                      whsvarB = wh^2 * svarB,
+                      whstdD = wh * stdD,
+                      whstdB = wh * stdB,
                       n = tidyr::replace_na(n, 0))  %>%
         dplyr::ungroup()
 
@@ -1254,51 +1263,64 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype, 
         # group by analysis level strata
         dplyr::mutate(ANALYSIS_STRATUM = STRAT) %>%
         dplyr::group_by(YEAR, ANALYSIS_STRATUM, STRAT) %>% # Modify this line to changes analysis substrate
-        dplyr::summarise(
-          # compute average density
-          avprev = mean(DIS_PREV),
+        dplyr::summarise(# compute average density
+          avDprev = mean(DIS_PREV),
+          avBprev = mean(BLE_PREV),
           # compute stratum variance
-          svar = var(DIS_PREV),
+          svarD = var(DIS_PREV),
+          svarB = var(BLE_PREV),
           # calculate N
-          n = length(DIS_PREV)) %>%
+          n = length(PRIMARY_SAMPLE_UNIT)) %>%
         # convert 0 for stratum variance so that the sqrt is a small # but not a 0
-        dplyr::mutate(svar = dplyr::case_when(svar == 0 ~ 0.00000001,
-                                              TRUE ~ svar)) %>%
-        dplyr::mutate(std = sqrt(svar))
+        dplyr::mutate(svarD = dplyr::case_when(svarD == 0 ~ 0.00000001,
+                                              TRUE ~ svarD)) %>%
+        dplyr::mutate(stdD = sqrt(svarD))%>%
+        # convert 0 for stratum variance so that the sqrt is a small # but not a 0
+        dplyr::mutate(svarB = dplyr::case_when(svarB == 0 ~ 0.00000001,
+                                              TRUE ~ svarB)) %>%
+        dplyr::mutate(stdB = sqrt(svarB))
 
       disease_est <- disease_est %>%
         # Merge ntot with coral_est_spp
         dplyr::full_join(., ntot) %>%
         # stratum estimates
-        dplyr::mutate(whavprev = wh * avprev,
-                      whsvar = wh^2 * svar,
-                      whstd = wh * std,
-                      n = tidyr::replace_na(n, 0),
-                      # Add the following to match FL format
-                      PROT = NA,
-                      RUG_CD = NA)  %>%
+        dplyr::mutate(whavDprev = wh * avDprev,
+                      whavBprev = wh * avBprev,
+                      whsvarD = wh^2 * svarD,
+                      whsvarB = wh^2 * svarB,
+                      whstdD = wh * stdD,
+                      whstdB = wh * stdB,
+                      n = tidyr::replace_na(n, 0))  %>%
         dplyr::ungroup()
-
     }
 
 
     # Reformat output
 
     disease_est <- disease_est %>%
-      dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, NTOT, ngrtot, wh, n, avprev, svar, std, whavprev, whsvar, whstd)
+      dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT,  PROT, NTOT, ngrtot, wh, n, avDprev, svarD, stdD, whavDprev, whsvarD, whstdD,
+                    avBprev, svarB, stdB, whavBprev, whsvarB, whstdB)
 
     dis_prev_strata <-  disease_est %>%
-      dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, NTOT, ngrtot, wh, n, avprev, svar, std) %>%
-      dplyr::mutate(RUG_CD = as.factor(RUG_CD))
+      dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT,  PROT, NTOT, ngrtot, wh, n, avDprev, svarD, stdD)
+
+    ble_prev_strata <-  disease_est %>%
+      dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, PROT, NTOT, ngrtot, wh, n, avBprev, svarB, stdB)
 
     ## Domain Estimates
     Domain_est <- disease_est %>%
       dplyr::group_by(REGION, YEAR) %>%
-      dplyr::summarise(avPrev = sum(whavprev, na.rm = T), # This accounts for strata with 0 species of interest present
-                       var = sum(whsvar, na.rm = T),    # This accounts for strata with N = 1
-                       std = sqrt(var),
+      dplyr::summarise(avDisPrev = sum(whavDprev, na.rm = T), # This accounts for strata with 0 species of interest present
+                       avBlePrev = sum(whavBprev, na.rm = T),
+                       VarD = sum(whsvarD, na.rm = T),
+                       VarB = sum(whsvarB, na.rm = T),# This accounts for strata with N = 1
+                       SE_D=sqrt(VarD),
+                       SE_B=sqrt(VarB),
+                       n_sites = sum(n),
+                       n_strat = length(unique(ANALYSIS_STRATUM)),
                        ngrtot = sum(NTOT) )  %>%
       dplyr::ungroup()
+
 
     ################
     # Export
@@ -1307,6 +1329,7 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype, 
     # Create list to export
     output <- list(
       "dis_prev_strata" = dis_prev_strata,
+      'ble_prev_strata' = ble_prev_strata,
       "Domain_est" = Domain_est)
 
     return(output)
