@@ -19,7 +19,7 @@
 #
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman
-# Last update: Sep 2021
+# Last update: March 2022
 
 
 ##############################################################################################################################
@@ -39,79 +39,185 @@
 NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, region){
 
 
+
+  if(project == "NCRMP_DRM") {
+
+    if(region == "SEFCRI"){
+
+      # Load species/site level bleaching & disease data
+      dat <- NCRMP_DRM_SEFCRI_2014_21_dis_ble_prev_species %>%
+        dplyr::mutate(SPECIES_CD=dplyr::recode(SPECIES_CD,
+                                               "ORB ANCX"="ORB SPE.",
+                                               "DIP STRI"="PSE STRI"))
+
+      ntot <- load_NTOT(region = region,
+                        inputdata = dat,
+                        project = project)
+    }
+
+    if(region == "FLK"){
+
+      # Load species/site level bleaching & disease data
+      dat <- NCRMP_DRM_FLK_2014_21_dis_ble_prev_species %>%
+        dplyr::mutate(SPECIES_CD = dplyr::recode(SPECIES_CD,
+                                                 "DIP CLIV" = "PSE CLIV",
+                                                 "DIP STRI" = "PSE STRI",
+                                                 'CLA ARBU' = "CLA ABRU",
+                                                 "ORB ANCX"="ORB SPE."))
+
+      ntot <- load_NTOT(region = region,
+                        inputdata = dat,
+                        project = project)
+    }
+
+    if(region == "Tortugas"){
+
+      # Load species/site level bleaching & disease data
+      dat <- NCRMP_DRM_Tort_2014_21_dis_ble_prev_species %>%
+        dplyr::mutate(SPECIES_CD = dplyr::recode(SPECIES_CD,
+                                                 "DIP CLIV" = "PSE CLIV",
+                                                 "DIP STRI" = "PSE STRI",
+                                                 'CLA ARBU' = "CLA ABRU",
+                                                 "ORB ANCX"="ORB SPE.",))
+
+      ntot <- load_NTOT(region = region,
+                        inputdata = dat,
+                        project = project)
+    }
+  } else {
+
+    ntot <- load_NTOT(region = region,
+                      inputdata = "NULL",
+                      project = "NCRMP")
+  }
+
   if(project == "NCRMP"){
+
+    if(region == "SEFCRI"){
+
+      # Load species/site level bleaching & disease data
+      dat <- NCRMP_SEFCRI_2014_20_dis_ble_prev_species %>%
+        dplyr::mutate(SPECIES_CD=dplyr::recode(SPECIES_CD,
+                                               "ORB ANCX"="ORB SPE.",
+                                               "DIP STRI"="PSE STRI"))
+    }
+
+    if(region == "FLK"){
+
+      # Load species/site level bleaching & disease data
+      dat <- NCRMP_FLK_2014_18_dis_ble_prev_species %>%
+        dplyr::mutate(SPECIES_CD=dplyr::recode(SPECIES_CD,
+                                               "ORB ANCX"="ORB SPE.",
+                                               "DIP STRI"="PSE STRI"))
+    }
+
+    if(region == "Tortugas"){
+
+      # Load species/site level bleaching & disease data
+      dat <- NCRMP_Tort_2014_20_dis_ble_prev_species %>%
+        dplyr::mutate(SPECIES_CD=dplyr::recode(SPECIES_CD,
+                                               "ORB ANCX"="ORB SPE.",
+                                               "DIP STRI"="PSE STRI"))
+    }
 
 
     if(region == "STTSTJ"){
 
-      # Load NTOTs
-      ntot <- USVI_2019_NTOT %>%
-        dplyr::filter(REGION == "STTSTJ") %>%
-        dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
-        dplyr::summarise(NTOT = sum(NTOT),
-                         #.groups is experimental with dplyr
-                         .groups = "keep") %>%
-        dplyr::ungroup() %>%
-        dplyr::mutate(ANALYSIS_STRATUM = STRAT,
-                      ngrtot = sum(NTOT)) %>%
-        dplyr::ungroup() %>%
-        dplyr::mutate(wh = NTOT/ngrtot)
-
-
       # Load species/site level bleaching & disease data
-      dat <- NCRMP_STTSTJ_2013_19_dis_ble_prev_species %>%
+      dat <- NCRMP_STTSTJ_2013_21_dis_ble_prev_species %>%
         dplyr::mutate(SPECIES_CD=dplyr::recode(SPECIES_CD,
-                                               `ORB ANCX`="ORB SPE."))
+                                               "ORB ANCX"="ORB SPE."))
 
     }
 
     if(region == "STX"){
 
-      ntot <- USVI_2019_NTOT %>%
-        dplyr::filter(REGION == "STX") %>%
-        dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
-        dplyr::summarise(NTOT = sum(NTOT),
-                         #.groups is experimental with dplyr
-                         .groups = "keep") %>%
-        dplyr::ungroup() %>%
-        dplyr::mutate(ANALYSIS_STRATUM = STRAT,
-                      ngrtot = sum(NTOT)) %>%
-        dplyr::ungroup() %>%
-        dplyr::mutate(wh = NTOT/ngrtot)
 
-      dat <- NCRMP_STX_2015_19_dis_ble_prev_species %>%
+      dat <- NCRMP_STX_2015_21_dis_ble_prev_species %>%
         dplyr::mutate(SPECIES_CD=dplyr::recode(SPECIES_CD,
-                                               `ORB ANCX`="ORB SPE."))
+                                               "ORB ANCX"="ORB SPE."))
 
     }
 
     if(region == "PRICO"){
 
-      ntot <- PRICO_2019_NTOT %>%
-        dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
-        dplyr::summarise(NTOT = sum(NTOT),
-                         #.groups is experimental with dplyr
-                         .groups = "keep") %>%
-        dplyr::ungroup() %>%
-        dplyr::mutate(ANALYSIS_STRATUM = STRAT,
-                      ngrtot = sum(NTOT)) %>%
-        dplyr::ungroup() %>%
-        dplyr::mutate(wh = NTOT/ngrtot)
-
-      dat <- NCRMP_PRICO_2014_19_dis_ble_prev_species %>%
+      dat <- NCRMP_PRICO_2014_21_dis_ble_prev_species %>%
         dplyr::mutate(SPECIES_CD=dplyr::recode(SPECIES_CD,
-                                               `ORB ANCX`="ORB SPE."))
+                                               "ORB ANCX"="ORB SPE."))
+    }
+
+    ## Flower Garden Banks National Marine Sanctuary (GOM)
+    if(region == "GOM"){
+
+
+      # Load species/site level bleaching & disease data
+      dat <- NCRMP_FGBNMS_2013_18_dis_ble_prev_species %>%
+        dplyr::mutate(SPECIES_CD=dplyr::recode(SPECIES_CD,
+                                               "ORB ANCX"="ORB SPE."))
     }
 
   }
 
 
-  dat1 <- dat %>%
-    dplyr::mutate(ANALYSIS_STRATUM = STRAT) %>%
-    dplyr::group_by(YEAR, ANALYSIS_STRATUM, SPECIES_CD) %>% # Modify this line to changes analysis stratum
+
+  ## coral data processing
+
+  dat_ble_wide <- dat %>%
+    # select for most recent year
+    # remove other metrics
+    dplyr::select(-Total_ble, -Total_dis, -Total_col, -DIS_PREV) %>%
+    # filter out spp columns
+    dplyr::filter(
+      SPECIES_CD != "ORB SPE.",
+      SPECIES_CD != "AGA SPE.",
+      SPECIES_CD != "MYC SPE.",
+      SPECIES_CD != "SCO SPE.",
+      SPECIES_CD != "MAD SPE.",
+      SPECIES_CD != "SID SPE.",
+      SPECIES_CD != "SOL SPE.",
+      SPECIES_CD != "PSE SPE.",
+      SPECIES_CD != "OTH CORA",
+      SPECIES_CD != "POR SPE.",
+      SPECIES_CD != "SCL SPE.")
+  # %>%
+  #   # add in zeros for species that didn't occur per site. Easiest to flip to wide format ( 1 row per site) for this
+  #   tidyr::spread(., SPECIES_CD, BLE_PREV
+  #                 ,
+  #                 fill = 0
+  #                 )
+
+  #dat_ble_long <- tidyr::gather(dat_ble_wide, SPECIES_CD, BLE_PREV, 12:ncol(dat_ble_wide))
+
+  dat_dis_wide <- dat %>%
+    # select for most recent year
+    # remove other metrics
+    dplyr::select(-Total_ble, -Total_dis, -Total_col, -BLE_PREV) %>%
+    # filter out spp columns
+    dplyr::filter(
+      SPECIES_CD != "ORB SPE.",
+      SPECIES_CD != "AGA SPE.",
+      SPECIES_CD != "MYC SPE.",
+      SPECIES_CD != "SCO SPE.",
+      SPECIES_CD != "OTH CORA",
+      SPECIES_CD != "MAD SPE.",
+      SPECIES_CD != "SID SPE.",
+      SPECIES_CD != "SOL SPE.",
+      SPECIES_CD != "PSE SPE.",
+      SPECIES_CD != "POR SPE.",
+      SPECIES_CD != "SCL SPE.")
+  # %>%
+  #   # add in zeros for species that didn't occur per site. Easiest to flip to wide format ( 1 row per site) for this
+  #   tidyr::spread(., SPECIES_CD, DIS_PREV,
+  #                 fill = 0)
+
+  #dat_dis_long <- tidyr::gather(dat_dis_wide, SPECIES_CD, DIS_PREV, 12:ncol(dat_dis_wide))
+
+
+  dat1 <- dplyr::left_join(dat_dis_wide, dat_ble_wide) %>%
+    dplyr::group_by(YEAR, STRAT, SPECIES_CD) %>% # Modify this line to changes analysis stratum
     dplyr::summarise(# compute average density
-      avDprev = mean(DIS_PREV),
-      avBprev = mean(BLE_PREV),
+      avDprev = mean(DIS_PREV, na.rm = T),
+      avBprev = mean(BLE_PREV, na.rm = T),
       # compute stratum variance
       svarD = var(DIS_PREV, na.rm = T),
       svarB = var(BLE_PREV, na.rm = T),
@@ -158,25 +264,17 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
     dplyr::ungroup() %>%
     dplyr::left_join(., ncrmp_frrp_sppcodes %>%
                        dplyr::select(fl_ncrmp_code, species_name),
-                     by = c('SPECIES_CD' = 'fl_ncrmp_code'))
+                     by = c('SPECIES_CD' = 'fl_ncrmp_code')) %>%
+    dplyr::filter(!is.na(SPECIES_CD))
 
   DomainEst_bl <- DomainEst %>%
-    dplyr::select(REGION, YEAR, species_name, avBlePrev, SE_B) %>%
-    dplyr::filter(avBlePrev > 0,
-                  species_name != "Orbicella spp",
-                  species_name != "Agaricia spp",
-                  species_name != "Undaria spp",
-                  species_name != "Madracis spp",
-                  species_name != "Siderastrea spp")
+    dplyr::select(REGION, YEAR, species_name, avBlePrev, SE_B)%>%
+    dplyr::filter(!is.na(species_name))
 
 
   DomainEst_dis <- DomainEst %>%
-    dplyr::select(REGION, YEAR, species_name, avDisPrev, SE_D) %>%
-    dplyr::filter(avDisPrev > 0,
-                  species_name != "Orbicella spp",
-                  species_name != "Agaricia spp",
-                  species_name != "Undaria spp",
-                  species_name != "Siderastrea spp")
+    dplyr::select(REGION, YEAR, species_name, avDisPrev, SE_D)%>%
+    dplyr::filter(!is.na(species_name))
 
 
 

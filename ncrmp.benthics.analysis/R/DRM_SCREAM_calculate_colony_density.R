@@ -11,7 +11,7 @@
 
 # outputs created in this file --------------
 # density_site
-# unwh_density_strata,
+# density_strata,
 # Domain estimates
 
 
@@ -23,7 +23,7 @@
 #
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman
-# Last update: Nov 2018
+# Last update: Jun 2022
 
 
 ##############################################################################################################################
@@ -165,27 +165,95 @@ DRM_SCREAM_calculate_colony_density <- function(project = "NULL", species_filter
 
   }
 
+  if(project == "SCREAM"){
+
+
+    if(species_filter == "FALSE"||
+       species_filter == "NULL"){
+
+      # Load data
+
+      dat <- SCREAM_FL_1999_2015_2stage_coral_demographics %>%
+        # Set LAT and LON to the same # of digits - helps with grouping
+        dplyr::mutate(LAT_DEGREES = sprintf("%0.5f", LAT_DEGREES),
+                      LON_DEGREES = sprintf("%0.5f", LON_DEGREES),
+                      SURVEY = "SCREAM")
+
+    }
+
+    if(species_filter == "TRUE"){
+
+      dat <- SCREAM_FL_1999_2015_2stage_coral_demographics %>%
+        # Set LAT and LON to the same # of digits - helps with grouping
+        dplyr::mutate(LAT_DEGREES = sprintf("%0.5f", LAT_DEGREES),
+                      LON_DEGREES = sprintf("%0.5f", LON_DEGREES)) %>%
+        # Filter out Sand
+        dplyr::filter(STRAT != "SAND_NA",
+                      SURVEY == "SCREAM")
+
+      # Subset by region and filter with region specific filter
+
+
+      FLK <- dat %>%
+        dplyr::filter(REGION == "FLK",
+                      SPECIES_CD %in% FLK_filter)
+
+      Tort <- dat %>%
+        dplyr::filter(REGION == "Tortugas",
+                      SPECIES_CD %in% Tort_filter)
+
+
+      dat <- dplyr::bind_rows(FLK, Tort)
+
+    }
+
+  }
+
+
   # Calculate coral density
 
-
+  density_species <- dat %>%
+    dplyr::filter(N == 1,
+                  JUV == 0,
+                  SUB_REGION_NAME != "Marquesas",
+                  SUB_REGION_NAME != "Marquesas-Tortugas Trans") %>%
+    # update some column classes to make them compatible with current NCRMP data
+    dplyr::mutate(PRIMARY_SAMPLE_UNIT = as.factor(PRIMARY_SAMPLE_UNIT),
+                  LAT_DEGREES = as.numeric(LAT_DEGREES),
+                  LON_DEGREES = as.numeric(LON_DEGREES),
+                  PROT = as.factor(PROT)) %>%
+    dplyr::mutate(LAT_DEGREES = sprintf("%0.4f", LAT_DEGREES),
+                  LON_DEGREES = sprintf("%0.4f", LON_DEGREES)) %>%
+    dplyr::group_by(REGION, SURVEY, YEAR, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, STATION_NR, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT, METERS_COMPLETED, SPECIES_CD, SPECIES_NAME) %>%
+    dplyr::summarise(ABUNDANCE = sum(N)) %>%
+    dplyr::mutate(DENSITY_transect = ABUNDANCE/METERS_COMPLETED) %>%
+    dplyr::group_by(REGION, SURVEY, YEAR, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT, SPECIES_CD, SPECIES_NAME) %>%
+    dplyr::summarise(DENSITY = mean(DENSITY_transect),
+                     ABUNDANCE = mean(ABUNDANCE)) %>%
+    dplyr::ungroup()
 
   density_site <- dat %>%
     dplyr::ungroup() %>%
     dplyr::filter(N == 1,
+                  JUV == 0,
                   SUB_REGION_NAME != "Marquesas",
                   SUB_REGION_NAME != "Marquesas-Tortugas Trans") %>%
+    # update some column classes to make them compatible with current NCRMP data
+    dplyr::mutate(PRIMARY_SAMPLE_UNIT = as.factor(PRIMARY_SAMPLE_UNIT),
+                  LAT_DEGREES = as.numeric(LAT_DEGREES),
+                  LON_DEGREES = as.numeric(LON_DEGREES),
+                  PROT = as.factor(PROT)) %>%
+    dplyr::mutate(LAT_DEGREES = sprintf("%0.4f", LAT_DEGREES),
+                  LON_DEGREES = sprintf("%0.4f", LON_DEGREES)) %>%
     dplyr::group_by(SURVEY, REGION, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, STATION_NR, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT, METERS_COMPLETED) %>%
     dplyr::summarise(ABUNDANCE = sum(N)) %>%
     dplyr::mutate(DENSITY_transect = ABUNDANCE/METERS_COMPLETED) %>%
     dplyr::ungroup() %>%
     dplyr::group_by(SURVEY, REGION, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT) %>%
-    dplyr::summarise(DENSITY = mean(DENSITY_transect)) %>%
-    dplyr::ungroup() %>%
-    # update some column classes to make them compatible with current NCRMP data
-    dplyr::mutate(PRIMARY_SAMPLE_UNIT = as.factor(PRIMARY_SAMPLE_UNIT),
-                  LAT_DEGREES = as.numeric(LAT_DEGREES),
-                  LON_DEGREES = as.numeric(LON_DEGREES),
-                  PROT = as.factor(PROT))
+    dplyr::summarise(DENSITY = mean(DENSITY_transect),
+                     ABUNDANCE = mean(ABUNDANCE)) %>%
+    dplyr::ungroup()
+
 
 
   tmp  <- DRM_SCREAM_make_weighted_demo_data(inputdata = density_site, datatype = "density")
@@ -201,6 +269,7 @@ DRM_SCREAM_calculate_colony_density <- function(project = "NULL", species_filter
 
   # Create list to export
   output <- list(
+    "density_species" = density_species,
     "density_site" = density_site,
     "density_strata" = density_strata,
     "Domain_est" = Domain_est)

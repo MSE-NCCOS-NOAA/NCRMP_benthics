@@ -5,11 +5,11 @@ Version: 1.0.0.0001
 Authors@R: c(person("Sarah", "Groves", email = "sarah.groves@noaa.gov", role = c("cre", "cur")),
              person("Shay", "Viehman", email = "shay.viehman@noaa.gov", role = "wal"))
 Description: The ncrmp.benthic.analysis package is designed to use benthic data collected from the Atlantic regions of the National Coral Reef Monitoring Program (NCRMP) to complete the following: Compute summary statistics such as coral density, percent cover, species richness, old and recent mortality, disease prevalence, diadema density, and presence/absence of ESA species from the site to the regional level. House all current NCRMP benthic data ranging from analysis ready data to regional domain estimates in a standardized format. This includes all metrics listed in item #1 calculated at the site, strata and regional level as well as most recent sampling grids and NTOT files.
-Depends: R (>= 3.4.1)
+Depends: R (>= 3.5.0)
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.0.2
+RoxygenNote: 7.2.0
 Imports: dplyr,
          magrittr,
          ggplot2,

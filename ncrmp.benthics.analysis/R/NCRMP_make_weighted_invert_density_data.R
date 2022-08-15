@@ -57,32 +57,32 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
   # SE FL
   if(region == "SEFCRI") {
 
-    ntot14 <- FL_2018_NTOT %>%
-      # Filter to region of interest
-      dplyr::filter(REGION == "SEFCRI") %>%
-      # Create a STRAT column
-      dplyr::mutate(STRAT = paste(STRAT, RUG_CD, sep = "")) %>%
-      # Filter out strata not sampled that year
+    ntot14 <- SEFL_2014_NTOT %>%
       dplyr::filter(STRAT == "MIDR1" | STRAT == "MIDR0") %>%
-      # Create analysis strata column and change the sampling year to match the data
       dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "),
-                    YEAR = 2014) %>%
-      # Calculate total number of grid cells, based on strata sampled
-      dplyr::mutate(ngrtot = sum(NTOT))
+                    ngrtot = sum(NTOT))
 
+    ntot16 <- SEFL_2016_NTOT %>%
+      dplyr::mutate(STRAT = dplyr::case_when(STRAT == "PTSH2"~"NEAR1",
+                                             STRAT == "PTDP0"~"OFFR0",
+                                             STRAT == "PTDP1"~"OFFR1", TRUE ~ as.character(STRAT))) %>%
+      dplyr::group_by(YEAR, REGION, STRAT, PROT, GRID_SIZE) %>%
+      dplyr::summarise(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup() %>%
+      dplyr::filter(STRAT != "RGDP1" & STRAT != "RGDP0") %>%
+      dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "),
+                    ngrtot = sum(NTOT))
 
-    ntot16 <- FL_2018_NTOT %>%
-      dplyr::filter(REGION == "SEFCRI") %>%
-      dplyr::mutate(STRAT = paste(STRAT, RUG_CD, sep = ""),
-                    YEAR = 2016) %>%
-      dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
-      dplyr::mutate(ngrtot = sum(NTOT))
-
-    ntot18 <- FL_2018_NTOT %>%
-      dplyr::filter(REGION == "SEFCRI") %>%
-      dplyr::mutate(STRAT = paste(STRAT, RUG_CD, sep = "")) %>%
-      dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
-      dplyr::mutate(ngrtot = sum(NTOT))
+    ntot18 <- SEFL_2018_NTOT %>%
+      dplyr::mutate(STRAT = dplyr::case_when(STRAT == "PTSH2"~"NEAR1",
+                                             STRAT == "PTDP0"~"OFFR0",
+                                             STRAT == "PTDP1"~"OFFR1", TRUE ~ as.character(STRAT))) %>%
+      dplyr::group_by(YEAR, REGION, STRAT, PROT, GRID_SIZE) %>%
+      dplyr::summarise(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup() %>%
+      dplyr::filter(STRAT != "RGDP1" & STRAT != "RGDP0") %>%
+      dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "),
+                    ngrtot = sum(NTOT))
 
     # Combine NTOT files
     ntot <- rbind(ntot16, ntot14, ntot18)
@@ -150,7 +150,7 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
 
   if(region == "STTSTJ"){
 
-  ntot13 <- USVI_2019_NTOT %>%
+    ntot13 <- USVI_2021_NTOT %>%
       dplyr::filter(REGION == "STTSTJ",
                     STRAT != "HARD_SHLW") %>% # Hard shlw was not sampled in 2013
       dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
@@ -161,7 +161,7 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
                     PROT = NA_character_,
                     ngrtot = sum(NTOT))
 
-    ntot15 <- USVI_2019_NTOT %>%
+    ntot15 <- USVI_2021_NTOT %>%
       dplyr::filter(REGION == "STTSTJ") %>%
       dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
       dplyr::summarise(NTOT = sum(NTOT)) %>%
@@ -172,7 +172,7 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
                     ngrtot = sum(NTOT)) %>%
       dplyr::ungroup()
 
-    ntot17 <- USVI_2019_NTOT %>%
+    ntot17 <- USVI_2021_NTOT %>%
       dplyr::filter(REGION == "STTSTJ") %>%
       dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
       dplyr::summarise(NTOT = sum(NTOT)) %>%
@@ -183,7 +183,18 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
                     ngrtot = sum(NTOT)) %>%
       dplyr::ungroup()
 
-      ntot19 <- USVI_2019_NTOT %>%
+    ntot19 <- USVI_2021_NTOT %>%
+      dplyr::filter(REGION == "STTSTJ") %>%
+      dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
+      dplyr::summarise(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(YEAR = 2019,
+                    ANALYSIS_STRATUM = STRAT,
+                    PROT = NA_character_,
+                    ngrtot = sum(NTOT)) %>%
+      dplyr::ungroup()
+
+    ntot21 <- USVI_2021_NTOT %>%
       dplyr::filter(REGION == "STTSTJ") %>%
       dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
       dplyr::summarise(NTOT = sum(NTOT)) %>%
@@ -194,14 +205,14 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
       dplyr::ungroup()
 
 
-    ntot <- rbind(ntot13, ntot15, ntot17, ntot19)
+    ntot <- dplyr::bind_rows(ntot13, ntot15, ntot17, ntot19, ntot21)
 
 
   }
 
   if(region == "STX"){
 
-    ntot15 <- USVI_2019_NTOT %>%
+    ntot15 <- USVI_2021_NTOT %>%
       dplyr::filter(REGION == "STX",
                     STRAT != "HARD_SHLW", # Hard shlw was not sampled in 2015
                     STRAT != "HARD_DEEP") %>% # Hard deep was not sampled in 2015
@@ -213,7 +224,7 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
                     PROT = NA_character_,
                     ngrtot = sum(NTOT))
 
-    ntot17 <- USVI_2019_NTOT %>%
+    ntot17 <- USVI_2021_NTOT %>%
       dplyr::filter(REGION == "STX",
                     STRAT != "HARD_SHLW") %>%
       dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
@@ -224,7 +235,17 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
                     PROT = NA_character_,
                     ngrtot = sum(NTOT))
 
-    ntot19 <- USVI_2019_NTOT %>%
+    ntot19 <- USVI_2021_NTOT %>%
+      dplyr::filter(REGION == "STX") %>%
+      dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
+      dplyr::summarise(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(YEAR = 2019,
+                    ANALYSIS_STRATUM = STRAT,
+                    PROT = NA_character_,
+                    ngrtot = sum(NTOT))
+
+    ntot21 <- USVI_2021_NTOT %>%
       dplyr::filter(REGION == "STX") %>%
       dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
       dplyr::summarise(NTOT = sum(NTOT)) %>%
@@ -234,13 +255,13 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
                     ngrtot = sum(NTOT))
 
 
-    ntot <- rbind(ntot15, ntot17, ntot19)
+    ntot <- dplyr::bind_rows(ntot15, ntot17, ntot19, ntot21)
 
   }
 
   if(region == "PRICO"){
 
-    ntot14 <- PRICO_2019_NTOT %>%
+    ntot14 <- PRICO_2021_NTOT %>%
       dplyr::filter(STRAT != "HARD_DEEP", # Hard shlw was not sampled in 2014
                     STRAT != "HARD_SHLW") %>% # Hard deep was not sampled in 2014
       dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
@@ -251,7 +272,7 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
                     PROT = NA_character_,
                     ngrtot = sum(NTOT))
 
-    ntot16 <- PRICO_2019_NTOT %>%
+    ntot16 <- PRICO_2021_NTOT %>%
       dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
       dplyr::summarise(NTOT = sum(NTOT)) %>%
       dplyr::ungroup() %>%
@@ -260,7 +281,16 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
                     PROT = NA_character_,
                     ngrtot = sum(NTOT))
 
-    ntot19 <- PRICO_2019_NTOT %>%
+    ntot19 <- PRICO_2021_NTOT %>%
+      dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
+      dplyr::summarise(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(YEAR = 2019,
+                    ANALYSIS_STRATUM = STRAT,
+                    PROT = NA_character_,
+                    ngrtot = sum(NTOT))
+
+    ntot21 <- PRICO_2021_NTOT %>%
       dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
       dplyr::summarise(NTOT = sum(NTOT)) %>%
       dplyr::ungroup() %>%
@@ -268,7 +298,7 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
                     PROT = NA_character_,
                     ngrtot = sum(NTOT))
 
-    ntot <- rbind(ntot14, ntot16, ntot19)
+    ntot <- dplyr::bind_rows(ntot14, ntot16, ntot19, ntot21)
 
   }
 
@@ -390,7 +420,7 @@ NCRMP_make_weighted_invert_density_data <- function(inputdata, region)
   ## Domain Estimates
   Domain_est <- dens_est %>%
     dplyr::group_by(REGION, YEAR) %>%
-    dplyr::summarise(avDen = sum(whavden),
+    dplyr::summarise(avDen = sum(whavden, na.rm = T),
                      var = sum(whsvar, na.rm = T),
                      std = sqrt(var),
                      ngrtot = sum(NTOT) )

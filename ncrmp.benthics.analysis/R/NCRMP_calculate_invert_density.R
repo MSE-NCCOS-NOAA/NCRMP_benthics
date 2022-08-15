@@ -1,4 +1,4 @@
-## Function to calculate colony density and colony size structure for combined NCRMP and FRRP data
+## Function to calculate diadema density
 
 # Purpose:
 # creates csv files with colony density and colony size structure.
@@ -10,7 +10,7 @@
 
 # outputs created in this file --------------
 # diadema_density_site
-# unwh_diadema_density_strata
+# diadema_density_strata
 # Domain est
 
 
@@ -22,7 +22,7 @@
 #
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman
-# Last update: Mar 2020
+# Last update: Jul 2022
 
 
 ##############################################################################################################################
@@ -51,7 +51,7 @@ NCRMP_calculate_invert_density <- function(region) {
 
     dat_2stage <- SEFCRI_2014_2stage_inverts_ESAcorals
 
-    dat_1stage <- SEFCRI_2016_inverts_ESAcorals
+    dat_1stage <- dplyr::bind_rows(SEFCRI_2016_inverts_ESAcorals, SEFCRI_2018_inverts_ESAcorals, SEFCRI_2020_inverts_ESAcorals %>% dplyr::mutate(YEAR = 2020))
 
 
   }
@@ -75,9 +75,11 @@ NCRMP_calculate_invert_density <- function(region) {
 
     tmp3 <- Tortugas_2018_inverts_ESAcorals
 
-    dat_1stage <- rbind(tmp1, tmp2)
+    tmp4 <- Tortugas_2020_inverts_ESAcorals %>% dplyr::mutate(YEAR = 2020)
 
-    dat_2stage <- rbind(tmp3)
+    dat_1stage <- dplyr::bind_rows(tmp1, tmp2)
+
+    dat_2stage <- dplyr::bind_rows(tmp3, tmp4)
 
   }
 
@@ -100,8 +102,11 @@ NCRMP_calculate_invert_density <- function(region) {
     tmp4 <- USVI_2019_inverts_ESAcorals %>%
       dplyr::filter(REGION == "STTSTJ")
 
+    tmp5 <- USVI_2021_inverts_ESAcorals %>%
+      dplyr::filter(REGION == "STTSTJ")
+
     #Combine 1 stage or 2 stage data
-    dat_1stage <-dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4) %>%
+    dat_1stage <-dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4, tmp5) %>%
       dplyr::mutate(DIADEMA_NUM = as.numeric(DIADEMA_NUM))
 
 
@@ -120,8 +125,11 @@ NCRMP_calculate_invert_density <- function(region) {
     tmp3 <- USVI_2019_inverts_ESAcorals %>%
       dplyr::filter(REGION == "STX")
 
+    tmp4 <- USVI_2021_inverts_ESAcorals %>%
+      dplyr::filter(REGION == "STX")
+
     #Combine 1 stage or 2 stage data
-    dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3)
+    dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4)
 
 
   }
@@ -136,8 +144,10 @@ NCRMP_calculate_invert_density <- function(region) {
 
     tmp3 <- PRICO_2019_inverts_ESAcorals
 
+    tmp4 <- PRICO_2021_inverts_ESAcorals
+
     #Combine data
-    dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3) %>%
+    dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4) %>%
       dplyr::mutate(ANALYSIS_STRATUM = STRAT)
 
   }

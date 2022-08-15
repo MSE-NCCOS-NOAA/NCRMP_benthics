@@ -118,53 +118,51 @@ DRM_SCREAM_calculate_mortality <- function(project = "NULL", species_filter = "N
   }
 
 
-  if(project == "DRM"){
+  if(project == "DRM")
 
-    if(species_filter == "FALSE"||
-       species_filter == "NULL"){
 
-      # Load data
+    if(project == "SCREAM"){
 
-      dat <- preNCRMP_SCREAM_DRM_coral_demographics %>%
-        # Set LAT and LON to the same # of digits - helps with grouping
-        dplyr::mutate(LAT_DEGREES = sprintf("%0.5f", LAT_DEGREES),
-                      LON_DEGREES = sprintf("%0.5f", LON_DEGREES)) %>%
-        # Filter out Sand
-        dplyr::filter(STRAT != "SAND_NA",
-                      SURVEY == "DRM")
+
+      if(species_filter == "FALSE"||
+         species_filter == "NULL"){
+
+        # Load data
+
+        dat <- SCREAM_FL_1999_2015_2stage_coral_demographics %>%
+          # Set LAT and LON to the same # of digits - helps with grouping
+          dplyr::mutate(LAT_DEGREES = sprintf("%0.5f", LAT_DEGREES),
+                        LON_DEGREES = sprintf("%0.5f", LON_DEGREES),
+                        SURVEY = "SCREAM")
+
+      }
+
+      if(species_filter == "TRUE"){
+
+        dat <- SCREAM_FL_1999_2015_2stage_coral_demographics %>%
+          # Set LAT and LON to the same # of digits - helps with grouping
+          dplyr::mutate(LAT_DEGREES = sprintf("%0.5f", LAT_DEGREES),
+                        LON_DEGREES = sprintf("%0.5f", LON_DEGREES),
+                        SURVEY = "SCREAM")
+
+        # Subset by region and filter with region specific filter
+
+
+        FLK <- dat %>%
+          dplyr::filter(REGION == "FLK",
+                        SPECIES_CD %in% FLK_filter)
+
+        Tort <- dat %>%
+          dplyr::filter(REGION == "Tortugas",
+                        SPECIES_CD %in% Tort_filter)
+
+
+        dat <- dplyr::bind_rows(FLK, Tort)
+
+      }
 
     }
 
-    if(species_filter == "TRUE"){
-
-      dat <- preNCRMP_SCREAM_DRM_coral_demographics %>%
-        # Set LAT and LON to the same # of digits - helps with grouping
-        dplyr::mutate(LAT_DEGREES = sprintf("%0.5f", LAT_DEGREES),
-                      LON_DEGREES = sprintf("%0.5f", LON_DEGREES)) %>%
-        # Filter out Sand
-        dplyr::filter(STRAT != "SAND_NA",
-                      SURVEY == "DRM")
-
-      # Subset by region and filter with region specific filter
-
-      SEFCRI <- dat %>%
-        dplyr::filter(REGION == "SEFCRI",
-                      SPECIES_CD %in% SEFCRI_filter)
-
-      FLK <- dat %>%
-        dplyr::filter(REGION == "FLK",
-                      SPECIES_CD %in% FLK_filter)
-
-      Tort <- dat %>%
-        dplyr::filter(REGION == "Tortugas",
-                      SPECIES_CD %in% Tort_filter)
-
-
-      dat <- dplyr::bind_rows(SEFCRI, FLK, Tort)
-
-    }
-
-  }
 
 
   # Calculate mean mortality

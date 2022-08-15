@@ -9,9 +9,7 @@
 
 
 # outputs created in this file --------------
-# wh_richness_strata
-# unwh_richness_strata
-# comb_richness_strata
+# strata level means
 
 # Current weighting scheme:
 # STRAT + PROT
@@ -48,10 +46,8 @@ DRM_SCREAM_make_weighted_demo_data <- function(inputdata, datatype){
 
   #### Read in ntot ####
 
-  FL_NTOT <- FL_2018_NTOT %>%
-    # Combine rugosity cd and strat for SEFCRI
-    dplyr::mutate(STRAT = dplyr::case_when(REGION == "SEFCRI" ~ paste(STRAT, RUG_CD, sep = ""), TRUE ~
-                                             as.character(STRAT))) %>%
+  FL_NTOT <- dplyr::bind_rows(SEFL_2014_NTOT, FLK_2014_NTOT, Tort_2014_NTOT) %>%
+
     dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
 
   # Filter NTOT to only strata sampled that year
@@ -76,7 +72,7 @@ DRM_SCREAM_make_weighted_demo_data <- function(inputdata, datatype){
     Filter[[i]] = unique(a$ANALYSIS_STRATUM)
     assign(paste("Filter", i, sep = "_"), Filter[[i]])
 
-  ##### Create NTOT for each year - to do: Loop this!
+  ##### Create NTOT for each year
 
     ntot <- FL_NTOT %>%
       # Assign year
@@ -103,7 +99,10 @@ DRM_SCREAM_make_weighted_demo_data <- function(inputdata, datatype){
     dplyr::mutate(wh = NTOT/ngrtot) %>%
     # Add rugosity code
     dplyr::mutate(RUG_CD = dplyr::case_when(REGION == "SEFCRI" ~ as.character(substr(ANALYSIS_STRATUM, 5, 5)),
-                                            TRUE ~ NA_character_)) %>%
+                                            TRUE ~ NA_character_),
+                  REGION = dplyr::case_when(REGION == "FLA KEYS" ~ "FLK",
+                                            REGION == "DRY TORT" ~ "Tortugas",
+                                            REGION == "SEFCRI" ~ "SEFCRI")) %>%
     dplyr::mutate(PROT = as.factor(PROT),
                   RUG_CD = as.factor(RUG_CD))
 
@@ -206,7 +205,7 @@ DRM_SCREAM_make_weighted_demo_data <- function(inputdata, datatype){
     # Reformat output
 
     # strata_means
-    unwh_density_strata <-  density_est %>%
+    density_strata <-  density_est %>%
       dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, RUG_CD, PROT, n, avden, Var, SE, CV_perc) %>%
       dplyr::mutate(RUG_CD = as.factor(RUG_CD))
 
@@ -229,7 +228,7 @@ DRM_SCREAM_make_weighted_demo_data <- function(inputdata, datatype){
 
     # Create list to export
     output <- list(
-      "density_strata" = unwh_density_strata,
+      "density_strata" = density_strata,
       "Domain_est" = Domain_est)
 
     return(output)

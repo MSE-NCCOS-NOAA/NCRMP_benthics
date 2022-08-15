@@ -340,6 +340,25 @@ import_grids <- function (region, year){
       output <- list("sampling_grid" = STTSTJ_2019_sample_frame_WGS1984, "strata_ntot" = strata_ntot)
       return(output)
     }
+
+    if(year == 2021) {
+
+      # read the final sample frame feature class
+      STTSTJ_2021_sample_frame <- readOGR(dsn="K:\\_BioGeoProjects\\NCRMP\\2021_Missions\\St_John_St_Thomas_2021\\Sample_Design\\Final_Sample_Design", layer="STTSTJ_2021_SAMPLE_FRAME")
+      #summary(STTSTJ_2021_sample_frame)
+
+      # reproject to WGS 1984
+      STTSTJ_2021_sample_frame_WGS1984 <- spTransform(STTSTJ_2021_sample_frame, crs.wgs84)
+
+
+      # Add grid and allocation NTOT to QAQC package
+      usethis::use_data(STTSTJ_2021_sample_frame_WGS1984,  overwrite = TRUE)
+
+      # return output
+      output <- list("sampling_grid" = STTSTJ_2019_sample_frame_WGS1984)
+      return(output)
+    }
+
   }
 
   if(region == "STX") {
@@ -465,6 +484,22 @@ import_grids <- function (region, year){
       return(output)
     }
 
+    if(year == 2021) {
+
+      # load the sample frame R data file created during the sample allocation process
+      load("K:/_BioGeoProjects/NCRMP/Data Analysis/FY21/USVI 2021/grids/STX_2021_sample_frame_WGS1984.Rdata")
+      #summary(STTSTJ_2021_sample_frame)
+
+
+      # Add grid and allocation NTOT to QAQC package
+      usethis::use_data(STX_2021_sample_frame_WGS1984,  overwrite = TRUE)
+
+      # return output
+      output <- list("sampling_grid" = STTSTJ_2019_sample_frame_WGS1984)
+      return(output)
+    }
+
+
 
   }
 
@@ -582,3 +617,5 @@ import_grids <- function (region, year){
 
 
 }
+
+

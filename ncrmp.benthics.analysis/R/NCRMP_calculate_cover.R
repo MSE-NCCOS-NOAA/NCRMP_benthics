@@ -44,128 +44,7 @@
 
 NCRMP_calculate_cover <- function(region){
 
-  # Load analysis ready (AR) data
-  # Florida
-
-  if(region == "SEFCRI"){
-
-      dat1 <- SEFCRI_2014_2stage_benthic_cover
-
-      dat2 <- SEFCRI_2016_benthic_cover
-
-      dat3 <- SEFCRI_2018_benthic_cover
-
-      dat <- dplyr::bind_rows(dat1, dat2, dat3) %>%
-        dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
-
-  }
-
-  if(region == "FLK"){
-
-    dat1 <- FLK_2014_2stage_benthic_cover %>%
-      dplyr::mutate(YEAR = 2014)
-
-    dat2 <- FLK_2016_benthic_cover
-
-    dat3 <- FLK_2018_benthic_cover
-
-    dat <- dplyr::bind_rows(dat1, dat2, dat3) %>%
-      dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
-
-  }
-
-  if(region == "Tortugas"){
-
-    dat1 <- TortugasMarq_2014_benthic_cover
-
-    dat2 <- TortugasMarq_2016_benthic_cover
-
-    dat3 <- Tortugas_2018_benthic_cover
-
-    dat <- dplyr::bind_rows(dat1, dat2, dat3) %>%
-      dplyr::filter(SUB_REGION_NAME != "Marquesas",
-                    SUB_REGION_NAME != "Marquesas-Tortugas Trans") %>%
-      dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
-
-  }
-
-  # GOM / Carib
-
-  if(region == "STTSTJ"){
-
-
-      dat1 <- USVI_2013_benthic_cover %>%
-        dplyr::filter(REGION == "STTSTJ")
-
-      dat2 <- USVI_2015_benthic_cover %>%
-        dplyr::filter(REGION == "STTSTJ")
-
-      dat3 <- USVI_2017_benthic_cover %>%
-        dplyr::filter(REGION == "STTSTJ")
-
-      dat4 <- USVI_2019_benthic_cover %>%
-        dplyr::filter(REGION == "STTSTJ")
-
-      dat <- dplyr::bind_rows(dat1, dat2, dat3, dat4) %>%
-          dplyr::mutate(ANALYSIS_STRATUM = STRAT)
-
-    }
-
-  if(region == "STX"){
-
-
-      dat2 <- USVI_2015_benthic_cover %>%
-        dplyr::filter(REGION == "STX")
-
-      dat3 <- USVI_2017_benthic_cover %>%
-        dplyr::filter(REGION == "STX")
-
-      dat4 <- USVI_2019_benthic_cover %>%
-        dplyr::filter(REGION == "STX")
-
-      dat <- dplyr::bind_rows(dat2, dat3, dat4) %>%
-          dplyr::mutate(ANALYSIS_STRATUM = STRAT)
-
-  }
-
-  if(region == "PRICO"){
-
-      dat1 <- PRICO_2014_benthic_cover
-
-      dat2 <- PRICO_2016_benthic_cover %>%
-        dplyr::mutate(YEAR = 2016)
-
-      dat3 <- PRICO_2019_benthic_cover
-
-      dat <- dplyr::bind_rows(dat1, dat2, dat3) %>%
-          dplyr::mutate(ANALYSIS_STRATUM = STRAT)
-
-  }
-
-  if(region == "GOM"){
-
-    if(year == 2013){
-
-      dat <- FGBNMS_2013_benthic_cover %>%
-        dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS")
-
-    }
-
-    if(year == 2015) {
-
-      dat <- FGBNMS_2015_benthic_cover %>%
-        dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS")
-
-    }
-
-    if(year == 2018) {
-
-      dat <- FGBNMS_2018_benthic_cover  %>%
-        dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS")
-
-    }
-  }
-
+  dat <- load_NCRMP_benthic_cover_data(region = region)
 
   # Load species list
 
@@ -181,10 +60,19 @@ NCRMP_calculate_cover <- function(region){
                                                  species_name == "Turf Algae Free of Sediment" ~ "TURF ALGAE",
                                                  species_name == "Turf Algae with Sediment" ~ "TURF ALGAE",
                                                  cover_group == "ALGAE" ~ "MACROALGAE",
-                                                 TRUE ~ cover_group))
+                                                 TRUE ~ cover_group)) %>%
+    dplyr::filter(species_name != "Undaria spp")
 
 
   cover_group_key <-  ncrmp_frrp_sppcodes2
+
+  # Create a dataframe with site level mean depths, we will add this back in later
+
+  depth <- dat %>%
+    dplyr::ungroup() %>%
+    dplyr::group_by(REGION, YEAR, PRIMARY_SAMPLE_UNIT) %>%
+      dplyr::summarise(MIN_DEPTH = mean(MIN_DEPTH),
+                       MAX_DEPTH = mean(MAX_DEPTH))
 
 
   # Calculate percent cover of species by site
@@ -194,7 +82,9 @@ NCRMP_calculate_cover <- function(region){
      region == "Tortugas") {
 
     percent_cover_species <- dat %>%
-      dplyr::mutate(Percent_Cvr = rowSums(.[28:30])) %>%
+      dplyr::mutate(Percent_Cvr = rowSums(.[28:30]),
+                    LAT_DEGREES = sprintf("%0.4f", LAT_DEGREES),
+                    LON_DEGREES = sprintf("%0.4f", LON_DEGREES)) %>%
       dplyr::inner_join(.,ncrmp_frrp_sppcodes2,  by = c( "COVER_CAT_CD" = "fl_ncrmp_code")) %>%
       dplyr::select(-HARDBOTTOM_P, -SOFTBOTTOM_P, -RUBBLE_P) %>%
       dplyr::mutate(PROT = as.factor(PROT)) %>%
@@ -207,17 +97,19 @@ NCRMP_calculate_cover <- function(region){
       dplyr::ungroup() %>%
       dplyr::mutate(Percent_Cvr = Percent_Cvr_site) %>%
       dplyr::select(REGION, YEAR, MONTH, DAY, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES,
-                    ANALYSIS_STRATUM, STRAT, HABITAT_CD, PROT, MIN_DEPTH, MAX_DEPTH, COVER_CAT_CD, COVER_CAT_NAME, cover_group, Percent_Cvr)
+                    MIN_DEPTH, MAX_DEPTH, ANALYSIS_STRATUM, STRAT, HABITAT_CD, PROT, COVER_CAT_CD, COVER_CAT_NAME, cover_group, Percent_Cvr)
 
   } else {
 
     percent_cover_species <- dat %>%
-      dplyr::mutate(Percent_Cvr = rowSums(.[28:30])) %>%
+      dplyr::mutate(Percent_Cvr = rowSums(.[28:30]),
+                    LAT_DEGREES = sprintf("%0.4f", LAT_DEGREES),
+                    LON_DEGREES = sprintf("%0.4f", LON_DEGREES)) %>%
       dplyr::inner_join(.,ncrmp_frrp_sppcodes2,  by = c( "COVER_CAT_CD" = "fl_ncrmp_code")) %>%
       dplyr::select(-HARDBOTTOM_P, -SOFTBOTTOM_P, -RUBBLE_P) %>%
-      dplyr::mutate(PROT = as.factor(PROT)) %>%
+      dplyr::mutate(PROT = NA) %>%
       dplyr::select(REGION, YEAR, MONTH, DAY, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES,
-                    ANALYSIS_STRATUM, STRAT, HABITAT_CD, PROT, MIN_DEPTH, MAX_DEPTH, COVER_CAT_CD, COVER_CAT_NAME, cover_group, Percent_Cvr)
+                    MIN_DEPTH, MAX_DEPTH, ANALYSIS_STRATUM, STRAT, HABITAT_CD, PROT, COVER_CAT_CD, COVER_CAT_NAME, cover_group, Percent_Cvr)
 
   }
 
@@ -228,8 +120,8 @@ NCRMP_calculate_cover <- function(region){
     dplyr::inner_join(.,ncrmp_frrp_sppcodes2,  by = c( "COVER_CAT_CD" = "fl_ncrmp_code")) %>%
     dplyr::select(-HARDBOTTOM_P, -SOFTBOTTOM_P, -RUBBLE_P) %>%
     dplyr::mutate(PROT = as.factor(PROT)) %>%
-    dplyr::group_by(YEAR, REGION, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, STATION_NR, LAT_DEGREES, LON_DEGREES,
-                    MIN_DEPTH, MAX_DEPTH, ANALYSIS_STRATUM, STRAT, HABITAT_CD, PROT, cover_group) %>%
+    dplyr::group_by(YEAR, REGION, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, STATION_NR, LAT_DEGREES, LON_DEGREES,
+                    ANALYSIS_STRATUM, STRAT, HABITAT_CD, PROT, cover_group) %>%
     dplyr::summarise(Percent_Cvr = sum(Percent_Cvr)) %>%
     dplyr::ungroup()
 
@@ -256,19 +148,21 @@ NCRMP_calculate_cover <- function(region){
      region == "Tortugas") {
 
     dat2 <- dat2 %>%
-      dplyr::group_by(YEAR, REGION, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES,
+      dplyr::group_by(YEAR, REGION, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, STATION_NR, LAT_DEGREES, LON_DEGREES,
                       ANALYSIS_STRATUM, STRAT, HABITAT_CD, PROT, cover_group) %>%
-      dplyr::summarise(Percent_Cvr = mean(Percent_Cvr),
-                       MIN_DEPTH = mean(MIN_DEPTH),
-                       MAX_DEPTH = mean(MAX_DEPTH)) %>%
+      dplyr::summarise(Percent_Cvr = sum(Percent_Cvr)) %>%
+      dplyr::ungroup() %>%
+      dplyr::group_by(YEAR, REGION, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES,
+                      ANALYSIS_STRATUM, STRAT, HABITAT_CD, PROT, cover_group) %>%
+      dplyr::summarise(Percent_Cvr = mean(Percent_Cvr)) %>%
       dplyr::ungroup()
 
 
   } else{
 
     dat2 <- dat2 %>%
-      dplyr::group_by(YEAR, REGION, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES,
-                      MIN_DEPTH, MAX_DEPTH, ANALYSIS_STRATUM, STRAT, HABITAT_CD, PROT, cover_group) %>%
+      dplyr::group_by(YEAR, REGION, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES,
+                      ANALYSIS_STRATUM, STRAT, HABITAT_CD, PROT, cover_group) %>%
       dplyr::summarise(Percent_Cvr = sum(Percent_Cvr)) %>%
       dplyr::ungroup()
   }
@@ -279,7 +173,7 @@ NCRMP_calculate_cover <- function(region){
                         "RAMICRUSTA SPP.")
 
   # make unique sites df
-  allsites <- unique(dat2[, c("YEAR", "REGION", "SUB_REGION_NAME", "PRIMARY_SAMPLE_UNIT","MIN_DEPTH","MAX_DEPTH",
+  allsites <- unique(dat2[, c("YEAR", "REGION", "SUB_REGION_NAME", 'ADMIN', "PRIMARY_SAMPLE_UNIT",
                               "LAT_DEGREES", "LON_DEGREES", "ANALYSIS_STRATUM", "STRAT", "HABITAT_CD", "PROT")])
 
   # create empty dataframe with same column names as the demo data frame
@@ -301,9 +195,12 @@ NCRMP_calculate_cover <- function(region){
 
   dat2 <- PA %>%
     dplyr::mutate(n = dplyr::case_when(Percent_Cvr > 0 ~ 1, TRUE ~ 0)) %>%
-    dplyr::ungroup()
+    dplyr::ungroup() %>%
+    dplyr::left_join(., depth)
 
-  percent_cover_site <- dat2
+  percent_cover_site <- dat2 %>%
+      dplyr::select(REGION, YEAR, SUB_REGION_NAME, ADMIN,  PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES,
+                    MIN_DEPTH, MAX_DEPTH, ANALYSIS_STRATUM, STRAT,  HABITAT_CD, PROT, cover_group, Percent_Cvr, n)
 
   # site level totals are ~100% (may not be exact for 2 transect data where means are taken)
   cover_check_site <- percent_cover_site %>%
