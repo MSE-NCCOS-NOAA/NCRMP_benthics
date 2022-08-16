@@ -4,12 +4,7 @@
 \alias{NCRMP_DRM_calculate_mortality}
 \title{Creates colony mortality summary dataframes}
 \usage{
-NCRMP_DRM_calculate_mortality(
-  project,
-  region,
-  species_filter = "NULL",
-  analysis_strat = "NULL"
-)
+NCRMP_DRM_calculate_mortality(project, region, species_filter = "NULL")
 }
 \arguments{
 \item{project}{A string indicating the project, NCRMP or NCRMP and DRM combined}
@@ -17,8 +12,6 @@ NCRMP_DRM_calculate_mortality(
 \item{region}{A string indicating the region}
 
 \item{species_filter}{A boolean value indicating whether to filter to a subset of species}
-
-\item{analysis_strat}{A string indicating the analysis level strata}
 }
 \value{
 A dataframe
