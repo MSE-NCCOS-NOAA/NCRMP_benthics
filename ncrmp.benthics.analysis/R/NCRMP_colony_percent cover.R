@@ -21,7 +21,7 @@
 #
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman
-# Last update: Oct 2021
+# Last update: Aug 2022
 
 
 ##############################################################################################################################
@@ -57,7 +57,7 @@ NCRMP_colony_percent_cover <- function(region, ptitle, file_path){
   if(region == "FLK"){
 
     tmp <- NCRMP_make_weighted_species_coral_cover_data(region = region,
-                                                        sppcvr = NCRMP_FLK_2014_20_percent_cover_species)
+                                                        sppcvr = NCRMP_FLK_2014_18_percent_cover_species)
   }
 
 

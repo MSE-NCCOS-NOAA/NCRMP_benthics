@@ -22,7 +22,7 @@
 #
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman
-# Last update: Nov 2021
+# Last update: Aug 2022
 
 
 ##############################################################################################################################
@@ -50,37 +50,25 @@ NCRMP_make_weighted_species_coral_cover_data <- function(region, sppcvr) {
                     inputdata = sppcvr,
                     project = "NCRMP")
 
-
-
-  ## coral data processing
-  species_cvr_wide <- sppcvr %>%
-    # select hard corals only
-    dplyr::filter(cover_group == "HARD CORALS") %>%
-    # filter out spp columns
-    dplyr::filter(
-      COVER_CAT_NAME != "Solenastrea spp",
-      COVER_CAT_NAME != "Siderastrea spp",
-      COVER_CAT_NAME != "Scolymia spp",
-      COVER_CAT_NAME != "Agaricia spp",
-      COVER_CAT_NAME != "Orbicella spp",
-      COVER_CAT_NAME != "Madracis spp",
-      COVER_CAT_NAME != "Other coral",
-      COVER_CAT_NAME != "Isophyllia spp",
-      COVER_CAT_NAME != "Porites spp",
-      COVER_CAT_NAME != "Meandrina spp",
-      COVER_CAT_NAME != "Pseudodiploria spp",
-      COVER_CAT_NAME != "Orbicella annularis species complex") %>%
-    # add in zeros for species that didn't occur per site. Easiest to flip to wide format ( 1 row per site) for this
-    # dplyr::select(REGION, YEAR, PRIMARY_SAMPLE_UNIT, SPECIES_NAME, DENSITY) %>%
-    dplyr::select(-COVER_CAT_CD) %>%
-    tidyr::spread(., COVER_CAT_NAME, Percent_Cvr,
-                  fill = 0)
-
-  species_cvr_long <- tidyr::gather(species_cvr_wide, SPECIES_NAME, cvr, 17:ncol(species_cvr_wide))
-
   ## Calculate weighted means and cv
   # strata_means
-  strata_means <- species_cvr_long %>%
+  strata_means <- sppcvr %>%
+    dplyr::filter(cover_group == "HARD CORALS") %>%
+    dplyr::filter(COVER_CAT_NAME != "Solenastrea spp",
+                  COVER_CAT_NAME != "Siderastrea spp",
+                  COVER_CAT_NAME != "Scolymia spp",
+                  COVER_CAT_NAME != "Agaricia spp",
+                  COVER_CAT_NAME != "Orbicella spp",
+                  COVER_CAT_NAME != "Madracis spp",
+                  COVER_CAT_NAME != "Other coral",
+                  COVER_CAT_NAME != "Isophyllia spp",
+                  COVER_CAT_NAME != "Porites spp",
+                  COVER_CAT_NAME != "Meandrina spp",
+                  COVER_CAT_NAME != "Pseudodiploria spp",
+                  COVER_CAT_NAME != "Orbicella annularis species complex",
+                  COVER_CAT_NAME != "Tubastraea coccinea") %>%
+    dplyr::mutate(SPECIES_NAME = COVER_CAT_NAME,
+                  cvr = Percent_Cvr) %>%
     dplyr::group_by(REGION, YEAR, SPECIES_NAME, ANALYSIS_STRATUM, HABITAT_CD) %>%  # removed  DEPTH_STRAT, b/c it's in STRAT_ANALYSIS
     # sample variance of density in stratum
     dplyr::summarize(mean = mean(cvr),
@@ -120,7 +108,23 @@ NCRMP_make_weighted_species_coral_cover_data <- function(region, sppcvr) {
     dplyr::select(REGION, YEAR, STRAT_ANALYSIS, SPECIES_NAME, avCvr, Var, SE, CV_perc, CV, n_sites, HABITAT_CD, DEPTH_STRAT)
 
   # Calculate n sites present for each species
-  strata_presence <- species_cvr_long %>%
+  strata_presence <- sppcvr %>%
+    dplyr::filter(cover_group == "HARD CORALS") %>%
+    dplyr::filter(COVER_CAT_NAME != "Solenastrea spp",
+                  COVER_CAT_NAME != "Siderastrea spp",
+                  COVER_CAT_NAME != "Scolymia spp",
+                  COVER_CAT_NAME != "Agaricia spp",
+                  COVER_CAT_NAME != "Orbicella spp",
+                  COVER_CAT_NAME != "Madracis spp",
+                  COVER_CAT_NAME != "Other coral",
+                  COVER_CAT_NAME != "Isophyllia spp",
+                  COVER_CAT_NAME != "Porites spp",
+                  COVER_CAT_NAME != "Meandrina spp",
+                  COVER_CAT_NAME != "Pseudodiploria spp",
+                  COVER_CAT_NAME != "Orbicella annularis species complex",
+                  COVER_CAT_NAME != "Tubastraea coccinea") %>%
+    dplyr::mutate(SPECIES_NAME = COVER_CAT_NAME,
+                  cvr = Percent_Cvr) %>%
     # remove sites where species not present
     dplyr::filter(cvr > 0) %>%
     dplyr::group_by(REGION, YEAR, SPECIES_NAME, ANALYSIS_STRATUM, HABITAT_CD) %>%

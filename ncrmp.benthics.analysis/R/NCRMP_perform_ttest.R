@@ -187,7 +187,12 @@ if(n_years > 4) {
   #       if metric_2 is within the confidence interval of metric_1 (return True/False)
   t1 <- c(in_range(x = d[1,][metric2], lower = d[2,]$LCI, upper = d[2,]$UCI), in_range(x = d[2,][metric2], lower = d[1,]$LCI, upper = d[1,]$UCI))
   t2 <- c(in_range(x = d[1,][metric2], lower = d[3,]$LCI, upper = d[3,]$UCI), in_range(x = d[3,][metric2], lower = d[1,]$LCI, upper = d[1,]$UCI))
-  t3 <- c(in_range(x = d[2,][metric2], lower = d[3,]$LCI, upper = d[3,]$UCI), in_range(x = d[3,][metric2], lower = d[2,]$LCI, upper = d[2,]$UCI))
+  t3 <- c(in_range(x = d[1,][metric2], lower = d[4,]$LCI, upper = d[4,]$UCI), in_range(x = d[4,][metric2], lower = d[1,]$LCI, upper = d[1,]$UCI))
+
+  t4 <- c(in_range(x = d[2,][metric2], lower = d[3,]$LCI, upper = d[3,]$UCI), in_range(x = d[3,][metric2], lower = d[2,]$LCI, upper = d[2,]$UCI))
+  t5 <- c(in_range(x = d[2,][metric2], lower = d[4,]$LCI, upper = d[4,]$UCI), in_range(x = d[4,][metric2], lower = d[2,]$LCI, upper = d[2,]$UCI))
+
+  t6 <- c(in_range(x = d[3,][metric2], lower = d[4,]$LCI, upper = d[4,]$UCI), in_range(x = d[4,][metric2], lower = d[3,]$LCI, upper = d[3,]$UCI))
 
   return_test <- function(){
     if(any(t1==T)) {
@@ -201,18 +206,31 @@ if(n_years > 4) {
       print(paste(metric2, d[1,2], d[3,2], "Significantly different p <", alpha))
     }
     if(any(t3==T)) {
+      print(paste(metric2, d[1,2], d[4,2],  "NOT significant at alpha = ", alpha))
+    } else {
+      print(paste(metric2, d[1,2], d[4,2], "Significantly different p <", alpha))
+    }
+    if(any(t4==T)) {
       print(paste(metric2, d[2,2], d[3,2],  "NOT significant at alpha = ", alpha))
     } else {
       print(paste(metric2, d[2,2], d[3,2], "Significantly different p <", alpha))
     }
+    if(any(t5==T)) {
+      print(paste(metric2, d[2,2], d[4,2],  "NOT significant at alpha = ", alpha))
+    } else {
+      print(paste(metric2, d[2,2], d[4,2], "Significantly different p <", alpha))
+    }
+    if(any(t6==T)) {
+      print(paste(metric2, d[3,2], d[4,2],  "NOT significant at alpha = ", alpha))
+    } else {
+      print(paste(metric2, d[3,2], d[4,2], "Significantly different p <", alpha))
+    }
+
 
   }
 
-
-
-
-
 }
+
 
   # Return dataframe (d) if return_datafram = T, otherwise return test output
   ifelse(return_dataframe == FALSE ||

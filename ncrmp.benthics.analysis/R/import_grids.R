@@ -178,6 +178,25 @@ import_grids <- function (region, year){
       return(output)
     }
 
+    if(year == 2021) {
+
+      # read the final sample frame feature class
+      PRICO_2021_sample_frame <- readOGR(dsn="K:\\_BioGeoProjects\\NCRMP\\2021_Missions\\Puerto_Rico_2021\\Sample_Design\\Final_Sample_Design", layer="PR2021_SAMPLE_FRAME")
+      #summary(PRICO_2021_sample_frame)
+
+      # reproject to WGS 1984
+      PRICO_2021_sample_frame_WGS1984 <- spTransform(PRICO_2021_sample_frame, crs.wgs84)
+
+
+      # Add grid and allocation NTOT to QAQC package
+      usethis::use_data(PRICO_2021_sample_frame_WGS1984,  overwrite = TRUE)
+
+      # return output
+      output <- list("sampling_grid" = PRICO_2021_sample_frame_WGS1984)
+      return(output)
+    }
+
+
   }
 
   ##### St. Thomas / St. John ######
@@ -355,7 +374,7 @@ import_grids <- function (region, year){
       usethis::use_data(STTSTJ_2021_sample_frame_WGS1984,  overwrite = TRUE)
 
       # return output
-      output <- list("sampling_grid" = STTSTJ_2019_sample_frame_WGS1984)
+      output <- list("sampling_grid" = STTSTJ_2021_sample_frame_WGS1984)
       return(output)
     }
 

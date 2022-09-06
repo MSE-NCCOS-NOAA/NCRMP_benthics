@@ -57,11 +57,12 @@ NCRMP_DRM_calculate_mean_colony_size <- function(project = "NULL", region, speci
      project == "NCRMP" && region == "Tortugas") {
 
     size_species_1stage <- dat_1stage %>%
+      dplyr::mutate(total_mort = OLD_MORT + RECENT_MORT) %>%
       dplyr::filter(SUB_REGION_NAME != "Marquesas",
                     SUB_REGION_NAME != "Marquesas-Tortugas Trans",
                     N == 1,
                     JUV == 0,
-                    (OLD_MORT + RECENT_MORT) != 100) %>%
+                    total_mort < 100) %>%
 
       dplyr::mutate(size_2d = ((MAX_DIAMETER*PERP_DIAMETER)/2)-(((MAX_DIAMETER*PERP_DIAMETER)/2)*(OLD_MORT+RECENT_MORT)/100),
                     # equation for surface area of half of an ellipsoid
@@ -77,11 +78,12 @@ NCRMP_DRM_calculate_mean_colony_size <- function(project = "NULL", region, speci
       dplyr::ungroup()
 
     size_site_1stage <- dat_1stage %>%
+      dplyr::mutate(total_mort = OLD_MORT + RECENT_MORT) %>%
       dplyr::filter(SUB_REGION_NAME != "Marquesas",
                     SUB_REGION_NAME != "Marquesas-Tortugas Trans",
                     N == 1,
                     JUV == 0,
-                    (OLD_MORT + RECENT_MORT) != 100) %>%
+                    total_mort < 100) %>%
 
       dplyr::mutate(size_2d = ((MAX_DIAMETER*PERP_DIAMETER)/2)-(((MAX_DIAMETER*PERP_DIAMETER)/2)*(OLD_MORT+RECENT_MORT)/100),
                     # equation for surface area of half of an ellipsoid
@@ -98,11 +100,12 @@ NCRMP_DRM_calculate_mean_colony_size <- function(project = "NULL", region, speci
 
 
     size_species_2stage <- dat_2stage %>%
+      dplyr::mutate(total_mort = OLD_MORT + RECENT_MORT) %>%
       dplyr::filter(SUB_REGION_NAME != "Marquesas",
                     SUB_REGION_NAME != "Marquesas-Tortugas Trans",
                     N == 1,
                     JUV == 0,
-                    (OLD_MORT + RECENT_MORT) != 100) %>%
+                    total_mort < 100) %>%
 
       dplyr::mutate(size_2d = ((MAX_DIAMETER*PERP_DIAMETER)/2)-(((MAX_DIAMETER*PERP_DIAMETER)/2)*(OLD_MORT+RECENT_MORT)/100),
                     # equation for surface area of half of an ellipsoid
@@ -126,11 +129,12 @@ NCRMP_DRM_calculate_mean_colony_size <- function(project = "NULL", region, speci
 
 
     size_site_2stage <- dat_2stage %>%
+      dplyr::mutate(total_mort = OLD_MORT + RECENT_MORT) %>%
       dplyr::filter(SUB_REGION_NAME != "Marquesas",
                     SUB_REGION_NAME != "Marquesas-Tortugas Trans",
                     N == 1,
                     JUV == 0,
-                    (OLD_MORT + RECENT_MORT) != 100) %>%
+                    total_mort < 100) %>%
 
       dplyr::mutate(size_2d = ((MAX_DIAMETER*PERP_DIAMETER)/2)-(((MAX_DIAMETER*PERP_DIAMETER)/2)*(OLD_MORT+RECENT_MORT)/100),
                     # equation for surface area of half of an ellipsoid
@@ -159,11 +163,12 @@ NCRMP_DRM_calculate_mean_colony_size <- function(project = "NULL", region, speci
   } else {
 
     size_species <- dat_1stage %>%
+      dplyr::mutate(total_mort = OLD_MORT + RECENT_MORT) %>%
       dplyr::filter(SUB_REGION_NAME != "Marquesas",
                     SUB_REGION_NAME != "Marquesas-Tortugas Trans",
                     N == 1,
                     JUV == 0,
-                    (OLD_MORT + RECENT_MORT) != 100) %>%
+                    total_mort < 100) %>%
 
       dplyr::mutate(size_2d = ((MAX_DIAMETER*PERP_DIAMETER)/2)-(((MAX_DIAMETER*PERP_DIAMETER)/2)*(OLD_MORT+RECENT_MORT)/100),
         # equation for surface area of half of an ellipsoid
@@ -180,21 +185,22 @@ NCRMP_DRM_calculate_mean_colony_size <- function(project = "NULL", region, speci
 
 
     size_site <- dat_1stage %>%
+      dplyr::mutate(total_mort = OLD_MORT + RECENT_MORT) %>%
       dplyr::filter(SUB_REGION_NAME != "Marquesas",
                     SUB_REGION_NAME != "Marquesas-Tortugas Trans",
                     N == 1,
                     JUV == 0,
-                    (OLD_MORT + RECENT_MORT) != 100) %>%
+                    total_mort < 100) %>%
 
       dplyr::mutate(size_2d = ((MAX_DIAMETER*PERP_DIAMETER)/2)-(((MAX_DIAMETER*PERP_DIAMETER)/2)*(OLD_MORT+RECENT_MORT)/100),
                     # equation for surface area of half of an ellipsoid
                     size_3d = (4*pi*(((((MAX_DIAMETER/2)*(PERP_DIAMETER/2)) + ((MAX_DIAMETER/2)*(HEIGHT/2)) + ((MAX_DIAMETER/2*(HEIGHT/2))))/3)^1/p)/2)) %>%
 
       dplyr::group_by(REGION, SURVEY, YEAR, SUB_REGION_NAME, ADMIN, PROT, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, METERS_COMPLETED) %>%
-      dplyr::summarise(avg_cm2 = mean(size_2d),
-                       avg_cm3 = mean(size_3d),
-                       var_cm2 = var(size_2d),
-                       var_cm3 = var(size_3d),
+      dplyr::summarise(avg_cm2 = mean(size_2d, na.rm=T),
+                       avg_cm3 = mean(size_3d, na.rm=T),
+                       var_cm2 = var(size_2d, na.rm=T),
+                       var_cm3 = var(size_3d, na.rm=T),
                        n_colonies = length(unique(size_3d)),
                        DEPTH_M = mean(MAX_DEPTH), .groups = "keep") %>%
       dplyr::ungroup()
