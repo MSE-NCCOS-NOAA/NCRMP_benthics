@@ -7,6 +7,8 @@ The ncrmp.benthic.analysis package is designed to use benthic data collected fro
 
 2. House all current NCRMP benthic data ranging from analysis ready data to regional domain estimates in a standardized format. This includes all metrics listed in item #1 calculated at the site, strata and regional level as well as most recent sampling grids and NTOT files. 
 
+Citation: Groves SH, Viehman TS. 2023. ncrmp.benthic.analysis (R package version 1.0.0.0002). [date accessed ]. https://github.com/MSE-NCCOS-NOAA/NCRMP_benthics
+
 # Installation using devtools: 
 
 1. Download the zipped R package using the green "Clone or download" button.
