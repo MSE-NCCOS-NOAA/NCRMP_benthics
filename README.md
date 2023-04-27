@@ -11,7 +11,7 @@ Citation: Groves SH, Viehman TS. 2023. ncrmp.benthic.analysis (R package version
 
 # Installation using devtools: 
 
-1. Download the zipped R package using the green "Clone or download" button.
+1. Download the zipped R package using the green "Clone or download" button. Unzip the file to the location of your choice. If you do not unzip the file, the following steps will not work!
 
 2. In R studio, open the ncrmp.benthics.analysis R project in the folder of the same name and use the following code to install the package. You must be in the ncrmp.benthics.analysis R project. If you aleady have devtools installed you can skip the first line. 
 
