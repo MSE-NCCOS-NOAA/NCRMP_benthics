@@ -7,7 +7,7 @@
 load_NCRMP_DRM_demo_data(project = "NULL", region, species_filter = "NULL")
 }
 \arguments{
-\item{project}{A string indicating the project, NCRMP or NCRMP and DRM combined}
+\item{project}{A string indicating the project, NCRMP, NCRMP and DRM combined, or MIR. Default is NCRMP.}
 
 \item{region}{A string indicating the region}
 

@@ -7,8 +7,9 @@
 NCRMP_colony_density_CV_and_occurrence(
   region,
   ptitle,
-  file_path,
-  species_filter = "NULL"
+  file_path = "NULL",
+  species_filter = "NULL",
+  project = "NULL"
 )
 }
 \arguments{

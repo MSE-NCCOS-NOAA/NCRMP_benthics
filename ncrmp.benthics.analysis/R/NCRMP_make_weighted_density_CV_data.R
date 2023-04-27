@@ -22,7 +22,7 @@
 #
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman
-# Last update: March 2022
+# Last update: Feb 2023
 
 
 ##############################################################################################################################
@@ -33,6 +33,8 @@
 #'
 #'
 #' @param region A string indicating the region
+#' @param sppden A dataframe
+#' @param project A string indicating the project, "NCRMP", "DRM", or "MIR"
 #' @return A dataframe
 #' @importFrom magrittr "%>%"
 #' @importFrom dplyr "mutate"
@@ -43,11 +45,11 @@
 
 
 # function to Calculate weights based on the most recent sampling grid
-NCRMP_make_weighted_density_CV_data <- function(region, sppdens) {
+NCRMP_make_weighted_density_CV_data <- function(region, sppdens, project = "NULL") {
 
   ntot <- load_NTOT(region = region,
                     inputdata = sppdens,
-                    project = "NULL")
+                    project = project)
 
   ## coral data processing
   species_dens_wide <- sppdens %>%

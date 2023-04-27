@@ -24,7 +24,7 @@
 #
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman
-# Last update: Aug 2022
+# Last update: Feb 2023
 
 
 ##############################################################################################################################
@@ -35,6 +35,7 @@
 #'
 #'
 #' @param region A string indicating the region
+#' @param project A string indicating the project: "NCRMP" or "MIR". Default is NCRMP.
 #' @return A dataframe
 #' @importFrom magrittr "%>%"
 #' @export
@@ -42,9 +43,9 @@
 #'
 
 
-NCRMP_calculate_cover <- function(region){
+NCRMP_calculate_cover <- function(region, project = "NULL"){
 
-  dat <- load_NCRMP_benthic_cover_data(region = region)
+  dat <- load_NCRMP_benthic_cover_data(region = region, project = project)
 
   # Load species list
 
@@ -71,21 +72,20 @@ NCRMP_calculate_cover <- function(region){
   depth <- dat %>%
     dplyr::ungroup() %>%
     dplyr::group_by(REGION, YEAR, PRIMARY_SAMPLE_UNIT) %>%
-      dplyr::summarise(MIN_DEPTH = mean(MIN_DEPTH),
-                       MAX_DEPTH = mean(MAX_DEPTH))
+    dplyr::summarise(MIN_DEPTH = mean(MIN_DEPTH),
+                     MAX_DEPTH = mean(MAX_DEPTH))
 
 
   # Calculate percent cover of species by site
 
-  if(region == "SEFCRI" ||
-     region == "FLK" ||
-     region == "Tortugas") {
+  if(project == "NCRMP" && region == "SEFCRI" ||
+     project == "NCRMP" && region == "FLK" ||
+     project == "NCRMP" && region == "Tortugas") {
 
     dat2 <- dat %>%
       dplyr::mutate(Percent_Cvr = rowSums(.[28:30]),
                     LAT_DEGREES = sprintf("%0.4f", LAT_DEGREES),
                     LON_DEGREES = sprintf("%0.4f", LON_DEGREES)) %>%
-      #dplyr::inner_join(.,ncrmp_frrp_sppcodes2,  by = c( "COVER_CAT_CD" = "fl_ncrmp_code")) %>%
       dplyr::select(-HARDBOTTOM_P, -SOFTBOTTOM_P, -RUBBLE_P) %>%
       dplyr::mutate(PROT = as.factor(PROT)) %>%
       dplyr::ungroup() %>%
@@ -99,161 +99,192 @@ NCRMP_calculate_cover <- function(region){
       dplyr::select(REGION, YEAR, MONTH, DAY, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES,
                     MIN_DEPTH, MAX_DEPTH, ANALYSIS_STRATUM, STRAT, HABITAT_CD, PROT, COVER_CAT_NAME, Percent_Cvr)
 
-  } else {
+  }
+
+  if(project == "MIR" && region == "FLK") {
 
     dat2 <- dat %>%
-      dplyr::mutate(Percent_Cvr = rowSums(.[28:30]),
+      dplyr::mutate(Percent_Cvr = rowSums(.[31:33]),
                     LAT_DEGREES = sprintf("%0.4f", LAT_DEGREES),
                     LON_DEGREES = sprintf("%0.4f", LON_DEGREES)) %>%
-      #dplyr::inner_join(.,ncrmp_frrp_sppcodes2,  by = c( "COVER_CAT_CD" = "fl_ncrmp_code")) %>%
       dplyr::select(-HARDBOTTOM_P, -SOFTBOTTOM_P, -RUBBLE_P) %>%
       dplyr::mutate(PROT = NA) %>%
       dplyr::select(REGION, YEAR, MONTH, DAY, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES,
                     MIN_DEPTH, MAX_DEPTH, ANALYSIS_STRATUM, STRAT, HABITAT_CD, PROT, COVER_CAT_NAME, Percent_Cvr)
 
+
   }
 
+  if(project == "NCRMP" && region == "STTSTJ" ||
+     project == "NCRMP" && region == "STX" ||
+     project == "NCRMP" && region == "PRICO" ||
+     project == "NCRMP" && region == "GOM")  {
 
-  cvr_wide <- dat2 %>%
-        # add in zeros for species that didn't occur per site. Easiest to flip to wide format ( 1 row per site) for this
-        tidyr::spread(., COVER_CAT_NAME, Percent_Cvr,
-                      fill = 0)
-
-  percent_cover_species <- tidyr::gather(cvr_wide, COVER_CAT_NAME, Percent_Cvr, 16:ncol(cvr_wide)) %>%
-    dplyr::filter(COVER_CAT_NAME != '<NA>') %>%
-    dplyr::left_join(.,ncrmp_frrp_sppcodes2,  by = c( "COVER_CAT_NAME" = "species_name"))  %>%
-    dplyr::select(REGION, YEAR, SUB_REGION_NAME, ADMIN,  PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES,
-                  MIN_DEPTH, MAX_DEPTH, ANALYSIS_STRATUM, STRAT,  HABITAT_CD, PROT, COVER_CAT_NAME, cover_group, Percent_Cvr)
-
-  # Calculate percent cover of major biological categories by site
-
-  dat1 <-  dat %>%
-    dplyr::mutate(Percent_Cvr = rowSums(.[28:30])) %>%
-    dplyr::inner_join(.,ncrmp_frrp_sppcodes2,  by = c( "COVER_CAT_CD" = "fl_ncrmp_code")) %>%
-    dplyr::select(-HARDBOTTOM_P, -SOFTBOTTOM_P, -RUBBLE_P) %>%
-    dplyr::mutate(PROT = as.factor(PROT)) %>%
-    dplyr::group_by(YEAR, REGION, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, STATION_NR, LAT_DEGREES, LON_DEGREES,
-                    ANALYSIS_STRATUM, STRAT, HABITAT_CD, PROT, cover_group) %>%
-    dplyr::summarise(Percent_Cvr = sum(Percent_Cvr)) %>%
-    dplyr::ungroup()
+       dat2 <- dat %>%
+         dplyr::mutate(Percent_Cvr = rowSums(.[28:30]),
+                       LAT_DEGREES = sprintf("%0.4f", LAT_DEGREES),
+                       LON_DEGREES = sprintf("%0.4f", LON_DEGREES)) %>%
+         dplyr::select(-HARDBOTTOM_P, -SOFTBOTTOM_P, -RUBBLE_P) %>%
+         dplyr::mutate(PROT = NA) %>%
+         dplyr::select(REGION, YEAR, MONTH, DAY, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES,
+                       MIN_DEPTH, MAX_DEPTH, ANALYSIS_STRATUM, STRAT, HABITAT_CD, PROT, COVER_CAT_NAME, Percent_Cvr)
+     }
 
 
-  # Calculate percent cover at the STRATA level
+    cvr_wide <- dat2 %>%
+      # add in zeros for species that didn't occur per site. Easiest to flip to wide format ( 1 row per site) for this
+      tidyr::spread(., COVER_CAT_NAME, Percent_Cvr,
+                    fill = 0)
 
-  ### Reclassify all other categories to other or macroalgae
+    percent_cover_species <- tidyr::gather(cvr_wide, COVER_CAT_NAME, Percent_Cvr, 16:ncol(cvr_wide)) %>%
+      dplyr::filter(COVER_CAT_NAME != '<NA>') %>%
+      dplyr::left_join(.,ncrmp_frrp_sppcodes2,  by = c( "COVER_CAT_NAME" = "species_name"))  %>%
+      dplyr::select(REGION, YEAR, SUB_REGION_NAME, ADMIN,  PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES,
+                    MIN_DEPTH, MAX_DEPTH, ANALYSIS_STRATUM, STRAT,  HABITAT_CD, PROT, COVER_CAT_NAME, cover_group, Percent_Cvr)
 
-  dat2 <- dat1 %>%
-    dplyr::mutate(cover_group = dplyr::case_when(cover_group == "SUBSTRATE" ~ "OTHER",
-                                                 cover_group == "HYDROCORALS" ~ "OTHER",
-                                                 cover_group == "OTHER INVERTEBRATES" ~ "OTHER",
-                                                 cover_group == "CYANOBACTERIA" ~ "OTHER",
-                                                 cover_group == "SEAGRASSES" ~ "OTHER",
-                                                 cover_group == "PEYSONNELLIA" ~ "MACROALGAE",
-                                                 cover_group == "OTHER" ~ "OTHER",
-                                                 TRUE ~ cover_group))
+    # Calculate percent cover of major biological categories by site
 
+    if(project == "NCRMP") {
 
-  ### Account for SEFCRI/FLK 2014 & Tortugas 2018 2 transect data - take the transect means
-
-  if(region == "SEFCRI" ||
-     region == "FLK" ||
-     region == "Tortugas") {
-
-    dat3 <- dat2 %>%
+    dat1 <-  dat %>%
+      dplyr::mutate(Percent_Cvr = rowSums(.[28:30])) %>%
+      dplyr::inner_join(.,ncrmp_frrp_sppcodes2,  by = c( "COVER_CAT_CD" = "fl_ncrmp_code")) %>%
+      dplyr::select(-HARDBOTTOM_P, -SOFTBOTTOM_P, -RUBBLE_P) %>%
+      dplyr::mutate(PROT = as.factor(PROT)) %>%
       dplyr::group_by(YEAR, REGION, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, STATION_NR, LAT_DEGREES, LON_DEGREES,
                       ANALYSIS_STRATUM, STRAT, HABITAT_CD, PROT, cover_group) %>%
       dplyr::summarise(Percent_Cvr = sum(Percent_Cvr)) %>%
+      dplyr::ungroup()
+
+    } else {
+
+      dat1 <-  dat %>%
+        dplyr::mutate(Percent_Cvr = rowSums(.[31:33])) %>%
+        dplyr::inner_join(.,ncrmp_frrp_sppcodes2,  by = c( "COVER_CAT_CD" = "fl_ncrmp_code")) %>%
+        dplyr::select(-HARDBOTTOM_P, -SOFTBOTTOM_P, -RUBBLE_P) %>%
+        dplyr::mutate(PROT = as.factor(PROT)) %>%
+        dplyr::group_by(YEAR, REGION, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, STATION_NR, LAT_DEGREES, LON_DEGREES,
+                        ANALYSIS_STRATUM, STRAT, HABITAT_CD, PROT, cover_group) %>%
+        dplyr::summarise(Percent_Cvr = sum(Percent_Cvr)) %>%
+        dplyr::ungroup()
+
+    }
+    # Calculate percent cover at the STRATA level
+
+    ### Reclassify all other categories to other or macroalgae
+
+    dat2 <- dat1 %>%
+      dplyr::mutate(cover_group = dplyr::case_when(cover_group == "SUBSTRATE" ~ "OTHER",
+                                                   cover_group == "HYDROCORALS" ~ "OTHER",
+                                                   cover_group == "OTHER INVERTEBRATES" ~ "OTHER",
+                                                   cover_group == "CYANOBACTERIA" ~ "OTHER",
+                                                   cover_group == "SEAGRASSES" ~ "OTHER",
+                                                   cover_group == "PEYSONNELLIA" ~ "MACROALGAE",
+                                                   cover_group == "OTHER" ~ "OTHER",
+                                                   TRUE ~ cover_group))
+
+
+    ### Account for SEFCRI/FLK 2014 & Tortugas 2018 2 transect data - take the transect means
+
+    if(region == "SEFCRI" ||
+       region == "FLK" ||
+       region == "Tortugas") {
+
+      dat3 <- dat2 %>%
+        dplyr::group_by(YEAR, REGION, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, STATION_NR, LAT_DEGREES, LON_DEGREES,
+                        ANALYSIS_STRATUM, STRAT, HABITAT_CD, PROT, cover_group) %>%
+        dplyr::summarise(Percent_Cvr = sum(Percent_Cvr)) %>%
+        dplyr::ungroup() %>%
+        dplyr::group_by(YEAR, REGION, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES,
+                        ANALYSIS_STRATUM, STRAT, HABITAT_CD, PROT, cover_group) %>%
+        dplyr::summarise(Percent_Cvr = mean(Percent_Cvr)) %>%
+        dplyr::ungroup()
+
+
+    } else{
+
+      dat3 <- dat2 %>%
+        dplyr::group_by(YEAR, REGION, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES,
+                        ANALYSIS_STRATUM, STRAT, HABITAT_CD, PROT, cover_group) %>%
+        dplyr::summarise(Percent_Cvr = sum(Percent_Cvr)) %>%
+        dplyr::ungroup()
+    }
+
+
+    # Loop in cover groups that are missing from certain strat
+    groupsOfInterest <- c("CCA", "HARD CORALS", "MACROALGAE", "OTHER", "SOFT CORALS", "SPONGES", "TURF ALGAE",
+                          "RAMICRUSTA SPP.")
+
+    # make unique sites df
+    allsites <- unique(dat3[, c("YEAR", "REGION", "SUB_REGION_NAME", 'ADMIN', "PRIMARY_SAMPLE_UNIT",
+                                "LAT_DEGREES", "LON_DEGREES", "ANALYSIS_STRATUM", "STRAT", "HABITAT_CD", "PROT")])
+
+    # create empty dataframe with same column names as the demo data frame
+    PA <-   dat3[FALSE, ]
+
+    # use loop to add in missing cover groups within strata
+    for (i in groupsOfInterest)
+    {
+      # select out rows where cover_group is within groupsOfInterest object
+      presence <-   dat3[ dat3[, 'cover_group'] == i,]
+      # merge and keep all sites. If no data, rows should be full of NAs
+      pres_abs <- dplyr::full_join(allsites, presence)
+      #add cover group name to NA rows
+      pres_abs$cover_group <- i
+      #add each new cover group to the previous one
+      PA <- rbind(PA, pres_abs)
+      PA <- dplyr::mutate(PA, Percent_Cvr = tidyr::replace_na(Percent_Cvr, 0))
+    }
+
+    dat4 <- PA %>%
+      dplyr::mutate(n = dplyr::case_when(Percent_Cvr > 0 ~ 1, TRUE ~ 0)) %>%
       dplyr::ungroup() %>%
-      dplyr::group_by(YEAR, REGION, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES,
-                      ANALYSIS_STRATUM, STRAT, HABITAT_CD, PROT, cover_group) %>%
-      dplyr::summarise(Percent_Cvr = mean(Percent_Cvr)) %>%
-      dplyr::ungroup()
+      dplyr::left_join(., depth)
 
-
-  } else{
-
-    dat3 <- dat2 %>%
-      dplyr::group_by(YEAR, REGION, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES,
-                      ANALYSIS_STRATUM, STRAT, HABITAT_CD, PROT, cover_group) %>%
-      dplyr::summarise(Percent_Cvr = sum(Percent_Cvr)) %>%
-      dplyr::ungroup()
-  }
-
-
-  # Loop in cover groups that are missing from certain strat
-  groupsOfInterest <- c("CCA", "HARD CORALS", "MACROALGAE", "OTHER", "SOFT CORALS", "SPONGES", "TURF ALGAE",
-                        "RAMICRUSTA SPP.")
-
-  # make unique sites df
-  allsites <- unique(dat3[, c("YEAR", "REGION", "SUB_REGION_NAME", 'ADMIN', "PRIMARY_SAMPLE_UNIT",
-                              "LAT_DEGREES", "LON_DEGREES", "ANALYSIS_STRATUM", "STRAT", "HABITAT_CD", "PROT")])
-
-  # create empty dataframe with same column names as the demo data frame
-  PA <-   dat3[FALSE, ]
-
-  # use loop to add in missing cover groups within strata
-  for (i in groupsOfInterest)
-  {
-    # select out rows where cover_group is within groupsOfInterest object
-    presence <-   dat3[ dat3[, 'cover_group'] == i,]
-    # merge and keep all sites. If no data, rows should be full of NAs
-    pres_abs <- dplyr::full_join(allsites, presence)
-    #add cover group name to NA rows
-    pres_abs$cover_group <- i
-    #add each new cover group to the previous one
-    PA <- rbind(PA, pres_abs)
-    PA <- dplyr::mutate(PA, Percent_Cvr = tidyr::replace_na(Percent_Cvr, 0))
-  }
-
-  dat4 <- PA %>%
-    dplyr::mutate(n = dplyr::case_when(Percent_Cvr > 0 ~ 1, TRUE ~ 0)) %>%
-    dplyr::ungroup() %>%
-    dplyr::left_join(., depth)
-
-  percent_cover_site <- dat4 %>%
+    percent_cover_site <- dat4 %>%
       dplyr::select(REGION, YEAR, SUB_REGION_NAME, ADMIN,  PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES,
                     MIN_DEPTH, MAX_DEPTH, ANALYSIS_STRATUM, STRAT,  HABITAT_CD, PROT, cover_group, Percent_Cvr, n)
 
-  # site level totals are ~100% (may not be exact for 2 transect data where means are taken)
-  cover_check_site <- percent_cover_site %>%
-    dplyr::group_by(REGION, YEAR, PRIMARY_SAMPLE_UNIT, STRAT) %>%
-    dplyr::summarise(Cover = sum(Percent_Cvr))
+    # site level totals are ~100% (may not be exact for 2 transect data where means are taken)
+    cover_check_site <- percent_cover_site %>%
+      dplyr::group_by(REGION, YEAR, PRIMARY_SAMPLE_UNIT, STRAT) %>%
+      dplyr::summarise(Cover = sum(Percent_Cvr))
 
-  # Add NTOT, # Cells sampled and calculate sampling weights in weighting function
-
-
-  tmp  <- NCRMP_make_weighted_LPI_data(inputdata = dat4, region)
+    # Add NTOT, # Cells sampled and calculate sampling weights in weighting function
 
 
-  # unpack list
-  for(k in 1:length(tmp))assign(names(tmp)[k], tmp[[k]])
+    tmp  <- NCRMP_make_weighted_LPI_data(inputdata = dat4, region, project = project)
 
 
-  # Check your Domain totals - they should equal about 100
-  # If this number is not very close to 100, there is likely something wrong with your ntot. Any strata that was
-  # not sampled that year needs to be removed from the ntot BEFORE ngrot is calculated. Slight variations from 100
-  # could be due to using the most recent NTOT file for past years - this is OK.
-
-  Domain_check <- Domain_est %>%
-    dplyr::group_by(REGION, YEAR) %>%
-    dplyr::summarise(Whole_pie = sum(avCvr))
+    # unpack list
+    for(k in 1:length(tmp))assign(names(tmp)[k], tmp[[k]])
 
 
+    # Check your Domain totals - they should equal about 100
+    # If this number is not very close to 100, there is likely something wrong with your ntot. Any strata that was
+    # not sampled that year needs to be removed from the ntot BEFORE ngrot is calculated. Slight variations from 100
+    # could be due to using the most recent NTOT file for past years - this is OK.
 
-  ################
-  # Export
-  ################
+    Domain_check <- Domain_est %>%
+      dplyr::group_by(REGION, YEAR) %>%
+      dplyr::summarise(Whole_pie = sum(avCvr))
 
-  # Create list to export
-  output <- list(
-    "percent_cover_species" = percent_cover_species,
-    "percent_cover_site" = percent_cover_site,
-    "cover_check_site" = cover_check_site,
-    "cover_group_key" = cover_group_key,
-    "cover_strata" = cover_strata,
-    "Domain_est" = Domain_est,
-    "Domain_check" = Domain_check
-  )
 
-  return(output)
-}
+
+    ################
+    # Export
+    ################
+
+    # Create list to export
+    output <- list(
+      "percent_cover_species" = percent_cover_species,
+      "percent_cover_site" = percent_cover_site,
+      "cover_check_site" = cover_check_site,
+      "cover_group_key" = cover_group_key,
+      "cover_strata" = cover_strata,
+      "Domain_est" = Domain_est,
+      "Domain_check" = Domain_check
+    )
+
+    return(output)
+  }

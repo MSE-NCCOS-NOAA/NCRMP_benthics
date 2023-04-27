@@ -4,12 +4,14 @@
 \alias{NCRMP_make_weighted_invert_density_data}
 \title{Creates weighted Invert density data}
 \usage{
-NCRMP_make_weighted_invert_density_data(inputdata, region)
+NCRMP_make_weighted_invert_density_data(inputdata, region, project = "NULL")
 }
 \arguments{
 \item{inputdata}{A dataframe}
 
 \item{region}{A string indicating the region}
+
+\item{project}{A string indicating the project: "NCRMP" or "MIR". Default is NCRMP.}
 }
 \value{
 A dataframe

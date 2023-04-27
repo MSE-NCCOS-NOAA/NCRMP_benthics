@@ -19,7 +19,7 @@
 #
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman
-# Last update: March 2022
+# Last update: Feb 2023
 
 
 ##############################################################################################################################
@@ -29,7 +29,7 @@
 #'
 #'
 #'
-#' @param project A string indicating the project, NCRMP or NCRMP and DRM combined
+#' @param project A string indicating the project, NCRMP, MIR, or NCRMP and DRM combined
 #' @param region A string indicating the region
 #' @return A dataframe
 #' @importFrom magrittr "%>%"
@@ -39,6 +39,12 @@
 NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, region){
 
 
+  if(project == "MIR"){
+
+    dat <- MIR_2022_dis_ble_prev_species_DUMMY
+
+
+  }
 
   if(project == "NCRMP_DRM") {
 
@@ -88,7 +94,7 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
 
     ntot <- load_NTOT(region = region,
                       inputdata = "NULL",
-                      project = "NCRMP")
+                      project = project)
   }
 
   if(project == "NCRMP"){
@@ -149,9 +155,8 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
     ## Flower Garden Banks National Marine Sanctuary (GOM)
     if(region == "GOM"){
 
-
       # Load species/site level bleaching & disease data
-      dat <- NCRMP_FGBNMS_2013_18_dis_ble_prev_species %>%
+      dat <- NCRMP_FGBNMS_2013_22_dis_ble_prev_species %>%
         dplyr::mutate(SPECIES_CD=dplyr::recode(SPECIES_CD,
                                                "ORB ANCX"="ORB SPE."))
     }
@@ -212,6 +217,37 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
 
   #dat_dis_long <- tidyr::gather(dat_dis_wide, SPECIES_CD, DIS_PREV, 12:ncol(dat_dis_wide))
 
+  # Define regional groups
+  FL <- c("SEFCRI", "FLK", "Tortugas")
+  GOM <- "GOM"
+  Carib <- c("STTSTJ", "STX", "PRICO")
+
+  if(region %in% FL) {
+
+    dat1 <- dplyr::left_join(dat_dis_wide, dat_ble_wide) %>%
+      dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
+      dplyr::group_by(YEAR, ANALYSIS_STRATUM, SPECIES_CD) %>% # Modify this line to changes analysis stratum
+      dplyr::summarise(# compute average density
+        avDprev = mean(DIS_PREV, na.rm = T),
+        avBprev = mean(BLE_PREV, na.rm = T),
+        # compute stratum variance
+        svarD = var(DIS_PREV, na.rm = T),
+        svarB = var(BLE_PREV, na.rm = T),
+        # calculate N
+        n_sites = length(PRIMARY_SAMPLE_UNIT),
+        #.groups is experimental with dplyr
+        .groups = "keep") %>%
+      # convert 0 for stratum variance so that the sqrt is a small # but not a 0
+      dplyr::mutate(svarD = dplyr::case_when(svarD == 0 ~ 0.00000001,
+                                             TRUE ~ svarD)) %>%
+      dplyr::mutate(stdD = sqrt(svarD))%>%
+      # convert 0 for stratum variance so that the sqrt is a small # but not a 0
+      dplyr::mutate(svarB = dplyr::case_when(svarB == 0 ~ 0.00000001,
+                                             TRUE ~ svarB)) %>%
+      dplyr::mutate(stdB = sqrt(svarB))
+
+
+  } else {
 
   dat1 <- dplyr::left_join(dat_dis_wide, dat_ble_wide) %>%
     dplyr::group_by(YEAR, STRAT, SPECIES_CD) %>% # Modify this line to changes analysis stratum
@@ -233,6 +269,8 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
     dplyr::mutate(svarB = dplyr::case_when(svarB == 0 ~ 0.00000001,
                                            TRUE ~ svarB)) %>%
     dplyr::mutate(stdB = sqrt(svarB))
+
+  }
 
   dat2 <-dat1 %>%
     # Merge ntot with coral_est_spp

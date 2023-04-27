@@ -1,4 +1,4 @@
-## Function to calculate disease prevalence & bleaching prevalence for NCRMP and NCRMP + DRM data (FL only) by calculating species then colony prevalence (%) at the site level,
+## Function to calculate disease prevalence & bleaching prevalence for NCRMP, MIR, and NCRMP + DRM data (FL only) by calculating species then colony prevalence (%) at the site level,
 ## taking the mean of all sites within each strata, strata area weighting each strata and summing all strata means to reach the domain estimate.
 
 # Purpose:
@@ -21,7 +21,7 @@
 #
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman
-# Last update: Jul 2022
+# Last update: Feb 2023
 
 
 ##############################################################################################################################
@@ -31,7 +31,7 @@
 #'
 #'
 #'
-#' @param project A string indicating the project, NCRMP or NCRMP and DRM combined
+#' @param project A string indicating the project, NCRMP, MIR, or NCRMP and DRM combined
 #' @param region A string indicating the region
 #' @return A dataframe
 #' @importFrom magrittr "%>%"
@@ -45,6 +45,36 @@ NCRMP_DRM_calculate_disease_prevalence_colonies <- function(project, region, spe
 
   # Load data
   # Florida
+
+  if(project == "MIR"){
+
+    tmp1 <- MIR_FLK_2022_coral_demographics_DUMMY %>%
+      dplyr::mutate(SURVEY = "MIR",
+                    DATE = paste(MONTH, DAY, YEAR, sep = "/" ),
+                    REGION = "FLK",
+                    SUB_REGION_NAME = MIR_zone) %>%
+      dplyr::filter(!is.na(MAPGRID_NR),
+                    !is.na(MIR_zone))
+
+
+
+    if(species_filter == "FALSE" ||
+       species_filter == "NULL") {
+
+      #Combine 1 stage or 2 stage data
+      dat_1stage <- tmp1
+
+    }
+
+    if(species_filter == "TRUE"){
+      #Combine 1 stage or 2 stage data
+      dat_1stage <- tmp1 %>%
+        dplyr::filter(SPECIES_CD %in% species_filter)
+
+    }
+
+
+  }
 
   if(project == "NCRMP_DRM"){
 
@@ -462,13 +492,17 @@ NCRMP_DRM_calculate_disease_prevalence_colonies <- function(project, region, spe
 
       tmp2 <- FGBNMS_2015_coral_demographics
 
-      tmp3 <- FGBNMS_2018_coral_demographics
+      tmp3 <- FGBNMS_2018_coral_demographics %>%
+        dplyr::mutate(MAPGRID_NR = as.factor(MAPGRID_NR))
+
+      tmp4 <- FGBNMS_2022_coral_demographics %>%
+        dplyr::mutate(MAPGRID_NR = as.factor(MAPGRID_NR))
 
       if(species_filter == "FALSE" ||
          species_filter == "NULL"){
 
         #Combine 1 stage or 2 stage data
-        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3) %>%
+        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4) %>%
           dplyr::mutate(SURVEY = "NCRMP",
                         STRAT = "FGBNMS",
                         REGION = "GOM",
@@ -477,7 +511,7 @@ NCRMP_DRM_calculate_disease_prevalence_colonies <- function(project, region, spe
 
       if(species_filter == "TRUE"){
         #Combine 1 stage or 2 stage data
-        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3) %>%
+        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4) %>%
           dplyr::mutate(SURVEY = "NCRMP",
                         STRAT = "FGBNMS",
                         REGION = "GOM",
@@ -504,7 +538,9 @@ NCRMP_DRM_calculate_disease_prevalence_colonies <- function(project, region, spe
        dplyr::mutate(PROT = as.factor(PROT),
                      PRIMARY_SAMPLE_UNIT = as.factor(PRIMARY_SAMPLE_UNIT),
                     DISEASE = dplyr::case_when(DISEASE == "A" ~ 0,
-                                               DISEASE == "P" ~ 1, TRUE ~ 0),
+                                               DISEASE == "P" ~ 1,
+                                               DISEASE == "F" ~ 1,
+                                               DISEASE == "S" ~ 1,TRUE ~ 0),
                     BLEACH = dplyr::case_when(BLEACH_CONDITION == "N" ~ 0,
                                               BLEACH_CONDITION == "P" ~ 1,
                                               BLEACH_CONDITION == "B" ~ 1,
@@ -529,7 +565,9 @@ NCRMP_DRM_calculate_disease_prevalence_colonies <- function(project, region, spe
       dplyr::mutate(PROT = as.factor(PROT),
                     PRIMARY_SAMPLE_UNIT = as.factor(PRIMARY_SAMPLE_UNIT),
                     DISEASE = dplyr::case_when(DISEASE == "A" ~ 0,
-                                               DISEASE == "P" ~ 1, TRUE ~ 0),
+                                               DISEASE == "P" ~ 1,
+                                               DISEASE == "F" ~ 1,
+                                               DISEASE == "S" ~ 1,TRUE ~ 0),
                     BLEACH = dplyr::case_when(BLEACH_CONDITION == "N" ~ 0,
                                               BLEACH_CONDITION == "P" ~ 1,
                                               BLEACH_CONDITION == "B" ~ 1,
@@ -554,7 +592,9 @@ NCRMP_DRM_calculate_disease_prevalence_colonies <- function(project, region, spe
       dplyr::mutate(PROT = as.factor(PROT),
                     PRIMARY_SAMPLE_UNIT = as.factor(PRIMARY_SAMPLE_UNIT),
                     DISEASE = dplyr::case_when(DISEASE == "A" ~ 0,
-                                               DISEASE == "P" ~ 1, TRUE ~ 0),
+                                               DISEASE == "P" ~ 1,
+                                               DISEASE == "F" ~ 1,
+                                               DISEASE == "S" ~ 1,TRUE ~ 0),
                     BLEACH = dplyr::case_when(BLEACH_CONDITION == "N" ~ 0,
                                               BLEACH_CONDITION == "P" ~ 1,
                                               BLEACH_CONDITION == "T" ~ 1,
@@ -585,7 +625,9 @@ NCRMP_DRM_calculate_disease_prevalence_colonies <- function(project, region, spe
       dplyr::mutate(PROT = as.factor(PROT),
                     PRIMARY_SAMPLE_UNIT = as.factor(PRIMARY_SAMPLE_UNIT),
                     DISEASE = dplyr::case_when(DISEASE == "A" ~ 0,
-                                               DISEASE == "P" ~ 1, TRUE ~ 0),
+                                               DISEASE == "P" ~ 1,
+                                               DISEASE == "F" ~ 1,
+                                               DISEASE == "S" ~ 1,TRUE ~ 0),
                     BLEACH = dplyr::case_when(BLEACH_CONDITION == "N" ~ 0,
                                               BLEACH_CONDITION == "P" ~ 1,
                                               BLEACH_CONDITION == "B" ~ 1,
@@ -618,7 +660,9 @@ NCRMP_DRM_calculate_disease_prevalence_colonies <- function(project, region, spe
                     JUV == 0) %>%
       dplyr::mutate(PROT = as.factor(PROT),
                     DISEASE = dplyr::case_when(DISEASE == "A" ~ 0,
-                                               DISEASE == "P" ~ 1, TRUE ~ 0),
+                                               DISEASE == "P" ~ 1,
+                                               DISEASE == "F" ~ 1,
+                                               DISEASE == "S" ~ 1,TRUE ~ 0),
                     BLEACH = dplyr::case_when(BLEACH_CONDITION == "N" ~ 0,
                                               BLEACH_CONDITION == "P" ~ 1,
                                               BLEACH_CONDITION == "B" ~ 1,
@@ -639,7 +683,9 @@ NCRMP_DRM_calculate_disease_prevalence_colonies <- function(project, region, spe
                     JUV == 0) %>%
       dplyr::mutate(PROT = as.factor(PROT),
                     DISEASE = dplyr::case_when(DISEASE == "A" ~ 0,
-                                               DISEASE == "P" ~ 1, TRUE ~ 0),
+                                               DISEASE == "P" ~ 1,
+                                               DISEASE == "F" ~ 1,
+                                               DISEASE == "S" ~ 1,TRUE ~ 0),
                     BLEACH = dplyr::case_when(BLEACH_CONDITION == "N" ~ 0,
                                               BLEACH_CONDITION == "P" ~ 1,
                                               BLEACH_CONDITION == "B" ~ 1,

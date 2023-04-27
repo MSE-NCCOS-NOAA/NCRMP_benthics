@@ -24,7 +24,7 @@
 #
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman
-# Last update: Aug 2022
+# Last update: Jan 2023
 
 ##############################################################################################################################
 
@@ -144,8 +144,11 @@ NCRMP_calculate_ESA_corals_PresAbs <- function()
   tmp8 <- FGBNMS_2018_inverts_ESAcorals %>%
     dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS")
 
+  tmp8.1 <- FGBNMS_2022_inverts_ESAcorals %>%
+    dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS")
+
   #Combine Carib and GOM
-  tmp9 <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp3.1, tmp3.2, tmp4, tmp5, tmp5.1, tmp5.2, tmp8, tmp5.1) %>%
+  tmp9 <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp3.1, tmp3.2, tmp4, tmp5, tmp5.1, tmp5.2, tmp8, tmp5.1, tmp8.1) %>%
     # Remove METERS_COMPLETED as it is missing from the FL data
     dplyr::select(-METERS_COMPLETED) %>%
   # Combine and change to factor - there are letters in the FGBNMS MAPGRID NRs

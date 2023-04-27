@@ -2,14 +2,16 @@
 % Please edit documentation in R/NCRMP_colony_percent cover.R
 \name{NCRMP_colony_percent_cover}
 \alias{NCRMP_colony_percent_cover}
-\title{Creates colony coral cover summary dataframes}
+\title{Creates colony coral cover summary data frames}
 \usage{
-NCRMP_colony_percent_cover(region, ptitle, file_path)
+NCRMP_colony_percent_cover(region, ptitle, file_path, project = "NULL")
 }
 \arguments{
 \item{region}{A string indicating the region}
 
 \item{ptitle}{A string indicating the plot title}
+
+\item{project}{A string indicating the project: "NCRMP" or "MIR". Default is NCRMP.}
 
 \item{path}{A string indicating the filepath for the figure}
 }
@@ -17,5 +19,5 @@ NCRMP_colony_percent_cover(region, ptitle, file_path)
 A dataframe
 }
 \description{
-Creates colony coral cover summary dataframes
+Creates colony coral cover summary data frames
 }

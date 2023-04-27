@@ -4,10 +4,14 @@
 \alias{NCRMP_make_weighted_density_CV_data}
 \title{Calculate weighted mean density & CVs}
 \usage{
-NCRMP_make_weighted_density_CV_data(region, sppdens)
+NCRMP_make_weighted_density_CV_data(region, sppdens, project = "NULL")
 }
 \arguments{
 \item{region}{A string indicating the region}
+
+\item{project}{A string indicating the project, "NCRMP", "DRM", or "MIR"}
+
+\item{sppden}{A dataframe}
 }
 \value{
 A dataframe

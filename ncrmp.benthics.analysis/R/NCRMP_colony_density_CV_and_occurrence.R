@@ -21,7 +21,7 @@
 #
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman
-# Last update: Aug 2021
+# Last update: Jan 2023
 
 
 ##############################################################################################################################
@@ -42,7 +42,7 @@
 #'
 
 
-NCRMP_colony_density_CV_and_occurrence <- function(region, ptitle, file_path, species_filter = "NULL"){
+NCRMP_colony_density_CV_and_occurrence <- function(region, ptitle, file_path = "NULL", species_filter = "NULL", project = "NULL"){
 
   #############
   # coral species used in allocation
@@ -77,47 +77,62 @@ NCRMP_colony_density_CV_and_occurrence <- function(region, ptitle, file_path, sp
 
   }
 
-  if(region=="FLK") {
+  if(region=="FLK" && project == "NCRMP") {
 
     region_means <- NCRMP_make_weighted_density_CV_data(region = region,
-                                                        sppdens = NCRMP_FLK_2014_20_density_species)
+                                                        sppdens = NCRMP_FLK_2014_18_density_species,
+                                                        project = project)
   }
+
+  if(region=="FLK" && project == "MIR") {
+
+    region_means <- NCRMP_make_weighted_density_CV_data(region = region,
+                                                        sppdens = MIR_2022_density_species_DUMMY,
+                                                        project = project)
+  }
+
 
   if(region=="Tortugas") {
 
     region_means <- NCRMP_make_weighted_density_CV_data(region = region,
-                                                        sppdens = NCRMP_Tort_2014_20_density_species)
+                                                        sppdens = NCRMP_Tort_2014_20_density_species,
+                                                        project = project)
   }
 
   if(region=="SEFCRI") {
 
     region_means <- NCRMP_make_weighted_density_CV_data(region = region,
-                                                        sppdens = NCRMP_SEFCRI_2014_20_density_species)
+                                                        sppdens = NCRMP_SEFCRI_2014_20_density_species,
+                                                        project = project)
   }
 
   if(region=="PRICO") {
 
     region_means <- NCRMP_make_weighted_density_CV_data(region = region,
-                                                        sppdens = NCRMP_PRICO_2014_21_density_species)
+                                                        sppdens = NCRMP_PRICO_2014_21_density_species,
+                                                        project = project)
   }
 
   if(region=="STTSTJ") {
 
     region_means <- NCRMP_make_weighted_density_CV_data(region = region,
-                                                        sppdens = NCRMP_STTSTJ_2013_21_density_species)
+                                                        sppdens = NCRMP_STTSTJ_2013_21_density_species,
+                                                        project = project)
   }
 
   if(region=="STX") {
 
     region_means <- NCRMP_make_weighted_density_CV_data(region = region,
-                                                        sppdens = NCRMP_STX_2015_21_density_species)
+                                                        sppdens = NCRMP_STX_2015_21_density_species,
+                                                        project = project)
   }
 
 
   if(region=="GOM") {
 
     region_means <- NCRMP_make_weighted_density_CV_data(region = region,
-                                                        sppdens = NCRMP_FGBNMS_2013_18_density_species)
+                                                        sppdens = NCRMP_FGBNMS_2013_22_density_species,
+                                                        project = project)
   }
 
 
@@ -224,7 +239,8 @@ NCRMP_colony_density_CV_and_occurrence <- function(region, ptitle, file_path, sp
                                     size = 10,
                                     face = "bold")) +
     coord_flip() +
-    guides(fill = "none")
+    guides(fill = "none") +
+    geom_hline(yintercept=20, linetype="dashed", color = "black")
   # scale_fill_manual(values= c( "#58babb"))
 
   } else {
@@ -324,7 +340,8 @@ NCRMP_colony_density_CV_and_occurrence <- function(region, ptitle, file_path, sp
                                       size = 12,
                                       face = "bold")) +
       coord_flip() +
-      guides(fill = "none")
+      guides(fill = "none") +
+      geom_hline(yintercept=20, linetype="dashed", color = "black")
     # scale_fill_manual(values= c( "#58babb"))
 
 

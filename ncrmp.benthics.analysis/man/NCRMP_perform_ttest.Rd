@@ -9,7 +9,8 @@ NCRMP_perform_ttest(
   metric1,
   metric2,
   alpha,
-  n_years,
+  test_type,
+  n_years = "NULL",
   return_dataframe
 )
 }
@@ -20,9 +21,11 @@ NCRMP_perform_ttest(
 
 \item{metric2}{The column name of the metric you are testing: avCvr, avDen, etc.}
 
-\item{alpha}{THe alpha level you want to test, ex. 0.05}
+\item{alpha}{The alpha level you want to test, ex. 0.05}
 
-\item{n_years}{The number of sampling years completed in the subjurisdiction, currently 4 for St. Thomas & St. John and 3 for all other regions}
+\item{test_type}{You can compare domain estimates between years or inside/ outside a protected area for a single year, enter "Years" or "PROT"}
+
+\item{n_years}{You must specify the number of sampling years completed in the subjurisdiction if test_type = "Years", currently 4 for St. Thomas & St. John and 3 for all other regions.}
 }
 \value{
 A dataframe
