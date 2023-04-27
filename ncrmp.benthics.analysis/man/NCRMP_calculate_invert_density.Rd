@@ -4,10 +4,12 @@
 \alias{NCRMP_calculate_invert_density}
 \title{Creates colony density and colony size summary dataframes}
 \usage{
-NCRMP_calculate_invert_density(region)
+NCRMP_calculate_invert_density(region, project = "NULL")
 }
 \arguments{
 \item{region}{A string indicating the region}
+
+\item{project}{A string indicating the project: "NCRMP" or "MIR". Default is NCRMP.}
 
 \item{inputdf}{A dataframe}
 }

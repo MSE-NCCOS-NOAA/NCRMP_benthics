@@ -18,7 +18,7 @@
 # NCRMP_make_weighted_demo_data.R
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman
-# Last update: March 2022
+# Last update: Jan 2023
 
 
 ##############################################################################################################################
@@ -78,7 +78,13 @@ if(region == "SEFCRI") {
       dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "),
                     ngrtot = sum(NTOT))
 
-    ntot <- dplyr::bind_rows(ntot14, ntot16, ntot18, ntot20) %>% dplyr::mutate(PROT = as.factor(PROT))
+    ntot22 <- SEFL_2022_NTOT %>%
+      dplyr::filter(STRAT != "RGDP1" & STRAT != "RGDP0") %>%
+      dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "),
+                    ngrtot = sum(NTOT))
+
+
+    ntot <- dplyr::bind_rows(ntot14, ntot16, ntot18, ntot20, ntot22) %>% dplyr::mutate(PROT = as.factor(PROT))
 
   }
 
@@ -192,7 +198,13 @@ if(region == "FLK") {
                     ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "),
                     ngrtot = sum(NTOT))
 
-    ntot <- dplyr::bind_rows(ntot14, ntot16, ntot18, ntot20) %>% dplyr::mutate(PROT = as.factor(PROT))
+    ntot22 <- FLK_2020_NTOT %>%
+      dplyr::mutate(YEAR = 2022,
+                    REGION = "FLK",
+                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "),
+                    ngrtot = sum(NTOT))
+
+    ntot <- dplyr::bind_rows(ntot14, ntot16, ntot18, ntot20, ntot22) %>% dplyr::mutate(PROT = as.factor(PROT))
 
   }
 
@@ -290,6 +302,25 @@ if(region == "FLK") {
 
   }
 
+
+  if(project == "MIR"){
+
+    ntot22 <- FLK_MIR_2022_NTOT %>%
+      dplyr::ungroup() %>%
+      # Remove strata not sampled - this will be unique to each year and need to be updated. See Tortugas for examples.
+      dplyr::filter(STRAT_CORA != "CS05",
+                    STRAT_CORA != "CS16",
+                    ANALYSIS_STRATUM != "CS02 / PROT = 1",
+                    ANALYSIS_STRATUM != "CS07 / PROT = 1",
+                    ANALYSIS_STRATUM != "CS12 / PROT = 0",
+                    ANALYSIS_STRATUM != "CS14 / PROT = 1",
+                    ANALYSIS_STRATUM != "CS15 / PROT = 1") %>%
+      dplyr::mutate(YEAR = 2022,
+                    ngrtot = sum(NTOT))
+
+    ntot <- ntot22
+
+  }
 
 }
 
@@ -568,35 +599,43 @@ if(region == "PRICO"){
 
 if(region == "GOM"){
 
-  ntot13 <- FGBNMS_2018_NTOT %>%
+  ntot13 <- FGBNMS_2022_NTOT %>%
     dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS",
                   PROT = NA_character_,
                   YEAR = 2013) %>%
-    dplyr::group_by(REGION, YEAR, ANALYSIS_STRATUM, DEPTH, PROT) %>%
+    dplyr::group_by(REGION, YEAR, ANALYSIS_STRATUM, DEPTH_STRAT, PROT) %>%
     dplyr::summarise(NTOT = sum(NTOT),
                      ngrtot = sum(NTOT)) %>%
     dplyr::ungroup()
 
 
-
-  ntot15 <- FGBNMS_2018_NTOT %>%
+  ntot15 <- FGBNMS_2022_NTOT %>%
     dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS",
                   PROT = NA_character_,
                   YEAR = 2015) %>%
-    dplyr::group_by(REGION, YEAR, ANALYSIS_STRATUM, DEPTH, PROT) %>%
+    dplyr::group_by(REGION, YEAR, ANALYSIS_STRATUM, DEPTH_STRAT, PROT) %>%
     dplyr::summarise(NTOT = sum(NTOT),
                      ngrtot = sum(NTOT)) %>%
     dplyr::ungroup()
 
-  ntot18 <- FGBNMS_2018_NTOT %>%
+  ntot18 <- FGBNMS_2022_NTOT %>%
+    dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS",
+                  PROT = NA_character_,
+                  YEAR = 2018) %>%
+    dplyr::group_by(REGION, YEAR, ANALYSIS_STRATUM, DEPTH_STRAT, PROT) %>%
+    dplyr::summarise(NTOT = sum(NTOT),
+                     ngrtot = sum(NTOT)) %>%
+    dplyr::ungroup()
+
+  ntot22 <- FGBNMS_2022_NTOT %>%
     dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS",
                   PROT = NA_character_) %>%
-    dplyr::group_by(REGION, YEAR, ANALYSIS_STRATUM, DEPTH, PROT) %>%
+    dplyr::group_by(REGION, YEAR, ANALYSIS_STRATUM, DEPTH_STRAT, PROT) %>%
     dplyr::summarise(NTOT = sum(NTOT),
                      ngrtot = sum(NTOT)) %>%
     dplyr::ungroup()
 
-  ntot <- dplyr::bind_rows(ntot13, ntot15, ntot18)
+  ntot <- dplyr::bind_rows(ntot13, ntot15, ntot18, ntot22)
 
 }
 

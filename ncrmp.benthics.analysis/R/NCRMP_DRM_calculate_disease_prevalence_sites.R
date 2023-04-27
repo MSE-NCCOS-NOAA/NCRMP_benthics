@@ -21,7 +21,7 @@
 #
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman
-# Last update: Jul 2022
+# Last update: Jan 2023
 
 
 ##############################################################################################################################
@@ -93,7 +93,9 @@ NCRMP_DRM_calculate_disease_prevalence_sites <- function(project, region, specie
       dplyr::mutate(PROT = as.factor(PROT),
                     DATE = paste(MONTH, DAY, YEAR, sep = "/"),
                     DISEASE = dplyr::case_when(DISEASE == "A" ~ 0,
-                                               DISEASE == "P" ~ 1, TRUE ~ 0),
+                                               DISEASE == "P" ~ 1,
+                                               DISEASE == "F" ~ 1,
+                                               DISEASE == "S" ~ 1,TRUE ~ 0),
                     BLEACH = dplyr::case_when(BLEACH_CONDITION == "N" ~ 0,
                                               BLEACH_CONDITION == "P" ~ 1,
                                               BLEACH_CONDITION == "B" ~ 1,

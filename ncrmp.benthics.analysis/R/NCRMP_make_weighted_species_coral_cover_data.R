@@ -22,7 +22,7 @@
 #
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman
-# Last update: Aug 2022
+# Last update: Feb 2023
 
 
 ##############################################################################################################################
@@ -33,6 +33,7 @@
 #'
 #'
 #' @param region A string indicating the region
+#' @param region A string indicating the project: "NCRMP" or "MIR". Default is NCRMP.
 #' @return A dataframe
 #' @importFrom magrittr "%>%"
 #' @importFrom dplyr "mutate"
@@ -43,12 +44,12 @@
 
 
 # function to Calculate weights based on the most recent sampling grid
-NCRMP_make_weighted_species_coral_cover_data <- function(region, sppcvr) {
+NCRMP_make_weighted_species_coral_cover_data <- function(region, sppcvr, project = "NULL") {
 
 
   ntot <- load_NTOT(region = region,
                     inputdata = sppcvr,
-                    project = "NCRMP")
+                    project = project)
 
   ## Calculate weighted means and cv
   # strata_means

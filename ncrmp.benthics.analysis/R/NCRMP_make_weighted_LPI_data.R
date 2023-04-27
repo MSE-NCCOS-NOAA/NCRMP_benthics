@@ -41,7 +41,7 @@
 #'
 #'
 
-NCRMP_make_weighted_LPI_data <- function(inputdata, region)
+NCRMP_make_weighted_LPI_data <- function(inputdata, region, project = "NULL")
 {
 
   # Define regional groups
@@ -51,7 +51,7 @@ NCRMP_make_weighted_LPI_data <- function(inputdata, region)
 
   ntot <- load_NTOT(region = region,
                     inputdata = inputdata,
-                    project = "NCRMP")
+                    project = project)
 
   if(region %in% FL)
   {

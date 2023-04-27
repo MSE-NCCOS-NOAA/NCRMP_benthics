@@ -22,7 +22,7 @@
 #
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman
-# Last update: Jul 2022
+# Last update: Feb 2023
 
 
 ##############################################################################################################################
@@ -34,6 +34,7 @@
 #'
 #' @param inputdf A dataframe
 #' @param region A string indicating the region
+#' @param project A string indicating the project: "NCRMP" or "MIR". Default is NCRMP.
 #' @return A dataframe
 #' @importFrom magrittr "%>%"
 #' @export
@@ -41,7 +42,7 @@
 #'
 
 
-NCRMP_calculate_invert_density <- function(region) {
+NCRMP_calculate_invert_density <- function(region, project = "NULL") {
 
   # Load analysis ready data from package
 
@@ -51,7 +52,7 @@ NCRMP_calculate_invert_density <- function(region) {
 
     dat_2stage <- SEFCRI_2014_2stage_inverts_ESAcorals
 
-    dat_1stage <- dplyr::bind_rows(SEFCRI_2016_inverts_ESAcorals, SEFCRI_2018_inverts_ESAcorals, SEFCRI_2020_inverts_ESAcorals %>% dplyr::mutate(YEAR = 2020))
+    dat_1stage <- dplyr::bind_rows(SEFCRI_2016_inverts_ESAcorals, SEFCRI_2018_inverts_ESAcorals, SEFCRI_2020_inverts_ESAcorals %>% dplyr::mutate(YEAR = 2020), SEFCRI_2022_inverts_ESAcorals_DUMMY)
 
 
   }
@@ -59,11 +60,24 @@ NCRMP_calculate_invert_density <- function(region) {
   # FLK
   if(region == "FLK"){
 
+    if(project == "NCRMP" || project == "NULL"){
+
     dat_2stage <- FLK_2014_2stage_inverts_ESAcorals %>%
       dplyr::mutate(YEAR = 2014)
 
     dat_1stage <- FLK_2016_inverts_ESAcorals
 
+    }
+
+    if(project == "MIR"){
+
+      dat_1stage <- MIR_2022_inverts_ESAcorals_DUMMY %>%
+        dplyr::mutate(SURVEY = "MIR",
+                      DATE = paste(MONTH, DAY, YEAR, sep = "/" ),
+                      REGION = "FLK",
+                      SUB_REGION_NAME = MIR_zone)
+
+    }
   }
 
   # Tortugas
@@ -178,9 +192,9 @@ NCRMP_calculate_invert_density <- function(region) {
 
   ### Account for SEFCRI/FLK 2014 2 stage data - take the transect means
 
-  if(region == "SEFCRI" ||
-     region == "FLK" ||
-     region == "Tortugas") {
+  if(project == "NCRMP" && region == "SEFCRI" ||
+     project == "NCRMP" && region == "FLK" ||
+     project == "NCRMP" && region == "Tortugas") {
 
     dat1_1stage <- dat_1stage %>%
       # Remove Marquesas
@@ -260,7 +274,9 @@ NCRMP_calculate_invert_density <- function(region) {
   }
 
   # call function for weighting
-  tmp <-NCRMP_make_weighted_invert_density_data(inputdata = diadema_density_site, region)
+  tmp <-NCRMP_make_weighted_invert_density_data(inputdata = diadema_density_site,
+                                                region,
+                                                project)
 
   # unpack list
   for(k in 1:length(tmp))assign(names(tmp)[k], tmp[[k]])

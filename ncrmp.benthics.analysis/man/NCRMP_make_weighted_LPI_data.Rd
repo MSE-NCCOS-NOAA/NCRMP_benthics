@@ -4,7 +4,7 @@
 \alias{NCRMP_make_weighted_LPI_data}
 \title{Creates weighted LPI data}
 \usage{
-NCRMP_make_weighted_LPI_data(inputdata, region)
+NCRMP_make_weighted_LPI_data(inputdata, region, project = "NULL")
 }
 \arguments{
 \item{inputdata}{A dataframe}

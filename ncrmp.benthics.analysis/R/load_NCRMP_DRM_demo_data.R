@@ -21,7 +21,7 @@
 #
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman
-# Last update: March 2022
+# Last update: Feb 2023
 
 
 ##############################################################################################################################
@@ -31,7 +31,7 @@
 #'
 #'
 #'
-#' @param project A string indicating the project, NCRMP or NCRMP and DRM combined
+#' @param project A string indicating the project, NCRMP, NCRMP and DRM combined, or MIR. Default is NCRMP.
 #' @param region A string indicating the region
 #' @param species_filter A string indicating whether to filter to a subset of species
 #' @return A dataframe
@@ -47,6 +47,19 @@ load_NCRMP_DRM_demo_data <- function(project = "NULL", region, species_filter = 
 
   # Load data
   # Florida
+
+  if(project == "MIR"){
+
+    tmp1 <- MIR_FLK_2022_coral_demographics_DUMMY %>%
+      dplyr::mutate(SURVEY = "MIR",
+                    DATE = paste(MONTH, DAY, YEAR, sep = "/" ),
+                    REGION = "FLK",
+                    SUB_REGION_NAME = MIR_zone) %>%
+      dplyr::filter(!is.na(MAPGRID_NR),
+                    !is.na(MIR_zone))
+
+    dat_1stage <- tmp1
+  }
 
   if(project == "NCRMP_DRM"){
 
@@ -126,12 +139,17 @@ load_NCRMP_DRM_demo_data <- function(project = "NULL", region, species_filter = 
                       SURVEY = "NCRMP",
                       DATE = paste(MONTH, DAY, YEAR, sep = "/" ))
 
+      tmp6 <- FLK_2022_coral_demographics %>%
+        dplyr::mutate(YEAR = 2022,
+                      SURVEY = "NCRMP",
+                      DATE = paste(MONTH, DAY, YEAR, sep = "/" ))
+
 
       if(species_filter == "FALSE" ||
          species_filter == "NULL") {
 
         #Combine 1 stage or 2 stage data
-        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp4, tmp5) %>%
+        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp4, tmp5, tmp6) %>%
           dplyr::mutate(SPECIES_CD = dplyr::recode(SPECIES_CD,
                                                    "DIP CLIV" = "PSE CLIV",
                                                    "DIP STRI" = "PSE STRI",
@@ -146,7 +164,7 @@ load_NCRMP_DRM_demo_data <- function(project = "NULL", region, species_filter = 
 
       if(species_filter == "TRUE"){
         #Combine 1 stage or 2 stage data
-        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp4, tmp5) %>%
+        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp4, tmp5, tmp6) %>%
           dplyr::filter(SPECIES_CD %in% FLK_filter)
 
         dat_2stage <- dplyr::bind_rows(tmp3) %>%
@@ -210,7 +228,7 @@ load_NCRMP_DRM_demo_data <- function(project = "NULL", region, species_filter = 
         dat_2stage <- SEFCRI_2014_2stage_coral_demographics %>%
           dplyr::mutate(SURVEY = "NCRMP")
 
-        dat_1stage <- dplyr::bind_rows(SEFCRI_2016_coral_demographics, SEFCRI_2018_coral_demographics, SEFCRI_2020_coral_demographics %>% dplyr::mutate(YEAR = 2020)) %>%
+        dat_1stage <- dplyr::bind_rows(SEFCRI_2016_coral_demographics, SEFCRI_2018_coral_demographics, SEFCRI_2020_coral_demographics %>% dplyr::mutate(YEAR = 2020), SEFCRI_2022_coral_demographics_DUMMY) %>%
           dplyr::mutate(SURVEY = "NCRMP") %>%
           dplyr::mutate(STRAT = dplyr::case_when(STRAT == "PTSH1"~"PTSH2", TRUE ~ as.character(STRAT)))
       }
@@ -232,7 +250,7 @@ load_NCRMP_DRM_demo_data <- function(project = "NULL", region, species_filter = 
       tmp1 <- FLK_2014_coral_demographics %>%
         dplyr::mutate(YEAR = 2014)
 
-      tmp2 <- dplyr::bind_rows(FLK_2016_coral_demographics, FLK_2018_coral_demographics, FLK_2020_coral_demographics %>% dplyr::mutate(YEAR = 2020))
+      tmp2 <- dplyr::bind_rows(FLK_2016_coral_demographics, FLK_2018_coral_demographics, FLK_2020_coral_demographics %>% dplyr::mutate(YEAR = 2020), FLK_2022_coral_demographics)
 
 
       if(species_filter == "FALSE" ||
@@ -371,10 +389,12 @@ load_NCRMP_DRM_demo_data <- function(project = "NULL", region, species_filter = 
 
     if(region == "PRICO"){
 
-      tmp1 <- PRICO_2014_coral_demographics
+      tmp1 <- PRICO_2014_coral_demographics %>%
+        dplyr::mutate(PROT = NA)
 
       tmp2 <- PRICO_2016_coral_demographics %>%
-        dplyr::mutate(YEAR = 2016)
+        dplyr::mutate(YEAR = 2016,
+                      PROT = NA)
 
       tmp3 <- PRICO_2019_coral_demographics
 
@@ -406,13 +426,17 @@ load_NCRMP_DRM_demo_data <- function(project = "NULL", region, species_filter = 
 
       tmp2 <- FGBNMS_2015_coral_demographics
 
-      tmp3 <- FGBNMS_2018_coral_demographics
+      tmp3 <- FGBNMS_2018_coral_demographics %>%
+        dplyr::mutate(MAPGRID_NR = as.factor(MAPGRID_NR))
+
+      tmp4 <- FGBNMS_2022_coral_demographics %>%
+        dplyr::mutate(MAPGRID_NR = as.factor(MAPGRID_NR))
 
       if(species_filter == "FALSE" ||
          species_filter == "NULL"){
 
         #Combine 1 stage or 2 stage data
-        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3) %>%
+        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4) %>%
           dplyr::mutate(SURVEY = "NCRMP",
                         STRAT = "FGBNMS",
                         REGION = "GOM")
@@ -420,7 +444,7 @@ load_NCRMP_DRM_demo_data <- function(project = "NULL", region, species_filter = 
 
       if(species_filter == "TRUE"){
         #Combine 1 stage or 2 stage data
-        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3) %>%
+        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4) %>%
           dplyr::mutate(SURVEY = "NCRMP",
                         STRAT = "FGBNMS",
                         REGION = "GOM") %>%

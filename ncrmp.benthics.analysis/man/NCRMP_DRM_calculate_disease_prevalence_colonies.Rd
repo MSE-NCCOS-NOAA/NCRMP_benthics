@@ -12,7 +12,7 @@ NCRMP_DRM_calculate_disease_prevalence_colonies(
 )
 }
 \arguments{
-\item{project}{A string indicating the project, NCRMP or NCRMP and DRM combined}
+\item{project}{A string indicating the project, NCRMP, MIR, or NCRMP and DRM combined}
 
 \item{region}{A string indicating the region}
 }

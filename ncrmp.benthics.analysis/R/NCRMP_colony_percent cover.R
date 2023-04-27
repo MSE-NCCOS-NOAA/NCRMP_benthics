@@ -21,18 +21,19 @@
 #
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman
-# Last update: Aug 2022
+# Last update: Feb 2023
 
 
 ##############################################################################################################################
 
-#' Creates colony coral cover summary dataframes
+#' Creates colony coral cover summary data frames
 #'
 #'
 #'
 #'
 #' @param region A string indicating the region
 #' @param ptitle A string indicating the plot title
+#' @param project A string indicating the project: "NCRMP" or "MIR". Default is NCRMP.
 #' @param path A string indicating the filepath for the figure
 #' @return A dataframe
 #' @importFrom magrittr "%>%"
@@ -41,7 +42,7 @@
 #'
 
 
-NCRMP_colony_percent_cover <- function(region, ptitle, file_path){
+NCRMP_colony_percent_cover <- function(region, ptitle, file_path, project = "NULL"){
 
   #############
   # coral species used in allocation
@@ -51,20 +52,34 @@ NCRMP_colony_percent_cover <- function(region, ptitle, file_path){
   if(region == "SEFCRI"){
 
     tmp <- NCRMP_make_weighted_species_coral_cover_data(region = region,
-                                                        sppcvr = NCRMP_SEFCRI_2014_20_percent_cover_species)
+                                                        sppcvr = NCRMP_SEFCRI_2014_20_percent_cover_species,
+                                                        project = project)
   }
 
   if(region == "FLK"){
 
+    if(project == "NCRMP" || project == "NULL") {
+
     tmp <- NCRMP_make_weighted_species_coral_cover_data(region = region,
-                                                        sppcvr = NCRMP_FLK_2014_18_percent_cover_species)
+                                                        sppcvr = NCRMP_FLK_2014_18_percent_cover_species,
+                                                        project = project)
+  }
+
+  if(project == "MIR"){
+
+    tmp <- NCRMP_make_weighted_species_coral_cover_data(region = region,
+                                                        sppcvr = MIR_2022_percent_cover_species_DUMMY,
+                                                        project = "MIR")
+
+  }
   }
 
 
   if(region == "Tortugas"){
 
     tmp <- NCRMP_make_weighted_species_coral_cover_data(region = region,
-                                                        sppcvr = NCRMP_Tort_2014_20_percent_cover_species)
+                                                        sppcvr = NCRMP_Tort_2014_20_percent_cover_species,
+                                                        project = project)
   }
 
 
@@ -74,7 +89,8 @@ NCRMP_colony_percent_cover <- function(region, ptitle, file_path){
     # Puerto Rico
 
     tmp <- NCRMP_make_weighted_species_coral_cover_data(region = region,
-                                                        sppcvr = NCRMP_PRICO_2014_21_percent_cover_species)
+                                                        sppcvr = NCRMP_PRICO_2014_21_percent_cover_species,
+                                                        project = project)
 
   }
 
@@ -82,19 +98,22 @@ NCRMP_colony_percent_cover <- function(region, ptitle, file_path){
 
     # STT-STJ
     tmp <- NCRMP_make_weighted_species_coral_cover_data(region = region,
-                                                        sppcvr = NCRMP_STTSTJ_2013_21_percent_cover_species)
+                                                        sppcvr = NCRMP_STTSTJ_2013_21_percent_cover_species,
+                                                        project = project)
 
   }
 
   if(region=="STX") {
     tmp <- NCRMP_make_weighted_species_coral_cover_data(region = region,
-                                                        sppcvr = NCRMP_STX_2015_21_percent_cover_species)
+                                                        sppcvr = NCRMP_STX_2015_21_percent_cover_species,
+                                                        project = project)
 
   }
 
   if(region=="GOM") {
     tmp <- NCRMP_make_weighted_species_coral_cover_data(region = region,
-                                                        sppcvr = NCRMP_FGBNMS_2013_18_percent_cover_species)
+                                                        sppcvr = NCRMP_FGBNMS_2013_22_percent_cover_species,
+                                                        project = project)
 
   }
 
@@ -127,6 +146,7 @@ NCRMP_colony_percent_cover <- function(region, ptitle, file_path){
           axis.title.y = element_blank(),
           #axis.text.y = element_blank(),
           axis.ticks.y = element_blank(),
+          axis.text.y = element_text(face ="italic"),
           plot.margin = unit(c(t = 1, r = 1, b = 1, l = 1), "mm"),
           plot.title = element_text(hjust = 0.5,
                                     size = 10,

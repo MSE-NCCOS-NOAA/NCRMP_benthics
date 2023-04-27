@@ -4,9 +4,11 @@
 \alias{load_NCRMP_benthic_cover_data}
 \title{Creates combined cover dataframes}
 \usage{
-load_NCRMP_benthic_cover_data(region)
+load_NCRMP_benthic_cover_data(project = "NULL", region)
 }
 \arguments{
+\item{project}{A string indicating the project: "NCRMP" or "MIR". Default is NCRMP.}
+
 \item{region}{A string indicating the region}
 }
 \value{

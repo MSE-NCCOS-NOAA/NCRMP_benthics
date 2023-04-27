@@ -4,10 +4,12 @@
 \alias{NCRMP_calculate_cover}
 \title{Creates percent cover dataframe}
 \usage{
-NCRMP_calculate_cover(region)
+NCRMP_calculate_cover(region, project = "NULL")
 }
 \arguments{
 \item{region}{A string indicating the region}
+
+\item{project}{A string indicating the project: "NCRMP" or "MIR". Default is NCRMP.}
 }
 \value{
 A dataframe

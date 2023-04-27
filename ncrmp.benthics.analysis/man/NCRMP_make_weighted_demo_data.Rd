@@ -9,8 +9,7 @@ NCRMP_make_weighted_demo_data(
   inputdata,
   region,
   datatype,
-  species_filter,
-  species_data = NULL
+  species_filter
 )
 }
 \arguments{

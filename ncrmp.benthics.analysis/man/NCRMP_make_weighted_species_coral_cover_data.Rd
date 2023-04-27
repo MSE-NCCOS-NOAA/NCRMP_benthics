@@ -4,10 +4,10 @@
 \alias{NCRMP_make_weighted_species_coral_cover_data}
 \title{Calculate weighted mean density & CVs}
 \usage{
-NCRMP_make_weighted_species_coral_cover_data(region, sppcvr)
+NCRMP_make_weighted_species_coral_cover_data(region, sppcvr, project = "NULL")
 }
 \arguments{
-\item{region}{A string indicating the region}
+\item{region}{A string indicating the project: "NCRMP" or "MIR". Default is NCRMP.}
 }
 \value{
 A dataframe

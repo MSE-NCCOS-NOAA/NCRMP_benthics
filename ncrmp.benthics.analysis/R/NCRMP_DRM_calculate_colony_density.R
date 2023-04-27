@@ -174,8 +174,7 @@ NCRMP_DRM_calculate_colony_density <- function(project = "NULL", region, species
                                         inputdata = density_site,
                                         region,
                                         datatype = "density",
-                                        species_filter = species_filter,
-                                        species_data = density_species)
+                                        species_filter = species_filter)
 
 
 
@@ -188,18 +187,15 @@ NCRMP_DRM_calculate_colony_density <- function(project = "NULL", region, species
   # Export
   ################
 
-  if(species_filter == "TRUE"){
+  if(project == "MIR"){
 
     # Create list to export
     output <- list(
       "density_species" = density_species,
-      "Species_regional_means_CV" = Species_regional_CV,
       "density_site" = density_site,
       "density_strata" = density_strata,
       "Domain_est" = Domain_est,
-      'g1' = g1,
-      'g2' = g2,
-      'g.mid' = g.mid)
+      "Domain_est_PROT" = Domain_est_PROT)
 
   } else {
 

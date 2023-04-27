@@ -8,7 +8,7 @@
 NCRMP_DRM_calculate_dis_ble_prevalence_species_domain(project, region)
 }
 \arguments{
-\item{project}{A string indicating the project, NCRMP or NCRMP and DRM combined}
+\item{project}{A string indicating the project, NCRMP, MIR, or NCRMP and DRM combined}
 
 \item{region}{A string indicating the region}
 }
