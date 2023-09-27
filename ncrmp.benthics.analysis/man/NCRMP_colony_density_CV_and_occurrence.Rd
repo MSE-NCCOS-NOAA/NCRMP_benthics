@@ -7,6 +7,7 @@
 NCRMP_colony_density_CV_and_occurrence(
   region,
   ptitle,
+  year,
   file_path = "NULL",
   species_filter = "NULL",
   project = "NULL"
@@ -16,6 +17,8 @@ NCRMP_colony_density_CV_and_occurrence(
 \item{region}{A string indicating the region}
 
 \item{ptitle}{A string indicating the plot title}
+
+\item{year}{A numeric indicating the year of interest}
 
 \item{path}{A string indicating the filepath for the figure}
 }

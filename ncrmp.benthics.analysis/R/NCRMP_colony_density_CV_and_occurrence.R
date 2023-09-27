@@ -33,6 +33,7 @@
 #'
 #' @param region A string indicating the region
 #' @param ptitle A string indicating the plot title
+#' @param year A numeric indicating the year of interest
 #' @param path A string indicating the filepath for the figure
 #' @return A dataframe
 #' @importFrom magrittr "%>%"
@@ -42,7 +43,7 @@
 #'
 
 
-NCRMP_colony_density_CV_and_occurrence <- function(region, ptitle, file_path = "NULL", species_filter = "NULL", project = "NULL"){
+NCRMP_colony_density_CV_and_occurrence <- function(region, ptitle, year, file_path = "NULL", species_filter = "NULL", project = "NULL"){
 
   #############
   # coral species used in allocation
@@ -80,7 +81,7 @@ NCRMP_colony_density_CV_and_occurrence <- function(region, ptitle, file_path = "
   if(region=="FLK" && project == "NCRMP") {
 
     region_means <- NCRMP_make_weighted_density_CV_data(region = region,
-                                                        sppdens = NCRMP_FLK_2014_18_density_species,
+                                                        sppdens = NCRMP_FLK_2014_22_density_species,
                                                         project = project)
   }
 
@@ -91,18 +92,25 @@ NCRMP_colony_density_CV_and_occurrence <- function(region, ptitle, file_path = "
                                                         project = project)
   }
 
+  if(region=="FLK" && project == "NCRMP_DRM") {
+
+    region_means <- NCRMP_make_weighted_density_CV_data(region = region,
+                                                        sppdens = NCRMP_DRM_FLK_2014_22_density_species,
+                                                        project = project)
+  }
+
 
   if(region=="Tortugas") {
 
     region_means <- NCRMP_make_weighted_density_CV_data(region = region,
-                                                        sppdens = NCRMP_Tort_2014_20_density_species,
+                                                        sppdens = NCRMP_Tort_2014_22_density_species,
                                                         project = project)
   }
 
-  if(region=="SEFCRI") {
+  if(region=="SEFCRI" & project == "NCRMP") {
 
     region_means <- NCRMP_make_weighted_density_CV_data(region = region,
-                                                        sppdens = NCRMP_SEFCRI_2014_20_density_species,
+                                                        sppdens = NCRMP_SEFCRI_2014_22_density_species,
                                                         project = project)
   }
 
@@ -142,13 +150,15 @@ NCRMP_colony_density_CV_and_occurrence <- function(region, ptitle, file_path = "
 
   }
 
+
   if(region=="STX" || region=="STTSTJ" || region == "PRICO" || region == "GOM") {
 
   # Create plot pieces to export
   g.mid <- region_means %>%
+    # filter to year of interest
+    dplyr::filter(YEAR == year) %>%
     # exclude occurrences of 0
-    dplyr::filter(occurrence > 0.01,
-                  YEAR >= 2020) %>%
+    dplyr::filter(occurrence > 0.01) %>%
     # exclude CVs over 1
     dplyr::filter(CV < 1) %>%
 
@@ -182,9 +192,10 @@ NCRMP_colony_density_CV_and_occurrence <- function(region, ptitle, file_path = "
 
 
   g1 <-  region_means %>%
+    # filter to year of interest
+    dplyr::filter(YEAR == year) %>%
     # exclude occurrences of 0
-    dplyr::filter(occurrence > 0.01,
-                  YEAR >= 2020) %>%
+    dplyr::filter(occurrence > 0.01) %>%
     # exclude CVs over 1
     dplyr::filter(CV < 1) %>%
 
@@ -215,9 +226,10 @@ NCRMP_colony_density_CV_and_occurrence <- function(region, ptitle, file_path = "
 
 
   g2 <- region_means %>%
+    # filter to year of interest
+    dplyr::filter(YEAR == year) %>%
     # exclude occurrences of 0
-    dplyr::filter(occurrence > 0.01,
-                  YEAR >= 2020) %>%
+    dplyr::filter(occurrence > 0.01) %>%
     # exclude CVs over 1
     dplyr::filter(CV < 1) %>%
     ggplot(data = .,
@@ -247,9 +259,10 @@ NCRMP_colony_density_CV_and_occurrence <- function(region, ptitle, file_path = "
 
     # Create plot pieces to export
     g.mid <- region_means %>%
+      # filter to year of interest
+      dplyr::filter(YEAR == year) %>%
       # exclude occurrences of 0
-      dplyr::filter(occurrence > 0.02,
-                    YEAR >= 2020) %>%
+      dplyr::filter(occurrence > 0.02) %>%
       # exclude CVs over 1
       dplyr::filter(CV < 1) %>%
 
@@ -283,9 +296,10 @@ NCRMP_colony_density_CV_and_occurrence <- function(region, ptitle, file_path = "
 
 
     g1 <-  region_means %>%
+      # filter to year of interest
+      dplyr::filter(YEAR == year) %>%
       # exclude occurrences of 0
-      dplyr::filter(occurrence > 0.01,
-                    YEAR >= 2020) %>%
+      dplyr::filter(occurrence > 0.01) %>%
       # exclude CVs over 1
       dplyr::filter(CV < 1) %>%
 
@@ -316,9 +330,10 @@ NCRMP_colony_density_CV_and_occurrence <- function(region, ptitle, file_path = "
 
 
     g2 <- region_means %>%
+      # filter to year of interest
+      dplyr::filter(YEAR == year) %>%
       # exclude occurrences of 0
-      dplyr::filter(occurrence > 0.02,
-                    YEAR >= 2020) %>%
+      dplyr::filter(occurrence > 0.02) %>%
       # exclude CVs over 1
       dplyr::filter(CV < 1) %>%
       ggplot(data = .,

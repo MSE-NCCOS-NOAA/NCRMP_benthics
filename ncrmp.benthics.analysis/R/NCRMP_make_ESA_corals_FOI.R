@@ -45,10 +45,10 @@ NCRMP_make_ESA_corals_FOI <- function(){
 
 esa_spp <- dplyr::bind_rows(USVI_2021_inverts_ESAcorals,
                         PRICO_2021_inverts_ESAcorals,
-                        FLK_2020_inverts_ESAcorals %>% dplyr::mutate(YEAR = 2020),
-                        Tortugas_2020_inverts_ESAcorals %>% dplyr::mutate(YEAR = 2020),
+                        FLK_2022_inverts_ESAcorals,
+                        Tortugas_2022_inverts_ESAcorals,
                         FGBNMS_2022_inverts_ESAcorals,
-                        SEFCRI_2020_inverts_ESAcorals %>% dplyr::select(-RUGOSITY_CD) %>% dplyr::mutate(YEAR = 2020)) %>%
+                        SEFCRI_2022_inverts_ESAcorals %>% dplyr::select(-RUGOSITY_CD)) %>%
   # calculate totals by species by region
   dplyr::mutate(O_ANNULARIS = dplyr::case_when(O_ANNULARIS == "PS" ~ 1,
                                                O_ANNULARIS == "PT" ~ 1,
@@ -95,10 +95,10 @@ esa_spp <- dplyr::bind_rows(USVI_2021_inverts_ESAcorals,
 # calculate NAs by species (not counted)
 esa_Nsites <-  dplyr::bind_rows(USVI_2021_inverts_ESAcorals,
                                 PRICO_2021_inverts_ESAcorals,
-                                FLK_2020_inverts_ESAcorals %>% dplyr::mutate(YEAR = 2020),
-                                Tortugas_2020_inverts_ESAcorals  %>% dplyr::mutate(YEAR = 2020),
+                                FLK_2022_inverts_ESAcorals,
+                                Tortugas_2022_inverts_ESAcorals,
                                 FGBNMS_2022_inverts_ESAcorals,
-                                SEFCRI_2020_inverts_ESAcorals %>% dplyr::select(-RUGOSITY_CD) %>% dplyr::mutate(YEAR = 2020)) %>%
+                                SEFCRI_2022_inverts_ESAcorals %>% dplyr::select(-RUGOSITY_CD)) %>%
   # calculate totals by species by region
   dplyr::mutate(O_ANNULARIS = dplyr::case_when(O_ANNULARIS == "PS" ~ 1,
                                                O_ANNULARIS == "PT" ~ 1,
@@ -156,10 +156,10 @@ FOI_species <- esa_spp %>%
 
 esa_reg <- dplyr::bind_rows(USVI_2021_inverts_ESAcorals,
                         PRICO_2021_inverts_ESAcorals,
-                        FLK_2020_inverts_ESAcorals %>% dplyr::mutate(YEAR = 2020),
-                        Tortugas_2020_inverts_ESAcorals  %>% dplyr::mutate(YEAR = 2020),
+                        FLK_2022_inverts_ESAcorals,
+                        Tortugas_2022_inverts_ESAcorals,
                         FGBNMS_2022_inverts_ESAcorals,
-                        SEFCRI_2020_inverts_ESAcorals %>% dplyr::select(-RUGOSITY_CD) %>% dplyr::mutate(YEAR = 2020)) %>%
+                        SEFCRI_2022_inverts_ESAcorals %>% dplyr::select(-RUGOSITY_CD)) %>%
   # calculate totals by species by region
   dplyr::mutate(O_ANNULARIS = dplyr::case_when(O_ANNULARIS == "PS" ~ 1,
                                                O_ANNULARIS == "PT" ~ 1,

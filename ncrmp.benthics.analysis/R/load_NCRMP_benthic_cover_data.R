@@ -70,7 +70,9 @@ load_NCRMP_benthic_cover_data <- function(project = "NULL", region){
         dplyr::mutate(YEAR = 2020,
                       STRAT = dplyr::case_when(STRAT == "PTSH1"~"PTSH2", TRUE ~ as.character(STRAT)))
 
-      dat <- dplyr::bind_rows(dat1, dat2, dat3, dat4) %>%
+      dat5 <- SEFCRI_2022_benthic_cover
+
+      dat <- dplyr::bind_rows(dat1, dat2, dat3, dat4, dat5) %>%
         dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
 
     }
@@ -84,9 +86,19 @@ load_NCRMP_benthic_cover_data <- function(project = "NULL", region){
 
       dat3 <- FLK_2018_benthic_cover
 
-      dat4 <- FLK_2020_benthic_cover # will combine with 2022
+      dat4 <- FLK_2020_benthic_cover %>%
+        dplyr::mutate(YEAR = 2020)
 
-      dat <- dplyr::bind_rows(dat1, dat2, dat3) %>%
+      dat5 <- FLK_2022_benthic_cover
+      grid_df <- FLK_2020_sample_frame@data
+      new_prots <- grid_df %>% dplyr::select(MAPGRID_NR, PROT) %>% dplyr::rename("PROT_og" = PROT) %>% dplyr::mutate(MAPGRID_NR = as.numeric(MAPGRID_NR), PROT_og = as.numeric(PROT_og))
+      dat5 <- dat5 %>% dplyr::left_join(., new_prots, by = c("MAPGRID_NR")) %>%
+        # fix any that get left out manually, they fell outside the grid and JB fixed them
+        dplyr::mutate(PROT_og = case_when(PRIMARY_SAMPLE_UNIT == 1006 ~ 0, PRIMARY_SAMPLE_UNIT == 1382 ~ 1, TRUE ~ PROT_og)) %>%
+        dplyr::select(-PROT) %>%
+        dplyr::rename("PROT" = PROT_og)
+
+      dat <- dplyr::bind_rows(dat1, dat2, dat3, dat4, dat5) %>%
         dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
 
     }
@@ -103,7 +115,9 @@ load_NCRMP_benthic_cover_data <- function(project = "NULL", region){
         dplyr::mutate(YEAR = 2020,
                       STRAT = dplyr::case_when(STRAT == "T08" & PROT == 2 ~ 'T09', TRUE ~ as.character(STRAT)))
 
-      dat <- dplyr::bind_rows(dat1, dat2, dat3, dat4) %>%
+      dat5 <- Tortugas_2022_benthic_cover
+
+      dat <- dplyr::bind_rows(dat1, dat2, dat3, dat4, dat5) %>%
         dplyr::filter(SUB_REGION_NAME != "Marquesas",
                       SUB_REGION_NAME != "Marquesas-Tortugas Trans") %>%
         dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))

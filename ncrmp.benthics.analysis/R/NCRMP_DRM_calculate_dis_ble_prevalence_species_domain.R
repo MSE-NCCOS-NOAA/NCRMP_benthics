@@ -51,7 +51,7 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
     if(region == "SEFCRI"){
 
       # Load species/site level bleaching & disease data
-      dat <- NCRMP_DRM_SEFCRI_2014_21_dis_ble_prev_species %>%
+      dat <- NCRMP_DRM_SEFCRI_2014_22_dis_ble_prev_species %>%
         dplyr::mutate(SPECIES_CD=dplyr::recode(SPECIES_CD,
                                                "ORB ANCX"="ORB SPE.",
                                                "DIP STRI"="PSE STRI"))
@@ -64,7 +64,7 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
     if(region == "FLK"){
 
       # Load species/site level bleaching & disease data
-      dat <- NCRMP_DRM_FLK_2014_21_dis_ble_prev_species %>%
+      dat <- NCRMP_DRM_FLK_2014_22_dis_ble_prev_species %>%
         dplyr::mutate(SPECIES_CD = dplyr::recode(SPECIES_CD,
                                                  "DIP CLIV" = "PSE CLIV",
                                                  "DIP STRI" = "PSE STRI",
@@ -79,7 +79,7 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
     if(region == "Tortugas"){
 
       # Load species/site level bleaching & disease data
-      dat <- NCRMP_DRM_Tort_2014_21_dis_ble_prev_species %>%
+      dat <- NCRMP_DRM_Tort_2014_22_dis_ble_prev_species %>%
         dplyr::mutate(SPECIES_CD = dplyr::recode(SPECIES_CD,
                                                  "DIP CLIV" = "PSE CLIV",
                                                  "DIP STRI" = "PSE STRI",
@@ -92,9 +92,9 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
     }
   } else {
 
-    ntot <- load_NTOT(region = region,
-                      inputdata = "NULL",
-                      project = project)
+    #ntot <- load_NTOT(region = region,
+    #                  inputdata = "NULL",
+    #                  project = project)
   }
 
   if(project == "NCRMP"){
@@ -102,7 +102,7 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
     if(region == "SEFCRI"){
 
       # Load species/site level bleaching & disease data
-      dat <- NCRMP_SEFCRI_2014_20_dis_ble_prev_species %>%
+      dat <- NCRMP_SEFCRI_2014_22_dis_ble_prev_species %>%
         dplyr::mutate(SPECIES_CD=dplyr::recode(SPECIES_CD,
                                                "ORB ANCX"="ORB SPE.",
                                                "DIP STRI"="PSE STRI"))
@@ -111,7 +111,7 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
     if(region == "FLK"){
 
       # Load species/site level bleaching & disease data
-      dat <- NCRMP_FLK_2014_18_dis_ble_prev_species %>%
+      dat <- NCRMP_FLK_2014_22_dis_ble_prev_species %>%
         dplyr::mutate(SPECIES_CD=dplyr::recode(SPECIES_CD,
                                                "ORB ANCX"="ORB SPE.",
                                                "DIP STRI"="PSE STRI"))
@@ -120,7 +120,7 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
     if(region == "Tortugas"){
 
       # Load species/site level bleaching & disease data
-      dat <- NCRMP_Tort_2014_20_dis_ble_prev_species %>%
+      dat <- NCRMP_Tort_2014_22_dis_ble_prev_species %>%
         dplyr::mutate(SPECIES_CD=dplyr::recode(SPECIES_CD,
                                                "ORB ANCX"="ORB SPE.",
                                                "DIP STRI"="PSE STRI"))
@@ -160,6 +160,10 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
         dplyr::mutate(SPECIES_CD=dplyr::recode(SPECIES_CD,
                                                "ORB ANCX"="ORB SPE."))
     }
+
+    ntot <- load_NTOT(region = region,
+                      inputdata = dat,
+                      project = project)
 
   }
 

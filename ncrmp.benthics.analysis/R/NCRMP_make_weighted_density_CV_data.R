@@ -69,15 +69,22 @@ NCRMP_make_weighted_density_CV_data <- function(region, sppdens, project = "NULL
     tidyr::spread(., SPECIES_NAME, DENSITY,
                   fill = 0)
 
+  if(project == "NCRMP_DRM"){
 
-  if(region == "SEFCRI" || region == "Tortugas"){
-    species_dens_long <- tidyr::gather(species_dens_wide, SPECIES_CD, dens, 12:ncol(species_dens_wide))
+      species_dens_long <- tidyr::gather(species_dens_wide, SPECIES_CD, dens, 12:ncol(species_dens_wide))
 
-  } else{
+  }
+  if(project == "NCRMP"){
 
-    species_dens_long <- tidyr::gather(species_dens_wide, SPECIES_CD, dens, 14:ncol(species_dens_wide))
+    if(region == "SEFCRI" || region == "Tortugas"){
+      species_dens_long <- tidyr::gather(species_dens_wide, SPECIES_CD, dens, 12:ncol(species_dens_wide))
+
+    } else{
+
+      species_dens_long <- tidyr::gather(species_dens_wide, SPECIES_CD, dens, 14:ncol(species_dens_wide))
 
 
+    }
   }
 
   if(region=="STX" || region=="STTSTJ" || region == "PRICO" || region == "GOM") {

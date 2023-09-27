@@ -83,7 +83,7 @@ NCRMP_calculate_cover <- function(region, project = "NULL"){
      project == "NCRMP" && region == "Tortugas") {
 
     dat2 <- dat %>%
-      dplyr::mutate(Percent_Cvr = rowSums(.[28:30]),
+      dplyr::mutate(Percent_Cvr = HARDBOTTOM_P+SOFTBOTTOM_P+RUBBLE_P, # previously Percent_Cvr = rowSums(.[28:30])
                     LAT_DEGREES = sprintf("%0.4f", LAT_DEGREES),
                     LON_DEGREES = sprintf("%0.4f", LON_DEGREES)) %>%
       dplyr::select(-HARDBOTTOM_P, -SOFTBOTTOM_P, -RUBBLE_P) %>%
@@ -104,7 +104,7 @@ NCRMP_calculate_cover <- function(region, project = "NULL"){
   if(project == "MIR" && region == "FLK") {
 
     dat2 <- dat %>%
-      dplyr::mutate(Percent_Cvr = rowSums(.[31:33]),
+      dplyr::mutate(Percent_Cvr = HARDBOTTOM_P+SOFTBOTTOM_P+RUBBLE_P, # previously Percent_Cvr = rowSums(.[31:33]
                     LAT_DEGREES = sprintf("%0.4f", LAT_DEGREES),
                     LON_DEGREES = sprintf("%0.4f", LON_DEGREES)) %>%
       dplyr::select(-HARDBOTTOM_P, -SOFTBOTTOM_P, -RUBBLE_P) %>%
@@ -147,7 +147,7 @@ NCRMP_calculate_cover <- function(region, project = "NULL"){
     if(project == "NCRMP") {
 
     dat1 <-  dat %>%
-      dplyr::mutate(Percent_Cvr = rowSums(.[28:30])) %>%
+      dplyr::mutate(Percent_Cvr = HARDBOTTOM_P+SOFTBOTTOM_P+RUBBLE_P) %>% # previously Percent_Cvr = rowSums(.[28:30]
       dplyr::inner_join(.,ncrmp_frrp_sppcodes2,  by = c( "COVER_CAT_CD" = "fl_ncrmp_code")) %>%
       dplyr::select(-HARDBOTTOM_P, -SOFTBOTTOM_P, -RUBBLE_P) %>%
       dplyr::mutate(PROT = as.factor(PROT)) %>%
@@ -159,7 +159,7 @@ NCRMP_calculate_cover <- function(region, project = "NULL"){
     } else {
 
       dat1 <-  dat %>%
-        dplyr::mutate(Percent_Cvr = rowSums(.[31:33])) %>%
+        dplyr::mutate(Percent_Cvr = HARDBOTTOM_P+SOFTBOTTOM_P+RUBBLE_P) %>%  # previously Percent_Cvr = rowSums(.[31:33])
         dplyr::inner_join(.,ncrmp_frrp_sppcodes2,  by = c( "COVER_CAT_CD" = "fl_ncrmp_code")) %>%
         dplyr::select(-HARDBOTTOM_P, -SOFTBOTTOM_P, -RUBBLE_P) %>%
         dplyr::mutate(PROT = as.factor(PROT)) %>%
