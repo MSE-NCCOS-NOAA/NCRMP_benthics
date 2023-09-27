@@ -73,7 +73,7 @@ NCRMP_DRM_calculate_disease_prevalence_sites <- function(project, region, specie
                                               BLEACH_CONDITION == "B" ~ 1,
                                               BLEACH_CONDITION == "T" ~ 1,
                                               BLEACH_CONDITION == "PB" ~ 1)) %>%
-      dplyr::group_by(SURVEY, REGION, YEAR, DATE, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT) %>%
+      dplyr::group_by(SURVEY, REGION, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT) %>%
       dplyr::summarise(Total_dis = sum(DISEASE, na.rm = T),
                        Total_ble = sum(BLEACH, na.rm = T), .groups = "keep") %>%
       dplyr::mutate(dis_present = dplyr::case_when(Total_dis > 0 ~ 1, TRUE ~ 0),
@@ -101,7 +101,7 @@ NCRMP_DRM_calculate_disease_prevalence_sites <- function(project, region, specie
                                               BLEACH_CONDITION == "B" ~ 1,
                                               BLEACH_CONDITION == "T" ~ 1,
                                               BLEACH_CONDITION == "PB" ~ 1)) %>%
-      dplyr::group_by(SURVEY, REGION, YEAR, DATE, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT) %>%
+      dplyr::group_by(SURVEY, REGION, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT) %>%
       dplyr::summarise(Total_dis = sum(DISEASE, na.rm = T),
                        Total_ble = sum(BLEACH, na.rm = T), .groups = "keep") %>%
       dplyr::mutate(dis_present = dplyr::case_when(Total_dis > 0 ~ 1, TRUE ~ 0),

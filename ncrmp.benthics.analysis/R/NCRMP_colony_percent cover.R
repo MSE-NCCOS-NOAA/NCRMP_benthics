@@ -52,7 +52,7 @@ NCRMP_colony_percent_cover <- function(region, ptitle, file_path, project = "NUL
   if(region == "SEFCRI"){
 
     tmp <- NCRMP_make_weighted_species_coral_cover_data(region = region,
-                                                        sppcvr = NCRMP_SEFCRI_2014_20_percent_cover_species,
+                                                        sppcvr = NCRMP_SEFCRI_2014_22_percent_cover_species,
                                                         project = project)
   }
 
@@ -61,7 +61,7 @@ NCRMP_colony_percent_cover <- function(region, ptitle, file_path, project = "NUL
     if(project == "NCRMP" || project == "NULL") {
 
     tmp <- NCRMP_make_weighted_species_coral_cover_data(region = region,
-                                                        sppcvr = NCRMP_FLK_2014_18_percent_cover_species,
+                                                        sppcvr = NCRMP_FLK_2014_22_percent_cover_species,
                                                         project = project)
   }
 
@@ -78,7 +78,7 @@ NCRMP_colony_percent_cover <- function(region, ptitle, file_path, project = "NUL
   if(region == "Tortugas"){
 
     tmp <- NCRMP_make_weighted_species_coral_cover_data(region = region,
-                                                        sppcvr = NCRMP_Tort_2014_20_percent_cover_species,
+                                                        sppcvr = NCRMP_Tort_2014_22_percent_cover_species,
                                                         project = project)
   }
 

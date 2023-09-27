@@ -6,7 +6,7 @@
 \usage{
 NCRMP_make_size_bins(
   region,
-  project = "NCRMP",
+  project,
   years,
   size_bin_count = 10,
   length_bin_count = 10,

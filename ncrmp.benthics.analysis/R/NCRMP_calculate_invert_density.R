@@ -52,7 +52,7 @@ NCRMP_calculate_invert_density <- function(region, project = "NULL") {
 
     dat_2stage <- SEFCRI_2014_2stage_inverts_ESAcorals
 
-    dat_1stage <- dplyr::bind_rows(SEFCRI_2016_inverts_ESAcorals, SEFCRI_2018_inverts_ESAcorals, SEFCRI_2020_inverts_ESAcorals %>% dplyr::mutate(YEAR = 2020), SEFCRI_2022_inverts_ESAcorals_DUMMY)
+    dat_1stage <- dplyr::bind_rows(SEFCRI_2016_inverts_ESAcorals, SEFCRI_2018_inverts_ESAcorals, SEFCRI_2020_inverts_ESAcorals %>% dplyr::mutate(YEAR = 2020), SEFCRI_2022_inverts_ESAcorals)
 
 
   }
@@ -65,7 +65,20 @@ NCRMP_calculate_invert_density <- function(region, project = "NULL") {
     dat_2stage <- FLK_2014_2stage_inverts_ESAcorals %>%
       dplyr::mutate(YEAR = 2014)
 
-    dat_1stage <- FLK_2016_inverts_ESAcorals
+    tmp1 <- FLK_2016_inverts_ESAcorals
+    tmp2 <- FLK_2018_inverts_ESAcorals
+    tmp3 <- FLK_2020_inverts_ESAcorals %>% dplyr::mutate(YEAR = 2020)
+    tmp4 <- FLK_2022_inverts_ESAcorals
+    # UPDATE THE PROT (MIR sites initially labeled as PROT=2)
+    grid_df <- FLK_2020_sample_frame@data
+    new_prots <- grid_df %>% dplyr::select(MAPGRID_NR, PROT) %>% dplyr::rename("PROT_og" = PROT) %>% dplyr::mutate(MAPGRID_NR = as.numeric(MAPGRID_NR), PROT_og = as.numeric(PROT_og))
+    tmp4 <- tmp4 %>% dplyr::left_join(., new_prots, by = c("MAPGRID_NR")) %>%
+      # fix any that get left out manually, they fell outside the grid and JB fixed them
+      dplyr::mutate(PROT_og = case_when(PRIMARY_SAMPLE_UNIT == 1006 ~ 0, PRIMARY_SAMPLE_UNIT == 1382 ~ 1, TRUE ~ PROT_og)) %>%
+      dplyr::select(-PROT) %>%
+      dplyr::rename("PROT" = PROT_og)
+
+    dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4)
 
     }
 
@@ -89,11 +102,14 @@ NCRMP_calculate_invert_density <- function(region, project = "NULL") {
 
     tmp3 <- Tortugas_2018_inverts_ESAcorals
 
-    tmp4 <- Tortugas_2020_inverts_ESAcorals %>% dplyr::mutate(YEAR = 2020)
+    tmp4 <- Tortugas_2020_inverts_ESAcorals %>% dplyr::mutate(YEAR = 2020) %>%
+      dplyr::mutate(STRAT = dplyr::case_when(STRAT == "T08" & PROT == 2 ~ 'T09', TRUE ~ as.character(STRAT)))
 
-    dat_1stage <- dplyr::bind_rows(tmp1, tmp2)
+    tmp5 <- Tortugas_2022_inverts_ESAcorals
 
-    dat_2stage <- dplyr::bind_rows(tmp3, tmp4)
+    dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp4, tmp5)
+
+    dat_2stage <- dplyr::bind_rows(tmp3)
 
   }
 
@@ -274,7 +290,7 @@ NCRMP_calculate_invert_density <- function(region, project = "NULL") {
   }
 
   # call function for weighting
-  tmp <-NCRMP_make_weighted_invert_density_data(inputdata = diadema_density_site,
+  tmp <- NCRMP_make_weighted_invert_density_data(inputdata = diadema_density_site,
                                                 region,
                                                 project)
 

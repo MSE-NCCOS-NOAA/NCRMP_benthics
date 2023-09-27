@@ -18,7 +18,7 @@
 # NCRMP_make_weighted_demo_data.R
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman
-# Last update: Jan 2023
+# Last update: Aug 2023
 
 
 ##############################################################################################################################
@@ -99,73 +99,34 @@ if(region == "SEFCRI") {
 
     # Make a list of all the years
     Years <- sort(unique(tmp$YEAR))
-    # And an empty list to populate with strata sampled for each year
-    Filter <- vector('list', length(Years))
+    # add an empty data frame to populate with the filtered NTOTs
+    ntot <- data.frame()
+    # create a data frame of the full NTOTs for FLK
+    NTOT_all <- dplyr::bind_rows(SEFL_2014_NTOT, SEFL_2014_NTOT %>% dplyr::mutate(YEAR = 2015),
+                                 SEFL_2016_NTOT, SEFL_2018_NTOT %>% dplyr::mutate(YEAR = 2017),
+                                 SEFL_2018_NTOT, SEFL_2018_NTOT %>% dplyr::mutate(YEAR = 2019),
+                                 SEFL_2020_NTOT, SEFL_2020_NTOT %>% dplyr::mutate(YEAR = 2021),
+                                 SEFL_2022_NTOT) %>%
+      dplyr::mutate(REGION = "SEFCRI",
+                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
 
     # Use a loop to create a unique lists for each year of strata sampled
     for(i in Years){
       a <- tmp %>% dplyr::filter(YEAR == i)
-      Filter[[i]] = unique(a$ANALYSIS_STRATUM)
-      assign(paste("Filter", i, sep = "_"), Filter[[i]])
+      Filter = unique(a$ANALYSIS_STRATUM)
+
+      ntot_filt <- NTOT_all %>%
+        # filter to year i
+        dplyr::filter(YEAR == i) %>%
+        # filter to strata present in year i
+        dplyr::filter(ANALYSIS_STRATUM %in% Filter) %>%
+        # re-calculate ntot
+        dplyr::mutate(ngrtot = sum(NTOT))
+
+      ntot <- dplyr::bind_rows(ntot, ntot_filt)
     }
 
-    ntot21 <- SEFL_2020_NTOT %>%
-      # create ANALYSIS STRATUM column
-      dplyr::mutate(YEAR = 2021,
-                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))  %>%
-      # Filter to just strata sampled
-      dplyr::filter(ANALYSIS_STRATUM %in% Filter_2021) %>%
-      # Calculate total grid (cell) n, based on strata sampled
-      dplyr::mutate(ngrtot = sum(NTOT))
-
-    ntot20 <- SEFL_2020_NTOT %>%
-      # create ANALYSIS STRATUM column
-      dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))  %>%
-      # Filter to just strata sampled
-      dplyr::filter(ANALYSIS_STRATUM %in% Filter_2020) %>%
-      # Calculate total grid (cell) n, based on strata sampled
-      dplyr::mutate(ngrtot = sum(NTOT))
-
-    ntot19 <- SEFL_2018_NTOT %>%
-      # create ANALYSIS STRATUM column
-      dplyr::mutate(YEAR = 2019,
-                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))  %>%
-      # Filter to just strata sampled
-      dplyr::filter(ANALYSIS_STRATUM %in% Filter_2019) %>%
-      # Calculate total grid (cell) n, based on strata sampled
-      dplyr::mutate(ngrtot = sum(NTOT))
-
-    ntot18 <- SEFL_2018_NTOT %>%
-      # create ANALYSIS STRATUM column
-      dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))  %>%
-      # Filter to just strata sampled
-      dplyr::filter(ANALYSIS_STRATUM %in% Filter_2018) %>%
-      # Calculate total grid (cell) n, based on strata sampled
-      dplyr::mutate(ngrtot = sum(NTOT))
-
-    ntot17 <- SEFL_2018_NTOT %>%
-      dplyr::mutate(YEAR = 2017,
-                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))  %>%
-      dplyr::filter(ANALYSIS_STRATUM %in% Filter_2017) %>%
-      dplyr::mutate(ngrtot = sum(NTOT))
-
-    ntot16 <- SEFL_2016_NTOT %>%
-      dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
-      dplyr::filter(ANALYSIS_STRATUM %in% Filter_2016) %>%
-      dplyr::mutate(ngrtot = sum(NTOT))
-
-    ntot15 <- SEFL_2014_NTOT %>%
-      dplyr::mutate(YEAR = 2015,
-                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
-      dplyr::filter(ANALYSIS_STRATUM %in% Filter_2015) %>%
-      dplyr::mutate(ngrtot = sum(NTOT))
-
-    ntot14 <- SEFL_2014_NTOT %>%
-      dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
-      dplyr::filter(ANALYSIS_STRATUM %in% Filter_2014) %>%
-      dplyr::mutate(ngrtot = sum(NTOT))
-
-    ntot <- dplyr::bind_rows(ntot21, ntot20, ntot19, ntot18, ntot17, ntot16, ntot15, ntot14)
+    ntot <- ntot %>% dplyr::mutate(PROT = as.factor(PROT))
 
   }
 
@@ -175,38 +136,43 @@ if(region == "FLK") {
 
   if(project == "NCRMP" || project == "NULL"){
 
-    # Filter NTOT to only strata sampled that year - this is done manually for NCRMP only for now
+    # Use a loop to create a unique lists for each year of strata sampled
+    # Filter NTOT to only strata sampled that year (previously done manually)
+    tmp <- inputdata %>%
+      dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
+      dplyr::group_by(YEAR, ANALYSIS_STRATUM) %>%
+      dplyr::summarise(N = length(ANALYSIS_STRATUM), .groups = "keep")
 
-    ntot14 <- FLK_2014_NTOT %>%
-      dplyr::filter(STRAT != "FDLR") %>% #Remove strat that were not sampled from ntot so they are not counted in ngrtot
-      dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "),
-                    REGION = "FLK",
-                    ngrtot = sum(NTOT))
-
-    ntot16 <- FLK_2016_NTOT %>%
+    # Make a list of all the years
+    Years <- sort(unique(tmp$YEAR))
+    # add an empty data frame to populate with the filtered NTOTs
+    ntot <- data.frame()
+    # create a data frame of the full NTOTs for FLK
+    NTOT_all <- dplyr::bind_rows(FLK_2014_NTOT, FLK_2016_NTOT, FLK_2018_NTOT, FLK_2020_NTOT,FLK_2022_NTOT) %>%
       dplyr::mutate(REGION = "FLK",
-                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "),
-                    ngrtot = sum(NTOT))
+                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
 
-    ntot18 <- FLK_2018_NTOT %>%
-      dplyr::mutate(REGION = "FLK",
-                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "),
-                    ngrtot = sum(NTOT))
+    # Use a loop to create a unique lists for each year of strata sampled
+    for(i in Years){
+      a <- tmp %>% dplyr::filter(YEAR == i)
+      Filter = unique(a$ANALYSIS_STRATUM)
 
-    ntot20 <- FLK_2020_NTOT %>%
-      dplyr::mutate(REGION = "FLK",
-                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "),
-                    ngrtot = sum(NTOT))
+      ntot_filt <- NTOT_all %>%
+        # filter to year i
+        dplyr::filter(YEAR == i) %>%
+        # filter to strata present in year i
+        dplyr::filter(ANALYSIS_STRATUM %in% Filter) %>%
+        # re-calculate ntot
+        dplyr::mutate(ngrtot = sum(NTOT))
 
-    ntot22 <- FLK_2020_NTOT %>%
-      dplyr::mutate(YEAR = 2022,
-                    REGION = "FLK",
-                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "),
-                    ngrtot = sum(NTOT))
+      ntot <- dplyr::bind_rows(ntot, ntot_filt)
+    }
 
-    ntot <- dplyr::bind_rows(ntot14, ntot16, ntot18, ntot20, ntot22) %>% dplyr::mutate(PROT = as.factor(PROT))
+
+    ntot <- ntot %>% dplyr::mutate(PROT = as.factor(PROT))
 
   }
+
 
   if(project == "NCRMP_DRM") {
 
@@ -219,86 +185,35 @@ if(region == "FLK") {
 
     # Make a list of all the years
     Years <- sort(unique(tmp$YEAR))
-    # And an empty list to populate with strata sampled for each year
-    Filter <- vector('list', length(Years))
+    # add an empty data frame to populate with the filtered NTOTs
+    ntot <- data.frame()
+    # create a data frame of the full NTOTs for FLK
+    NTOT_all <- dplyr::bind_rows(FLK_2014_NTOT, FLK_2016_NTOT %>% dplyr::mutate(YEAR = 2015),
+                                 FLK_2016_NTOT, FLK_2018_NTOT %>% dplyr::mutate(YEAR = 2017),
+                                 FLK_2018_NTOT, FLK_2018_NTOT %>% dplyr::mutate(YEAR = 2019),
+                                 FLK_2020_NTOT, FLK_2020_NTOT %>% dplyr::mutate(YEAR = 2021),
+                                 FLK_2022_NTOT) %>%
+      dplyr::mutate(REGION = "FLK",
+                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
 
     # Use a loop to create a unique lists for each year of strata sampled
     for(i in Years){
       a <- tmp %>% dplyr::filter(YEAR == i)
-      Filter[[i]] = unique(a$ANALYSIS_STRATUM)
-      assign(paste("Filter", i, sep = "_"), Filter[[i]])
+      Filter = unique(a$ANALYSIS_STRATUM)
+
+      ntot_filt <- NTOT_all %>%
+        # filter to year i
+        dplyr::filter(YEAR == i) %>%
+        # filter to strata present in year i
+        dplyr::filter(ANALYSIS_STRATUM %in% Filter) %>%
+        # re-calculate ntot
+        dplyr::mutate(ngrtot = sum(NTOT))
+
+      ntot <- dplyr::bind_rows(ntot, ntot_filt)
     }
 
-    ntot21 <- FLK_2020_NTOT %>%
-      # Rename region to current NCRMP code, YEAR to sampling year and create ANALYSIS STRATUM column
-      dplyr::mutate(REGION = "FLK",
-                    YEAR = 2021,
-                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))  %>%
-      # Filter to just strata sampled
-      dplyr::filter(ANALYSIS_STRATUM %in% Filter_2021) %>%
-      # Calculate total grid (cell) n, based on strata sampled
-      dplyr::mutate(ngrtot = sum(NTOT))
+    ntot <- ntot %>% dplyr::mutate(PROT = as.factor(PROT))
 
-    ntot20 <- FLK_2020_NTOT %>%
-      # Rename region to current NCRMP code, YEAR to sampling year and create ANALYSIS STRATUM column
-      dplyr::mutate(REGION = "FLK",
-                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))  %>%
-      # Filter to just strata sampled
-      dplyr::filter(ANALYSIS_STRATUM %in% Filter_2020) %>%
-      # Calculate total grid (cell) n, based on strata sampled
-      dplyr::mutate(ngrtot = sum(NTOT))
-
-    ntot19 <- FLK_2018_NTOT %>%
-      # Rename region to current NCRMP code, YEAR to sampling year and create ANALYSIS STRATUM column
-      dplyr::mutate(REGION = "FLK",
-                    YEAR = 2019,
-                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))  %>%
-      # Filter to just strata sampled
-      dplyr::filter(ANALYSIS_STRATUM %in% Filter_2019) %>%
-      # Calculate total grid (cell) n, based on strata sampled
-      dplyr::mutate(ngrtot = sum(NTOT))
-
-    ntot18 <- FLK_2018_NTOT %>%
-      # Subet to region of interest
-      # Rename region to current NCRMP code, YEAR to sampling year and create ANALYSIS STRATUM column
-      dplyr::mutate(REGION = "FLK",
-                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))  %>%
-      # Filter to just strata sampled
-      dplyr::filter(ANALYSIS_STRATUM %in% Filter_2018) %>%
-      # Calculate total grid (cell) n, based on strata sampled
-      dplyr::mutate(ngrtot = sum(NTOT))
-
-    ntot17 <- FLK_2018_NTOT %>%
-      # Subet to region of interest
-      # Rename region to current NCRMP code, YEAR to sampling year and create ANALYSIS STRATUM column
-      dplyr::mutate(REGION = "FLK",
-                    YEAR = 2017,
-                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))  %>%
-      # Filter to just strata sampled
-      dplyr::filter(ANALYSIS_STRATUM %in% Filter_2017) %>%
-      # Calculate total grid (cell) n, based on strata sampled
-      dplyr::mutate(ngrtot = sum(NTOT))
-
-    ntot16 <- FLK_2016_NTOT %>%
-      dplyr::mutate(REGION = "FLK",
-                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
-      dplyr::filter(ANALYSIS_STRATUM %in% Filter_2016) %>%
-      dplyr::mutate(ngrtot = sum(NTOT))
-
-    ntot15 <- FLK_2016_NTOT %>%
-      dplyr::mutate(REGION = "FLK",
-                    YEAR = 2015,
-                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
-      dplyr::filter(ANALYSIS_STRATUM %in% Filter_2015) %>%
-      dplyr::mutate(ngrtot = sum(NTOT))
-
-    ntot14 <- FLK_2014_NTOT %>%
-      dplyr::mutate(REGION = "FLK",
-                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
-      dplyr::filter(ANALYSIS_STRATUM %in% Filter_2014) %>%
-      dplyr::mutate(ngrtot = sum(NTOT))
-
-    ntot <- dplyr::bind_rows(ntot21, ntot20, ntot19, ntot18, ntot17, ntot16, ntot15, ntot14)
 
   }
 
@@ -350,14 +265,24 @@ if(region == "Tortugas") {
 
     ntot20 <- Tort_2020_NTOT %>%
       dplyr::mutate(REGION = "Tortugas",
-                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
+                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "),
+                    PROT = as.integer(PROT)) %>%
       dplyr::filter(ANALYSIS_STRATUM != "T09 / PROT = 0",
                     ANALYSIS_STRATUM != "T09 / PROT = 1",
                     ANALYSIS_STRATUM != "T03 / PROT = 2",
                     ANALYSIS_STRATUM != "T06 / PROT = 2") %>% #Not sampled
       dplyr::mutate(ngrtot = sum(NTOT))
 
-    ntot <- dplyr::bind_rows(ntot14, ntot16, ntot18, ntot20)
+    ntot22 <- Tort_2022_NTOT %>%
+      dplyr::mutate(REGION = "Tortugas",
+                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
+      dplyr::filter(PROT != 0) %>%
+      dplyr::filter(ANALYSIS_STRATUM != "T07 / PROT = 1",
+                    ANALYSIS_STRATUM != "T09 / PROT = 1",
+                    ANALYSIS_STRATUM != "T04 / PROT = 2") %>% #Not sampled
+      dplyr::mutate(ngrtot = sum(NTOT))
+
+    ntot <- dplyr::bind_rows(ntot14, ntot16, ntot18, ntot20, ntot22)
 
   }
 
@@ -372,72 +297,34 @@ if(region == "Tortugas") {
 
     # Make a list of all the years
     Years <- sort(unique(tmp$YEAR))
-    # And an empty list to populate with strata sampled for each year
-    Filter <- vector('list', length(Years))
+    # add an empty data frame to populate with the filtered NTOTs
+    ntot <- data.frame()
+    # create a data frame of the full NTOTs for FLK
+    NTOT_all <- dplyr::bind_rows(Tort_2014_NTOT, Tort_2016_NTOT %>% dplyr::mutate(YEAR = 2015),
+                                 Tort_2016_NTOT, Tort_2018_NTOT %>% dplyr::mutate(YEAR = 2017),
+                                 Tort_2018_NTOT, Tort_2018_NTOT %>% dplyr::mutate(YEAR = 2019),
+                                 Tort_2020_NTOT, Tort_2020_NTOT %>% dplyr::mutate(YEAR = 2021),
+                                 Tort_2022_NTOT) %>%
+      dplyr::mutate(REGION = "Tortugas",
+                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
 
     # Use a loop to create a unique lists for each year of strata sampled
     for(i in Years){
       a <- tmp %>% dplyr::filter(YEAR == i)
-      Filter[[i]] = unique(a$ANALYSIS_STRATUM)
-      assign(paste("Filter", i, sep = "_"), Filter[[i]])
+      Filter = unique(a$ANALYSIS_STRATUM)
+
+      ntot_filt <- NTOT_all %>%
+        # filter to year i
+        dplyr::filter(YEAR == i) %>%
+        # filter to strata present in year i
+        dplyr::filter(ANALYSIS_STRATUM %in% Filter) %>%
+        # re-calculate ntot
+        dplyr::mutate(ngrtot = sum(NTOT))
+
+      ntot <- dplyr::bind_rows(ntot, ntot_filt)
     }
 
-    ntot21 <- Tort_2020_NTOT %>%
-      # Rename region and year if necessary, add analysis strat
-      dplyr::mutate(REGION = "Tortugas",
-                    YEAR = 2021,
-                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))  %>%
-      # Filter to just strata sampled
-      dplyr::filter(ANALYSIS_STRATUM %in% Filter_2021) %>%
-      # Calculate total grid (cell) n, based on strata sampled
-      dplyr::mutate(ngrtot = sum(NTOT))
-
-    ntot20 <- Tort_2020_NTOT %>%
-      dplyr::mutate(REGION = "Tortugas",
-                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))  %>%
-      dplyr::filter(ANALYSIS_STRATUM %in% Filter_2020) %>%
-      dplyr::mutate(ngrtot = sum(NTOT))
-
-    ntot19 <- Tort_2018_NTOT %>%
-      dplyr::mutate(REGION = "Tortugas",
-                    YEAR = 2019,
-                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))  %>%
-      dplyr::filter(ANALYSIS_STRATUM %in% Filter_2019) %>%
-      dplyr::mutate(ngrtot = sum(NTOT))
-
-    ntot18 <- Tort_2018_NTOT %>%
-      dplyr::mutate(REGION = "Tortugas",
-                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))  %>%
-      dplyr::filter(ANALYSIS_STRATUM %in% Filter_2018) %>%
-      dplyr::mutate(ngrtot = sum(NTOT))
-
-    ntot17 <- Tort_2018_NTOT %>%
-      dplyr::mutate(REGION = "Tortugas",
-                    YEAR = 2017,
-                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))  %>%
-      dplyr::filter(ANALYSIS_STRATUM %in% Filter_2017) %>%
-      dplyr::mutate(ngrtot = sum(NTOT))
-
-    ntot16 <- Tort_2016_NTOT %>%
-      dplyr::mutate(REGION = "Tortugas",
-                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))  %>%
-      dplyr::filter(ANALYSIS_STRATUM %in% Filter_2016) %>%
-      dplyr::mutate(ngrtot = sum(NTOT))
-
-    ntot15 <- Tort_2016_NTOT %>%
-      dplyr::mutate(REGION = "Tortugas",
-                    YEAR = 2015,
-                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))  %>%
-      dplyr::filter(ANALYSIS_STRATUM %in% Filter_2015) %>%
-      dplyr::mutate(ngrtot = sum(NTOT))
-
-    ntot14 <- Tort_2014_NTOT %>%
-      dplyr::mutate(REGION = "Tortugas",
-                    ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))  %>%
-      dplyr::filter(ANALYSIS_STRATUM %in% Filter_2014) %>%
-      dplyr::mutate(ngrtot = sum(NTOT))
-
-    ntot <- dplyr::bind_rows(ntot21, ntot20, ntot19, ntot18, ntot17, ntot16, ntot15, ntot14)
+    ntot <- ntot %>% dplyr::mutate(PROT = as.factor(PROT))
 
   }
 

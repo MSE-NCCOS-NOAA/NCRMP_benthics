@@ -69,10 +69,12 @@ NCRMP_DRM_calculate_mean_colony_size <- function(project = "NULL", region, speci
                     size_3d = (4*pi*(((((MAX_DIAMETER/2)*(PERP_DIAMETER/2)) + ((MAX_DIAMETER/2)*(HEIGHT/2)) + ((MAX_DIAMETER/2*(HEIGHT/2))))/3)^1/p)/2) - ((4*pi*(((((MAX_DIAMETER/2)*(PERP_DIAMETER/2)) + ((MAX_DIAMETER/2)*(HEIGHT/2)) + ((MAX_DIAMETER/2*(HEIGHT/2))))/3)^1/p)/2)*(OLD_MORT+RECENT_MORT)/100)) %>%
 
       dplyr::group_by(REGION, SURVEY, YEAR, SUB_REGION_NAME, ADMIN, PROT, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, METERS_COMPLETED, SPECIES_CD, SPECIES_NAME) %>%
-      dplyr::summarise(avg_cm2 = mean(size_2d),
-                       avg_cm3 = mean(size_3d),
-                       var_cm2 = var(size_2d),
-                       var_cm3 = var(size_3d),
+      dplyr::summarise(avg_cm2 = mean(size_2d, na.rm = T),
+                       avg_cm3 = mean(size_3d, na.rm=T),
+                       var_cm2 = var(size_2d, na.rm=T),
+                       var_cm3 = var(size_3d, na.rm=T),
+                       avg_maxdiam = mean(MAX_DIAMETER, na.rm = T),
+                       var_maxdiam = var(MAX_DIAMETER, na.rm=T),
                        n_colonies = length(unique(size_3d)),
                        DEPTH_M = mean(MAX_DEPTH), .groups = "keep") %>%
       dplyr::ungroup()
@@ -90,10 +92,12 @@ NCRMP_DRM_calculate_mean_colony_size <- function(project = "NULL", region, speci
                     size_3d = (4*pi*(((((MAX_DIAMETER/2)*(PERP_DIAMETER/2)) + ((MAX_DIAMETER/2)*(HEIGHT/2)) + ((MAX_DIAMETER/2*(HEIGHT/2))))/3)^1/p)/2) - ((4*pi*(((((MAX_DIAMETER/2)*(PERP_DIAMETER/2)) + ((MAX_DIAMETER/2)*(HEIGHT/2)) + ((MAX_DIAMETER/2*(HEIGHT/2))))/3)^1/p)/2)*(OLD_MORT+RECENT_MORT)/100)) %>%
 
       dplyr::group_by(REGION, SURVEY, YEAR, SUB_REGION_NAME, ADMIN, PROT, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, METERS_COMPLETED) %>%
-      dplyr::summarise(avg_cm2 = mean(size_2d),
-                       avg_cm3 = mean(size_3d),
-                       var_cm2 = var(size_2d),
-                       var_cm3 = var(size_3d),
+      dplyr::summarise(avg_cm2 = mean(size_2d, na.rm=T),
+                       avg_cm3 = mean(size_3d, na.rm=T),
+                       var_cm2 = var(size_2d, na.rm=T),
+                       var_cm3 = var(size_3d, na.rm=T),
+                       avg_maxdiam = mean(MAX_DIAMETER, na.rm = T),
+                       var_maxdiam = var(MAX_DIAMETER, na.rm=T),
                        n_colonies = length(unique(size_3d)),
                        DEPTH_M = mean(MAX_DEPTH), .groups = "keep") %>%
       dplyr::ungroup()
@@ -112,17 +116,21 @@ NCRMP_DRM_calculate_mean_colony_size <- function(project = "NULL", region, speci
                     size_3d = (4*pi*(((((MAX_DIAMETER/2)*(PERP_DIAMETER/2)) + ((MAX_DIAMETER/2)*(HEIGHT/2)) + ((MAX_DIAMETER/2*(HEIGHT/2))))/3)^1/p)/2)) %>%
 
       dplyr::group_by(REGION, SURVEY, YEAR, SUB_REGION_NAME, ADMIN, PROT, PRIMARY_SAMPLE_UNIT, STATION_NR, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, MIN_DEPTH, MAX_DEPTH, METERS_COMPLETED, SPECIES_CD, SPECIES_NAME) %>%
-      dplyr::summarise(avg_cm2 = mean(size_2d),
-                       avg_cm3 = mean(size_3d),
-                       var_cm2 = var(size_2d),
-                       var_cm3 = var(size_3d),
+      dplyr::summarise(avg_cm2 = mean(size_2d, na.rm=T),
+                       avg_cm3 = mean(size_3d, na.rm=T),
+                       var_cm2 = var(size_2d, na.rm=T),
+                       var_cm3 = var(size_3d, na.rm=T),
+                       avg_maxdiam = mean(MAX_DIAMETER, na.rm = T),
+                       var_maxdiam = var(MAX_DIAMETER, na.rm=T),
                        n_colonies = length(unique(size_3d)), .groups = "keep") %>%
       dplyr::ungroup() %>%
       dplyr::group_by(REGION, SURVEY, YEAR, SUB_REGION_NAME, ADMIN, PROT, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, METERS_COMPLETED, SPECIES_CD, SPECIES_NAME) %>%
-      dplyr::summarise(avg_cm2 = mean(avg_cm2),
-                       avg_cm3 = mean(avg_cm3),
-                       var_cm2 = var(avg_cm2),
-                       var_cm3 = var(avg_cm3),
+      dplyr::summarise(avg_cm2 = mean(avg_cm2, na.rm=T),
+                       avg_cm3 = mean(avg_cm3, na.rm=T),
+                       var_cm2 = var(avg_cm2, na.rm=T),
+                       var_cm3 = var(avg_cm3, na.rm=T),
+                       avg_maxdiam = mean(avg_maxdiam, na.rm = T),
+                       var_maxdiam = var(avg_maxdiam, na.rm=T),
                        n_colonies = length(unique(avg_cm3)),
                        DEPTH_M = mean(MAX_DEPTH), .groups = "keep") %>%
       dplyr::ungroup()
@@ -141,17 +149,21 @@ NCRMP_DRM_calculate_mean_colony_size <- function(project = "NULL", region, speci
                     size_3d = (4*pi*(((((MAX_DIAMETER/2)*(PERP_DIAMETER/2)) + ((MAX_DIAMETER/2)*(HEIGHT/2)) + ((MAX_DIAMETER/2*(HEIGHT/2))))/3)^1/p)/2)) %>%
 
       dplyr::group_by(REGION, SURVEY, YEAR, SUB_REGION_NAME, ADMIN, PROT, PRIMARY_SAMPLE_UNIT, STATION_NR, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, MIN_DEPTH, MAX_DEPTH, METERS_COMPLETED) %>%
-      dplyr::summarise(avg_cm2 = mean(size_2d),
-                       avg_cm3 = mean(size_3d),
-                       var_cm2 = var(size_2d),
-                       var_cm3 = var(size_3d),
+      dplyr::summarise(avg_cm2 = mean(size_2d, na.rm=T),
+                       avg_cm3 = mean(size_3d, na.rm=T),
+                       var_cm2 = var(size_2d, na.rm=T),
+                       var_cm3 = var(size_3d, na.rm=T),
+                       avg_maxdiam = mean(MAX_DIAMETER, na.rm = T),
+                       var_maxdiam = var(MAX_DIAMETER, na.rm=T),
                        n_colonies = length(unique(size_3d)), .groups = "keep") %>%
       dplyr::ungroup() %>%
       dplyr::group_by(REGION, SURVEY, YEAR, SUB_REGION_NAME, ADMIN, PROT, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, METERS_COMPLETED) %>%
-      dplyr::summarise(avg_cm2 = mean(avg_cm2),
-                       avg_cm3 = mean(avg_cm3),
-                       var_cm2 = var(avg_cm2),
-                       var_cm3 = var(avg_cm3),
+      dplyr::summarise(avg_cm2 = mean(avg_cm2, na.rm=T),
+                       avg_cm3 = mean(avg_cm3, na.rm=T),
+                       var_cm2 = var(avg_cm2, na.rm=T),
+                       var_cm3 = var(avg_cm3, na.rm=T),
+                       avg_maxdiam = mean(avg_maxdiam, na.rm = T),
+                       var_maxdiam = var(avg_maxdiam, na.rm=T),
                        n_colonies = length(unique(avg_cm3)),
                        DEPTH_M = mean(MAX_DEPTH), .groups = "keep") %>%
       dplyr::ungroup()
@@ -179,6 +191,8 @@ NCRMP_DRM_calculate_mean_colony_size <- function(project = "NULL", region, speci
                        avg_cm3 = mean(size_3d),
                        var_cm2 = var(size_2d),
                        var_cm3 = var(size_3d),
+                       avg_maxdiam = mean(MAX_DIAMETER, na.rm = T),
+                       var_maxdiam = var(MAX_DIAMETER, na.rm=T),
                        n_colonies = length(unique(size_3d)),
                        DEPTH_M = mean(MAX_DEPTH), .groups = "keep") %>%
       dplyr::ungroup()
@@ -201,6 +215,8 @@ NCRMP_DRM_calculate_mean_colony_size <- function(project = "NULL", region, speci
                        avg_cm3 = mean(size_3d, na.rm=T),
                        var_cm2 = var(size_2d, na.rm=T),
                        var_cm3 = var(size_3d, na.rm=T),
+                       avg_maxdiam = mean(MAX_DIAMETER, na.rm = T),
+                       var_maxdiam = var(MAX_DIAMETER, na.rm=T),
                        n_colonies = length(unique(size_3d)),
                        DEPTH_M = mean(MAX_DEPTH), .groups = "keep") %>%
       dplyr::ungroup()
@@ -219,10 +235,20 @@ NCRMP_DRM_calculate_mean_colony_size <- function(project = "NULL", region, speci
                                         species_filter = species_filter)
 
 
-
-
   # unpack list
   for(k in 1:length(tmp))assign(names(tmp)[k], tmp[[k]])
+
+  # rename exports?
+
+
+  # Run through the weighting function by species
+  tmp2  <- NCRMP_make_weighted_demo_data(project,
+                                         inputdata = size_species,
+                                         region,
+                                         datatype = "size_species",
+                                         species_filter = species_filter)
+
+  for(k in 1:length(tmp2))assign(names(tmp2)[k], tmp2[[k]])
 
 
   ################
@@ -232,12 +258,26 @@ NCRMP_DRM_calculate_mean_colony_size <- function(project = "NULL", region, speci
 
 
     # Create list to export
+  if(project == "NCRMP"){
     output <- list(
       "size_species" = size_species,
       "size_site" = size_site,
       "size_est_cm2_strata" = size_est_cm2_strata,
       "size_est_cm3_strata" = size_est_cm3_strata,
+      "size_est_cm2_strata_species" = size_est_cm2_strata_species,
+      "size_est_cm3_strata_species" = size_est_cm3_strata_species,
+      "size_est_maxdiam_strata_species" = size_est_maxdiam_strata_species,
+      "Domain_est_species" = Domain_est_species,
       "Domain_est" = Domain_est)
+  }
+  if(project == "NCRMP_DRM"){
+    output <- list(
+      "size_species" = size_species,
+      "size_site" = size_site,
+      "size_est_maxdiam_strata_species" = size_est_maxdiam_strata_species,
+      "Domain_est_species" = Domain_est_species,
+      "Domain_est" = Domain_est)
+  }
 
 
 
