@@ -104,9 +104,9 @@ NCRMP_make_size_bins <- function(region, project, years,
       }
       if(project == "NCRMP_DRM"){
         # 1 stage demo data
-        tmp1 <- demos$dat_1stage
+        tmp1 <- demos$dat_1stage %>% dplyr::mutate(PRIMARY_SAMPLE_UNIT = as.character(PRIMARY_SAMPLE_UNIT))
         # load subsetted versions of 2 stage data
-        tmp2 <- dplyr::bind_rows(SEFCRI_2014_1stage_coral_demographics,
+        tmp2 <- dplyr::bind_rows(SEFCRI_2014_1stage_coral_demographics %>% dplyr::mutate(PRIMARY_SAMPLE_UNIT = as.character(PRIMARY_SAMPLE_UNIT)),
                                  DRM_SEFCRI_2014_2022_1stage_coral_demographics)
         # combine with actual 1 stage data
         demos <- dplyr::bind_rows(tmp1, tmp2) %>%
@@ -134,7 +134,6 @@ NCRMP_make_size_bins <- function(region, project, years,
           dplyr::filter(YEAR %in% years)
       }
     }
-
     if(region == "FLK"){
       # pull just ncrmp data from demos loaded data
       tmp1 <- dplyr::bind_rows(demos$dat_1stage %>% dplyr::mutate(PRIMARY_SAMPLE_UNIT = as.character(PRIMARY_SAMPLE_UNIT)),
@@ -147,50 +146,6 @@ NCRMP_make_size_bins <- function(region, project, years,
     }
 
   }
-
-  if (region == "SEFCRI" ) {
-    if(project == "NCRMP"){
-    #SEFCRI dat_1stage has one extra column for MEAN_RUG that is not needed
-    demos <- dplyr::bind_rows(demos$dat_1stage, demos$dat_2stage) %>%
-      #filter by year
-      dplyr::filter(YEAR %in% years, !is.na(SPECIES_NAME))
-    }
-    if(project == "NCRMP_DRM"){
-
-    }
-  }
-
-  if (region == "Tortugas") {
-    if(project == "NCRMP"){
-    #Tortugas requires dat_1stage and dat_2stage to be combined
-    demos <- dplyr::bind_rows(demos$dat_1stage, demos$dat_2stage) %>%
-      #filter by year
-      dplyr::filter(YEAR %in% years)
-    }
-    if(project == "NCRMP_DRM"){
-
-    }
-  }
-
-  if (region %in% c("FLK", "PRICO", "STTSTJ", "STX", "GOM")) {
-    if(project == "NCRMP"){
-    #These regions only have dat_1stage needed
-    demos <- demos$dat_1stage %>%
-      dplyr::filter(YEAR %in% years)
-    }
-    if(project == "NCRMP_DRM"){
-      # pull just ncrmp data from demos loaded data
-      tmp1 <- dplyr::bind_rows(demos$dat_1stage %>% dplyr::mutate(PRIMARY_SAMPLE_UNIT = as.character(PRIMARY_SAMPLE_UNIT)),
-                               demos$dat_2stage) %>%
-        dplyr::filter(SURVEY == "NCRMP")
-      # pull DRM 'single stage' data (which is just the first transect in the dataset from each site)
-      tmp2 <- DRM_FLK_2014_2022_1stage_coral_demographics
-      demos <- dplyr::bind_rows(tmp1, tmp2) %>%
-        dplyr::filter(YEAR %in% years)
-    }
-  }
-
-
 
 
   if (!is.null(species_filter)) {
@@ -509,7 +464,7 @@ NCRMP_make_size_bins <- function(region, project, years,
   #   dplyr::ungroup()
 
   ntot <- load_NTOT(region = region, inputdata = demos,
-                                             project = project) %>%
+                    project = project) %>%
     dplyr::mutate(YEAR = as.factor(YEAR)) %>%
     dplyr::filter(YEAR %in% years) %>%
     dplyr::ungroup()
@@ -578,8 +533,8 @@ NCRMP_make_size_bins <- function(region, project, years,
       # calculate relative frequency (proportion) of corals in each size bin
       dplyr::mutate(length_freq = n_corals/tot_corals)
     #inputdata is dummy, unused if project != DRM
-    ntot <- ncrmp.benthics.analysis::load_NTOT(region = region, inputdata = demos,
-                                               project = project) %>%
+    ntot <- load_NTOT(region = region, inputdata = demos,
+                      project = project) %>%
       dplyr::mutate(YEAR = as.factor(YEAR)) %>%
       dplyr::filter(YEAR %in% years) %>%
       dplyr::ungroup()
