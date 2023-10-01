@@ -59,6 +59,9 @@ NCRMP_calculate_ESA_corals_PresAbs <- function()
   tmp2.2 <- SEFCRI_2020_inverts_ESAcorals %>%
     dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
 
+  tmp2.3 <- SEFCRI_2022_inverts_ESAcorals %>%
+    dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
+
   # FLK
   tmp3 <- FLK_2014_2stage_inverts_ESAcorals %>%
     dplyr::mutate(YEAR = 2014,
@@ -73,6 +76,17 @@ NCRMP_calculate_ESA_corals_PresAbs <- function()
 
   tmp4.2 <- FLK_2020_inverts_ESAcorals %>%
     dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
+
+  tmp4.3 <- FLK_2022_inverts_ESAcorals %>%
+    dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
+  # UPDATE THE PROT (MIR sites initially labeled as PROT=2)
+  grid_df <- FLK_2020_sample_frame@data
+  new_prots <- grid_df %>% dplyr::select(MAPGRID_NR, PROT) %>% dplyr::rename("PROT_og" = PROT) %>% dplyr::mutate(MAPGRID_NR = as.numeric(MAPGRID_NR), PROT_og = as.numeric(PROT_og))
+  tmp4.3 <- tmp4.3 %>% dplyr::left_join(., new_prots, by = c("MAPGRID_NR")) %>%
+    # fix any that get left out manually, they fell outside the grid and JB fixed them
+    dplyr::mutate(PROT_og = case_when(PRIMARY_SAMPLE_UNIT == 1006 ~ 0, PRIMARY_SAMPLE_UNIT == 1382 ~ 1, TRUE ~ PROT_og)) %>%
+    dplyr::select(-PROT) %>%
+    dplyr::rename("PROT" = PROT_og)
 
   # Tortugas
   tmp5 <- TortugasMarq_2014_inverts_ESAcorals %>%
@@ -95,8 +109,13 @@ NCRMP_calculate_ESA_corals_PresAbs <- function()
     # Remove METERS_COMPLETED as it is missing from the other FL data
     dplyr::select(-METERS_COMPLETED)
 
+  tmp7.2 <- Tortugas_2022_inverts_ESAcorals %>%
+    dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
+    # Remove METERS_COMPLETED as it is missing from the other FL data
+    dplyr::select(-METERS_COMPLETED)
+
   #Combine FL
-  FL <- dplyr::bind_rows(tmp1, tmp2, tmp2.1, tmp2.2, tmp3, tmp4, tmp4.1, tmp4.2, tmp5, tmp6, tmp7, tmp7.1 )  %>%
+  FL <- dplyr::bind_rows(tmp1, tmp2, tmp2.1, tmp2.2, tmp2.3, tmp3, tmp4, tmp4.1, tmp4.2, tmp4.3, tmp5, tmp6, tmp7, tmp7.1, tmp7.2 )  %>%
   # Change to factor - there are letters in the FGBNMS MAPGRID NRs
   dplyr::mutate(MAPGRID_NR = as.factor(MAPGRID_NR))
 
@@ -148,7 +167,7 @@ NCRMP_calculate_ESA_corals_PresAbs <- function()
     dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS")
 
   #Combine Carib and GOM
-  tmp9 <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp3.1, tmp3.2, tmp4, tmp5, tmp5.1, tmp5.2, tmp8, tmp5.1, tmp8.1) %>%
+  tmp9 <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp3.1, tmp3.2, tmp4, tmp5, tmp5.1, tmp5.2, tmp8, tmp8.1) %>%
     # Remove METERS_COMPLETED as it is missing from the FL data
     dplyr::select(-METERS_COMPLETED) %>%
   # Combine and change to factor - there are letters in the FGBNMS MAPGRID NRs
@@ -172,22 +191,28 @@ NCRMP_calculate_ESA_corals_PresAbs <- function()
                                                    REGION == "Tortugas" & YEAR == 2021 ~ 2020,
                                                    TRUE ~ as.numeric(YEAR))) %>%
     # convert A (Absence) to 0 and P (Presence) to 1
-    dplyr::mutate_at(.vars = dplyr::vars ("A_PALMATA", "A_CERVICORNIS", "D_CYLINDRUS", "M_FEROX", "O_ANNULARIS", "O_FRANKSI", "O_FAVEOLATA"),
-                     .funs = dplyr::funs(ifelse(. == "A", 0,
-                                                ifelse(. == "PT", 1,
-                                                       ifelse(. == "PS", 1,
-                                                              ifelse(. == "P", 1, NA_integer_)))))) %>%
+    dplyr::mutate(A_PALMATA = dplyr::case_when(A_PALMATA == "A" ~ 0, A_PALMATA == "PT" ~ 1, A_PALMATA == "PS" ~ 1, A_PALMATA == "P" ~ 1, TRUE ~ NA_real_),
+                  A_CERVICORNIS = dplyr::case_when(A_CERVICORNIS == "A" ~ 0, A_CERVICORNIS == "PT" ~ 1, A_CERVICORNIS == "PS" ~ 1, A_CERVICORNIS == "P" ~ 1, TRUE ~ NA_real_),
+                  D_CYLINDRUS = dplyr::case_when(D_CYLINDRUS == "A" ~ 0, D_CYLINDRUS == "PT" ~ 1, D_CYLINDRUS == "PS" ~ 1, D_CYLINDRUS == "P" ~ 1, TRUE ~ NA_real_),
+                  M_FEROX = dplyr::case_when(M_FEROX == "A" ~ 0, M_FEROX == "PT" ~ 1, M_FEROX == "PS" ~ 1, M_FEROX == "P" ~ 1, TRUE ~ NA_real_),
+                  O_ANNULARIS = dplyr::case_when(O_ANNULARIS == "A" ~ 0, O_ANNULARIS == "PT" ~ 1, O_ANNULARIS == "PS" ~ 1, O_ANNULARIS == "P" ~ 1, TRUE ~ NA_real_),
+                  O_FRANKSI = dplyr::case_when(D_CYLINDRUS == "A" ~ 0, O_FRANKSI == "PT" ~ 1, O_FRANKSI == "PS" ~ 1, O_FRANKSI == "P" ~ 1, TRUE ~ NA_real_),
+                  O_FAVEOLATA = dplyr::case_when(O_FAVEOLATA == "A" ~ 0, O_FAVEOLATA == "PT" ~ 1, O_FAVEOLATA == "PS" ~ 1, O_FAVEOLATA == "P" ~ 1, TRUE ~ NA_real_)) %>%
 
     # sum ESA coral spp presence/absence by region, year, strata, habitat
+    # AS OF 9/23...this doesn't seem necessary according to BW...
     dplyr::group_by(REGION, MONTH, DAY, ANALYSES_YEAR, ANALYSIS_STRATUM, STRAT, HABITAT_CD, MAX_DEPTH, PRIMARY_SAMPLE_UNIT, STATION_NR, LAT_DEGREES, LON_DEGREES) %>%
     dplyr::summarise_at(.vars = dplyr::vars ("A_PALMATA", "A_CERVICORNIS", "D_CYLINDRUS", "M_FEROX", "O_ANNULARIS", "O_FRANKSI", "O_FAVEOLATA"),
                         sum, na.rm = TRUE) %>%
     dplyr::ungroup() %>%
     # convert strata-level sums to strata-level presence/absence (1/0) values
-    dplyr::mutate_at(.vars = dplyr::vars ("A_PALMATA", "A_CERVICORNIS", "D_CYLINDRUS", "M_FEROX", "O_ANNULARIS", "O_FRANKSI", "O_FAVEOLATA"),
-                     .funs = dplyr::funs(ifelse(. > 0 , 1,
-                                                ifelse(. == 0, 0, NA_integer_))
-                     )) %>%
+    dplyr::mutate(A_PALMATA = dplyr::case_when(A_PALMATA == 0 ~ 0, A_PALMATA > 0 ~ 1, TRUE ~ NA_real_),
+                  A_CERVICORNIS = dplyr::case_when(A_CERVICORNIS == 0 ~ 0, A_CERVICORNIS > 0 ~ 1, TRUE ~ NA_real_),
+                  D_CYLINDRUS = dplyr::case_when(D_CYLINDRUS == 0 ~ 0, D_CYLINDRUS > 0 ~ 1, TRUE ~ NA_real_),
+                  M_FEROX = dplyr::case_when(M_FEROX == 0 ~ 0, M_FEROX > 0 ~ 1, TRUE ~ NA_real_),
+                  O_ANNULARIS = dplyr::case_when(O_ANNULARIS == 0 ~ 0, O_ANNULARIS > 0 ~ 1, TRUE ~ NA_real_),
+                  O_FRANKSI = dplyr::case_when(O_FRANKSI == 0 ~ 0, O_FRANKSI > 0 ~ 1, TRUE ~ NA_real_),
+                  O_FAVEOLATA = dplyr::case_when(O_FAVEOLATA == 0 ~ 0, O_FAVEOLATA > 0 ~ 1, TRUE ~ NA_real_)) %>%
     # add a column that has total # of ESA corals
     dplyr::mutate(N_ESAcoralspp = rowSums(dplyr::select(., ids = "A_PALMATA", "A_CERVICORNIS", "D_CYLINDRUS", "M_FEROX", "O_ANNULARIS", "O_FRANKSI", "O_FAVEOLATA"),
                                           na.rm = TRUE)) %>%
@@ -206,11 +231,13 @@ NCRMP_calculate_ESA_corals_PresAbs <- function()
                                                    REGION == "Tortugas" & YEAR == 2021 ~ 2020,
                                                    TRUE ~ as.numeric(YEAR))) %>%
     # convert A (Absence) to 0 and P (Presence) to 1
-    dplyr::mutate_at(.vars = dplyr::vars ("A_PALMATA", "A_CERVICORNIS", "D_CYLINDRUS", "M_FEROX", "O_ANNULARIS", "O_FRANKSI", "O_FAVEOLATA"),
-                     .funs = dplyr::funs(ifelse(. == "A", 0,
-                                                ifelse(. == "PT", 1,
-                                                       ifelse(. == "PS", 1,
-                                                              ifelse(. == "P", 1, NA_integer_)))))) %>%
+    dplyr::mutate(A_PALMATA = dplyr::case_when(A_PALMATA == "A" ~ 0, A_PALMATA == "PT" ~ 1, A_PALMATA == "PS" ~ 1, A_PALMATA == "P" ~ 1, TRUE ~ NA_real_),
+                  A_CERVICORNIS = dplyr::case_when(A_CERVICORNIS == "A" ~ 0, A_CERVICORNIS == "PT" ~ 1, A_CERVICORNIS == "PS" ~ 1, A_CERVICORNIS == "P" ~ 1, TRUE ~ NA_real_),
+                  D_CYLINDRUS = dplyr::case_when(D_CYLINDRUS == "A" ~ 0, D_CYLINDRUS == "PT" ~ 1, D_CYLINDRUS == "PS" ~ 1, D_CYLINDRUS == "P" ~ 1, TRUE ~ NA_real_),
+                  M_FEROX = dplyr::case_when(M_FEROX == "A" ~ 0, M_FEROX == "PT" ~ 1, M_FEROX == "PS" ~ 1, M_FEROX == "P" ~ 1, TRUE ~ NA_real_),
+                  O_ANNULARIS = dplyr::case_when(O_ANNULARIS == "A" ~ 0, O_ANNULARIS == "PT" ~ 1, O_ANNULARIS == "PS" ~ 1, O_ANNULARIS == "P" ~ 1, TRUE ~ NA_real_),
+                  O_FRANKSI = dplyr::case_when(D_CYLINDRUS == "A" ~ 0, O_FRANKSI == "PT" ~ 1, O_FRANKSI == "PS" ~ 1, O_FRANKSI == "P" ~ 1, TRUE ~ NA_real_),
+                  O_FAVEOLATA = dplyr::case_when(O_FAVEOLATA == "A" ~ 0, O_FAVEOLATA == "PT" ~ 1, O_FAVEOLATA == "PS" ~ 1, O_FAVEOLATA == "P" ~ 1, TRUE ~ NA_real_)) %>%
 
     # sum ESA coral spp presence/absence by region, year, strata, habitat
     dplyr::group_by(REGION, ANALYSES_YEAR, ANALYSIS_STRATUM, STRAT) %>%
@@ -218,10 +245,13 @@ NCRMP_calculate_ESA_corals_PresAbs <- function()
                         sum, na.rm = TRUE) %>%
     dplyr::ungroup() %>%
     # convert strata-level sums to strata-level presence/absence (1/0) values
-    dplyr::mutate_at(.vars = dplyr::vars ("A_PALMATA", "A_CERVICORNIS", "D_CYLINDRUS", "M_FEROX", "O_ANNULARIS", "O_FRANKSI", "O_FAVEOLATA"),
-                     .funs = dplyr::funs(ifelse(. > 0 , 1,
-                                                ifelse(. == 0, 0, NA_integer_))
-                     )) %>%
+    dplyr::mutate(A_PALMATA = dplyr::case_when(A_PALMATA == 0 ~ 0, A_PALMATA > 0 ~ 1, TRUE ~ NA_real_),
+                  A_CERVICORNIS = dplyr::case_when(A_CERVICORNIS == 0 ~ 0, A_CERVICORNIS > 0 ~ 1, TRUE ~ NA_real_),
+                  D_CYLINDRUS = dplyr::case_when(D_CYLINDRUS == 0 ~ 0, D_CYLINDRUS > 0 ~ 1, TRUE ~ NA_real_),
+                  M_FEROX = dplyr::case_when(M_FEROX == 0 ~ 0, M_FEROX > 0 ~ 1, TRUE ~ NA_real_),
+                  O_ANNULARIS = dplyr::case_when(O_ANNULARIS == 0 ~ 0, O_ANNULARIS > 0 ~ 1, TRUE ~ NA_real_),
+                  O_FRANKSI = dplyr::case_when(O_FRANKSI == 0 ~ 0, O_FRANKSI > 0 ~ 1, TRUE ~ NA_real_),
+                  O_FAVEOLATA = dplyr::case_when(O_FAVEOLATA == 0 ~ 0, O_FAVEOLATA > 0 ~ 1, TRUE ~ NA_real_)) %>%
     # add a column that has total # of ESA corals
     dplyr::mutate(N_ESAcoralspp = rowSums(dplyr::select(., ids = "A_PALMATA", "A_CERVICORNIS", "D_CYLINDRUS", "M_FEROX", "O_ANNULARIS", "O_FRANKSI", "O_FAVEOLATA"),
                                           na.rm = TRUE)) %>%
