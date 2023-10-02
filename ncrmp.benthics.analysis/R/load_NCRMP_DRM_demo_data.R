@@ -36,6 +36,7 @@
 #' @param species_filter A string indicating whether to filter to a subset of species
 #' @return A dataframe
 #' @importFrom magrittr "%>%"
+#' @importFrom dplyr "case_when"
 #' @export
 #'
 #'
@@ -95,7 +96,8 @@ load_NCRMP_DRM_demo_data <- function(project = "NULL", region, species_filter = 
                       SPECIES_CD = dplyr::case_when(SPECIES_CD == "MEAN JACK" ~ "MEA JACK",
                                              TRUE ~ SPECIES_CD),
                       SPECIES_NAME = dplyr::case_when(SPECIES_CD == "MEA JACK" ~ "Meandrina jacksoni",
-                                               TRUE ~ SPECIES_NAME))
+                                               TRUE ~ SPECIES_NAME),
+                      PRIMARY_SAMPLE_UNIT = as.factor(PRIMARY_SAMPLE_UNIT))
 
       dat_2stage <- dplyr::bind_rows(tmp1, tmp3) %>%
         dplyr::mutate(STRAT = dplyr::case_when(STRAT == "PTSH1"~"PTSH2", TRUE ~ as.character(STRAT)),
