@@ -7,9 +7,9 @@
 NCRMP_DRM_calculate_mortality(project, region, species_filter = "NULL")
 }
 \arguments{
-\item{project}{A string indicating the project, NCRMP or NCRMP and DRM combined}
+\item{project}{A string indicating the project, NCRMP ("NCRMP") or NCRMP and DRM combined ("NCRMO_DRM")}
 
-\item{region}{A string indicating the region}
+\item{region}{A string indicating the region. Options include: "FLK", "SEFCRI", "Tortugas", "STX", "STTSTJ", and "GOM"}
 
 \item{species_filter}{A boolean value indicating whether to filter to a subset of species}
 }

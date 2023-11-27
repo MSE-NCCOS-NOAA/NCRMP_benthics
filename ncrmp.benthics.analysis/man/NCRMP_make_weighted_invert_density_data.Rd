@@ -2,20 +2,27 @@
 % Please edit documentation in R/NCRMP_make_weighted_invert_density_data.R
 \name{NCRMP_make_weighted_invert_density_data}
 \alias{NCRMP_make_weighted_invert_density_data}
-\title{Creates weighted Invert density data}
+\title{Creates weighted invertebrate density data}
 \usage{
 NCRMP_make_weighted_invert_density_data(inputdata, region, project = "NULL")
 }
 \arguments{
-\item{inputdata}{A dataframe}
+\item{inputdata}{A dataframe of site level invertebrate density.}
 
-\item{region}{A string indicating the region}
+\item{region}{A string indicating the region. Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".}
 
 \item{project}{A string indicating the project: "NCRMP" or "MIR". Default is NCRMP.}
 }
 \value{
-A dataframe
+A list of dataframes, including a dataframe of strata means of invertebrate
+and a dataframe of weighted regional estimates of invertebrate density, for specified region.
 }
 \description{
-Creates weighted Invert density data
+Calculates weighted invertebrate density data collected by benthic assessment.
+NCRMP utilizes a stratified random sampling design.
+Regional estimates of invertebrate density are weighted by the
+number of grid cells of a stratum in the sample frame.
+Function produces strata means, weighted strata means,
+and weighted regional estimates for invertebrate data.
+SUpport function called by [NCRMP_calculate_invert_density()].
 }

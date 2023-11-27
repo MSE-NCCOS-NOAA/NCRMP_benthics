@@ -2,20 +2,25 @@
 % Please edit documentation in R/load_NTOT.R
 \name{load_NTOT}
 \alias{load_NTOT}
-\title{Creates weighted demo data}
+\title{Creates weights for coral demographic data}
 \usage{
 load_NTOT(region, inputdata, project)
 }
 \arguments{
-\item{region}{A string indicating the region}
+\item{region}{A string indicating the region. Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".}
 
-\item{inputdata}{A dataframe}
+\item{inputdata}{A dataframe of coral demographic data. Can be in various forms.}
 
-\item{project}{A string indicating the project, NCRMP or NCRMP and DRM combined}
+\item{project}{A string indicating the project, "NCRMP" or NCRMP and DRM combined ("NCRMP_DRM").}
 }
 \value{
-A dataframe
+A dataframe of weighting scheme for corresponding region.
 }
 \description{
-Creates weighted demo data
+Creates weighting scheme for coral demographic data from a single region.
+NCRMP utilizes a stratified random sampling design. Generally, weighting is
+based on the number of grid cells in the sample frame in each stratum, to provide
+regional estimates. This function is called by broader calculation functions
+such as [NCRMP_make_weighted_demo_data()],
+which will provide the inputdata object.
 }

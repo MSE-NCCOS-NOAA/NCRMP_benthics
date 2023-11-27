@@ -22,20 +22,29 @@
 # NCRMP_calculate_cover.R
 #
 
-# NCRMP Caribbean Benthic analytics team: Groves and viehman
-# Last update: Apr 2019
+# NCRMP Caribbean Benthic analytics team: Groves, viehman, Williams
+# Last update: Nov 2023
 
 
 ##############################################################################################################################
 
-#' Creates weighted LPI data
+#' Creates weighted benthic cover data
+#'
+#' Calcualtes weighted benthic cover data. NCRMP utilizes a stratified random
+#' sampling design. Regional estimates of benthic cover are weighted by the
+#' number of grid cells of a stratum in the sample frame.
+#' Function produces strata means, weighted strata means,
+#' and weighted regional estimates for benthic cover data.
+#' Support function called by [NCRMP_calculate_cover()].
 #'
 #'
 #'
 #'
-#' @param inputdata A dataframe
-#' @param region A string indicating the region
-#' @return A dataframe
+#'
+#' @param inputdata A dataframe of benthic cover data summarized by cover group at each site in a single region.
+#' @param region A string indicating the region. Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".
+#' @return A list of dataframes, including a dataframe of strata means of cover groups
+#' and a dataframe of weighted regional estimates of cover groups, for specified region.
 #' @importFrom magrittr "%>%"
 #' @export
 #'

@@ -29,13 +29,16 @@
 #' Creates colony coral cover summary data frames
 #'
 #'
+#' Calculates coral cover strata means and regional weighted means, by coral species. Also
+#' produces a figure of percent cover by species from most recent year of data for the
+#' selected region.
 #'
 #'
-#' @param region A string indicating the region
-#' @param ptitle A string indicating the plot title
-#' @param project A string indicating the project: "NCRMP" or "MIR". Default is NCRMP.
-#' @param path A string indicating the filepath for the figure
-#' @return A dataframe
+#' @param region A string indicating the region. Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".
+#' @param ptitle A string indicating the plot title.
+#' @param project A string indicating the project: "NCRMP" or "MIR".
+#' @param file_path A string indicating the filepath for the figure output by this function.
+#' @return A list of dataframes and a jpeg. Dataframes include strata mean cover by species and regional weighted mean cover by species.
 #' @importFrom magrittr "%>%"
 #' @export
 #'

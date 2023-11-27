@@ -14,17 +14,26 @@ NCRMP_DRM_colony_density_CV_and_occurrence(
 )
 }
 \arguments{
-\item{region}{A string indicating the region}
+\item{region}{A string indicating the region. Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".}
 
-\item{ptitle}{A string indicating the plot title}
+\item{ptitle}{A string indicating the plot title, usually the region.}
 
-\item{year}{A numeric indicating the year of interest}
+\item{year}{A numeric indicating the year of interest, which will be plotted.}
 
-\item{path}{A string indicating the filepath for the figure}
+\item{path}{A string indicating the filepath for the figure.}
 }
 \value{
-A dataframe
+A list dataframes. First, a dataframe of regional weighted mean density, CV,
+and occurrence, by species for a given region. Second, a dataframe of the same,
+filtered to only species/years where CV is less than or equal to 20%.
 }
 \description{
-Creates colony density summary dataframes
+Calculates regional estimate of coral density and coefficient of variation (CV),
+by species, for a given region. NCRMP utilizes a stratified random
+sampling design. Regional estimates of density are weighted by the number of grid cells of a stratum
+in the sample frame. Function calculates weighted strata means to produce
+regional estimates for coral density data by species.
+Also calculates occurrence of each species in each year.
+Additionally, function produces a figure of species occurrence and CV by species
+for a given region and year.
 }

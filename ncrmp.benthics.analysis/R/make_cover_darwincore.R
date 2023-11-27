@@ -70,8 +70,11 @@ make_cover_darwincore <- function(dat, region, year){
      region == "FLK" ||
      region == "Tortugas") {
 
+    # below would need to change if we ever go back to 2 stage data
+
     percent_cover_species <- dat %>%
-      dplyr::mutate(Percent_Cvr = rowSums(.[28:30]),
+      dplyr::mutate(Percent_Cvr = HARDBOTTOM_P + SOFTBOTTOM_P + RUBBLE_P,
+                    #Percent_Cvr = rowSums(.[28:30]),
                     LAT_DEGREES = sprintf("%0.4f", LAT_DEGREES),
                     LON_DEGREES = sprintf("%0.4f", LON_DEGREES)) %>%
       dplyr::inner_join(.,ncrmp_frrp_sppcodes2,  by = c( "COVER_CAT_CD" = "fl_ncrmp_code")) %>%
@@ -79,26 +82,24 @@ make_cover_darwincore <- function(dat, region, year){
       dplyr::mutate(PROT = as.factor(PROT)) %>%
       dplyr::ungroup() %>%
       dplyr::group_by(REGION, YEAR, MONTH, DAY, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES,
-                      #ANALYSIS_STRATUM, STRAT, HABITAT_CD,
+                      ANALYSIS_STRATUM, STRAT, HABITAT_CD, MIN_DEPTH, MAX_DEPTH,
                       PROT, COVER_CAT_CD, COVER_CAT_NAME, cover_group) %>%
-      dplyr::summarise(Percent_Cvr_site = mean(Percent_Cvr),
-                       #MIN_DEPTH = mean(MIN_DEPTH),
-                       #MAX_DEPTH = mean(MAX_DEPTH)
-      ) %>%
+      dplyr::summarise(Percent_Cvr_site = mean(Percent_Cvr)) %>%
       dplyr::ungroup() %>%
       dplyr::mutate(Percent_Cvr = Percent_Cvr_site) %>%
       dplyr::select(REGION, YEAR, MONTH, DAY, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES,
-                    #MIN_DEPTH, MAX_DEPTH,
-                    #ANALYSIS_STRATUM, STRAT,
+                    MIN_DEPTH, MAX_DEPTH,
+                    ANALYSIS_STRATUM, STRAT,
                     HABITAT_CD, PROT, COVER_CAT_CD, COVER_CAT_NAME, cover_group, Percent_Cvr)
     # add depth back in...(averaging it above doesn't work well - gives multiple depths per site)
-    percent_cover_species <- percent_cover_species %>%
-      dplyr::left_join(., depth, by = c("REGION", "YEAR", "PRIMARY_SAMPLE_UNIT"))
+    #percent_cover_species <- percent_cover_species %>%
+    #  dplyr::left_join(., depth, by = c("REGION", "YEAR", "PRIMARY_SAMPLE_UNIT"))
 
   } else {
 
     percent_cover_species <- dat %>%
-      dplyr::mutate(Percent_Cvr = rowSums(.[29:31]),
+      dplyr::mutate(Percent_Cvr = HARDBOTTOM_P + SOFTBOTTOM_P + RUBBLE_P,
+                    #Percent_Cvr = rowSums(.[29:31]),
                     LAT_DEGREES = sprintf("%0.4f", LAT_DEGREES),
                     LON_DEGREES = sprintf("%0.4f", LON_DEGREES)) %>%
       dplyr::inner_join(.,ncrmp_frrp_sppcodes2,  by = c( "COVER_CAT_CD" = "fl_ncrmp_code")) %>%

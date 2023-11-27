@@ -17,20 +17,27 @@
 # output gets called by:
 # NCRMP_make_weighted_demo_data.R
 
-# NCRMP Caribbean Benthic analytics team: Groves, Viehman
+# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
 # Last update: Aug 2023
 
 
 ##############################################################################################################################
 
-#' Creates weighted demo data
+#' Creates weights for coral demographic data
+#'
+#' Creates weighting scheme for coral demographic data from a single region.
+#' NCRMP utilizes a stratified random sampling design. Generally, weighting is
+#' based on the number of grid cells in the sample frame in each stratum, to provide
+#' regional estimates. This function is called by broader calculation functions
+#' such as [NCRMP_make_weighted_demo_data()],
+#' which will provide the inputdata object.
 #'
 #'
 #'
-#' @param project A string indicating the project, NCRMP or NCRMP and DRM combined
-#' @param inputdata A dataframe
-#' @param region A string indicating the region
-#' @return A dataframe
+#' @param project A string indicating the project, "NCRMP" or NCRMP and DRM combined ("NCRMP_DRM").
+#' @param inputdata A dataframe of coral demographic data. Can be in various forms.
+#' @param region A string indicating the region. Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".
+#' @return A dataframe of weighting scheme for corresponding region.
 #' @importFrom magrittr "%>%"
 #' @export
 #'

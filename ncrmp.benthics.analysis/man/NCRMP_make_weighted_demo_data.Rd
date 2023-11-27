@@ -2,7 +2,7 @@
 % Please edit documentation in R/NCRMP_make_weighted_demo_data.R
 \name{NCRMP_make_weighted_demo_data}
 \alias{NCRMP_make_weighted_demo_data}
-\title{Creates weighted demo data}
+\title{Creates weighted coral demographic data}
 \usage{
 NCRMP_make_weighted_demo_data(
   project,
@@ -13,17 +13,23 @@ NCRMP_make_weighted_demo_data(
 )
 }
 \arguments{
-\item{project}{A string indicating the project, NCRMP or NCRMP and DRM combined}
+\item{project}{A string indicating the project, "NCRMP" or NCRMP and DRM combined ("NCRMP_DRM").}
 
-\item{inputdata}{A dataframe}
+\item{inputdata}{A dataframe A dataframe of coral demographic data. Can be in various forms.}
 
-\item{region}{A string indicating the region}
+\item{region}{A string indicating the region.  Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".}
 
-\item{datatype}{A string indicating the datatype}
+\item{datatype}{A string indicating the datatype. String is based on the inputdata supplied.}
 }
 \value{
-A dataframe
+A list of dataframes. Output varies by datatype.
 }
 \description{
-Creates weighted demo data
+Calculates weighted coral demographic data. NCRMP utilizes a stratified random
+sampling design. Regional estimates of measures like density, mortality,
+bleaching prevalence, etc. are weighted by the number of grid cells of a stratum
+in the sample frame. Function produces strata means, weighted strata means,
+and weighted regional estimates for various measures from coral demographic data.
+Support function called by various other functions that run data summary calculations
+such as [NCRMP_DRM_calculate_colony_density()] and [NCRMP_DRM_calculate_mortality()].
 }

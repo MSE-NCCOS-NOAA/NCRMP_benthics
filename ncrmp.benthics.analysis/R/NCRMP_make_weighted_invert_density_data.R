@@ -29,15 +29,25 @@
 
 ##############################################################################################################################
 
-#' Creates weighted Invert density data
+#' Creates weighted invertebrate density data
+#'
+#' Calculates weighted invertebrate density data collected by benthic assessment.
+#' NCRMP utilizes a stratified random sampling design.
+#' Regional estimates of invertebrate density are weighted by the
+#' number of grid cells of a stratum in the sample frame.
+#' Function produces strata means, weighted strata means,
+#' and weighted regional estimates for invertebrate data.
+#' SUpport function called by [NCRMP_calculate_invert_density()].
 #'
 #'
 #'
 #'
-#' @param inputdata A dataframe
-#' @param region A string indicating the region
+#'
+#' @param inputdata A dataframe of site level invertebrate density.
+#' @param region A string indicating the region. Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".
 #' @param project A string indicating the project: "NCRMP" or "MIR". Default is NCRMP.
-#' @return A dataframe
+#' @return A list of dataframes, including a dataframe of strata means of invertebrate
+#' and a dataframe of weighted regional estimates of invertebrate density, for specified region.
 #' @importFrom magrittr "%>%"
 #' @export
 #'

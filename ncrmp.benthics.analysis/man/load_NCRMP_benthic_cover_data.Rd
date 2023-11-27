@@ -9,11 +9,12 @@ load_NCRMP_benthic_cover_data(project = "NULL", region)
 \arguments{
 \item{project}{A string indicating the project: "NCRMP" or "MIR". Default is NCRMP.}
 
-\item{region}{A string indicating the region}
+\item{region}{A string indicating the region. Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".}
 }
 \value{
-A dataframe
+A dataframe of combined benthic cover data from specified region across all sampled years.
 }
 \description{
-Creates combined cover dataframes
+Loads combined dataframe of all years of benthic cover data from a single region.
+Function is called by all other functions that calculate data summaries from the benthic cover data.
 }

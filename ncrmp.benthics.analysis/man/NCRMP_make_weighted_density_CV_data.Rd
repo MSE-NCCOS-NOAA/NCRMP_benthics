@@ -2,20 +2,26 @@
 % Please edit documentation in R/NCRMP_make_weighted_density_CV_data.R
 \name{NCRMP_make_weighted_density_CV_data}
 \alias{NCRMP_make_weighted_density_CV_data}
-\title{Calculate weighted mean density & CVs}
+\title{Calculate weighted mean coral density & CVs}
 \usage{
 NCRMP_make_weighted_density_CV_data(region, sppdens, project = "NULL")
 }
 \arguments{
-\item{region}{A string indicating the region}
+\item{region}{A string indicating the region. Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".}
 
-\item{project}{A string indicating the project, "NCRMP", "DRM", or "MIR"}
+\item{sppdens}{A dataframe of coral density by species at each individual site in given region.}
 
-\item{sppden}{A dataframe}
+\item{project}{A string indicating the project, "NCRMP", "NCRMP_DRM", or "MIR".}
 }
 \value{
-A dataframe
+A dataframe of regional weighted means of coral density and CV.
 }
 \description{
-Calculate weighted mean density & CVs
+Calculates regional weighted mean coral density and coefficient of variation (CV), by species,
+from coral demographic data. NCRMP utilizes a stratified random
+sampling design. Regional estimates of density are weighted by the number of grid cells of a stratum
+in the sample frame. Function calculates strata means, weighted strata means,
+and weighted regional estimates for various measures from coral demographic data.
+Also calculates occurrence of each species in each year.
+Support function called by [NCRMP_colony_density_CV_and_occurrence()].
 }

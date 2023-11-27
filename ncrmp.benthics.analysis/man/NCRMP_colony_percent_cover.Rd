@@ -7,17 +7,19 @@
 NCRMP_colony_percent_cover(region, ptitle, file_path, project = "NULL")
 }
 \arguments{
-\item{region}{A string indicating the region}
+\item{region}{A string indicating the region. Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".}
 
-\item{ptitle}{A string indicating the plot title}
+\item{ptitle}{A string indicating the plot title.}
 
-\item{project}{A string indicating the project: "NCRMP" or "MIR". Default is NCRMP.}
+\item{file_path}{A string indicating the filepath for the figure output by this function.}
 
-\item{path}{A string indicating the filepath for the figure}
+\item{project}{A string indicating the project: "NCRMP" or "MIR".}
 }
 \value{
-A dataframe
+A list of dataframes and a jpeg. Dataframes include strata mean cover by species and regional weighted mean cover by species.
 }
 \description{
-Creates colony coral cover summary data frames
+Calculates coral cover strata means and regional weighted means, by coral species. Also
+produces a figure of percent cover by species from most recent year of data for the
+selected region.
 }
