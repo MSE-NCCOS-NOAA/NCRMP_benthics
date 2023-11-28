@@ -30,22 +30,32 @@
 # NCRMP_DRM_calculate_disease_prevalence.R
 # NCRMP_DRM_calculate_mean_colony_size
 
-# NCRMP Caribbean Benthic analytics team: Groves, Viehman
-# Last update: Feb 2023
+# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
+# Last update: Aug 2023
 
 
 ##############################################################################################################################
 
-#' Creates weighted demo data
+#' Creates weighted coral demographic data
+#'
+#' Calculates weighted coral demographic data. NCRMP utilizes a stratified random
+#' sampling design. Regional estimates of measures like density, mortality,
+#' bleaching prevalence, etc. are weighted by the number of grid cells of a stratum
+#' in the sample frame. Function produces strata means, weighted strata means,
+#' and weighted regional estimates for various measures from coral demographic data.
+#' Support function called by various other functions that run data summary calculations
+#' such as [NCRMP_DRM_calculate_colony_density()] and [NCRMP_DRM_calculate_mortality()].
 #'
 #'
 #'
 #'
-#' @param project A string indicating the project, NCRMP or NCRMP and DRM combined
-#' @param inputdata A dataframe
-#' @param region A string indicating the region
-#' @param datatype A string indicating the datatype
-#' @return A dataframe
+#'
+#'
+#' @param project A string indicating the project, "NCRMP" or NCRMP and DRM combined ("NCRMP_DRM").
+#' @param inputdata A dataframe A dataframe of coral demographic data. Can be in various forms.
+#' @param region A string indicating the region.  Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".
+#' @param datatype A string indicating the datatype. String is based on the inputdata supplied.
+#' @return A list of dataframes. Output varies by datatype.
 #' @importFrom magrittr "%>%"
 #' @export
 #'

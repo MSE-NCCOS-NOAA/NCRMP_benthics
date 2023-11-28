@@ -27,11 +27,18 @@
 
 
 
-#' Creates weighted demo data, for individual species
+#' Creates weighting for coral demographic data, for individual species
 #'
-#' @param region A string indicating the region
-#' @param inputdata A dataframe
-#' @param project A string indicating the project, NCRMP or NCRMP and DRM combined
+#' Calculates weighting scheme for individual species, to weight regional means for
+#' characteristics that are based on species presence, such as mortality and size. Weights here are based
+#' on the strata each species is present in, which is different than the weights used for density.
+#' Generally, weighting is based on the number of grid cells in the sample frame in each stratum, to provide
+#' regional estimates. Function called by [NCRMP_make_weighted_demo_data()]
+#'
+#'
+#' @param region A string indicating the region. Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".
+#' @param inputdata A dataframe of stratum weights, specific to each species and year, in the region selected.
+#' @param project A string indicating the project: "NCRMP" or NCRMP and DRM combined ("NCRMP_DRM").
 #'
 #' @importFrom magrittr "%>%"
 #' @export
@@ -170,7 +177,7 @@ load_NTOT_species <- function(region, inputdata, project){
       # Use a loop to create a unique lists for each year of strata sampled
       for(s in spp){
         for(i in Years){
-          a <- tmp %>% dplyr::filter(YEAR == i)
+          a <- tmp %>% dplyr::filter(YEAR == i & SPECIES_CD == s)
           Filter = unique(a$ANALYSIS_STRATUM)
 
           ntot_filt <- NTOT_all %>%
@@ -217,7 +224,7 @@ load_NTOT_species <- function(region, inputdata, project){
       # Use a loop to create a unique lists for each year of strata sampled
       for(s in spp){
         for(i in Years){
-          a <- tmp %>% dplyr::filter(YEAR == i)
+          a <- tmp %>% dplyr::filter(YEAR == i & SPECIES_CD == s)
           Filter = unique(a$ANALYSIS_STRATUM)
 
           ntot_filt <- NTOT_all %>%

@@ -18,20 +18,22 @@
 # NCRMP_calculate_cover
 #
 
-# NCRMP Caribbean Benthic analytics team: Groves, Viehman
-# Last update: Feb 2023
+# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
+# Last update: Nov 2023
 
 
 ##############################################################################################################################
 
 #' Creates combined cover dataframes
 #'
+#' Loads combined dataframe of all years of benthic cover data from a single region.
+#' Function is called by all other functions that calculate data summaries from the benthic cover data.
 #'
 #'
 #'
 #' @param project A string indicating the project: "NCRMP" or "MIR". Default is NCRMP.
-#' @param region A string indicating the region
-#' @return A dataframe
+#' @param region A string indicating the region. Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".
+#' @return A dataframe of combined benthic cover data from specified region across all sampled years.
 #' @importFrom magrittr "%>%"
 #' @export
 #'
@@ -60,7 +62,9 @@ load_NCRMP_benthic_cover_data <- function(project = "NULL", region){
 
     if(region == "SEFCRI"){
 
-      dat1 <- SEFCRI_2014_2stage_benthic_cover
+      dat1 <- SEFCRI_2014_2stage_benthic_cover %>%
+        # KICK OUT STATION NOT SAMPLED
+        dplyr::filter(!(PRIMARY_SAMPLE_UNIT == 3130 & STATION_NR == 1))
 
       dat2 <- SEFCRI_2016_benthic_cover
 
@@ -73,7 +77,15 @@ load_NCRMP_benthic_cover_data <- function(project = "NULL", region){
       dat5 <- SEFCRI_2022_benthic_cover
 
       dat <- dplyr::bind_rows(dat1, dat2, dat3, dat4, dat5) %>%
-        dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
+        dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
+        # update some old species codes
+        dplyr::mutate(COVER_CAT_NAME = case_when(COVER_CAT_NAME == "Erythropodium caribaeorum" ~ "Encrusting gorgonian",
+                                                 TRUE ~ COVER_CAT_NAME)) %>%
+        dplyr::mutate(COVER_CAT_CD = case_when(COVER_CAT_CD == "ENCR GORG" ~ "GOR ENCR",
+                                               COVER_CAT_CD == "POF SPE." ~ "SPO OTHE",
+                                               COVER_CAT_CD == "ERY CARI" ~ "ERY CARY",
+                                               TRUE ~ COVER_CAT_CD))
+
 
     }
 
@@ -82,7 +94,7 @@ load_NCRMP_benthic_cover_data <- function(project = "NULL", region){
       dat1 <- FLK_2014_2stage_benthic_cover %>%
         dplyr::mutate(YEAR = 2014)
 
-      dat2 <- FLK_2016_benthic_cover
+      dat2 <- FLK_2016_benthic_cover %>% dplyr::filter(!(is.na(STRAT)))
 
       dat3 <- FLK_2018_benthic_cover
 
@@ -99,7 +111,16 @@ load_NCRMP_benthic_cover_data <- function(project = "NULL", region){
         dplyr::rename("PROT" = PROT_og)
 
       dat <- dplyr::bind_rows(dat1, dat2, dat3, dat4, dat5) %>%
-        dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
+        dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
+        # update some old species codes
+        dplyr::mutate(COVER_CAT_NAME = case_when(COVER_CAT_CD == "MAD MIRA" ~ "Madracis auretenra", # species name updated
+                                                 COVER_CAT_NAME == "Erythropodium caribaeorum" ~ "Encrusting gorgonian",
+                                                 TRUE ~ COVER_CAT_NAME)) %>%
+        dplyr::mutate(COVER_CAT_CD = case_when(COVER_CAT_CD == "MAD MIRA" ~ "MAD AURE", # species name updated
+                                               COVER_CAT_CD == "ENCR GORG" ~ "GOR ENCR",
+                                               COVER_CAT_CD == "POF SPE." ~ "SPO OTHE",
+                                               COVER_CAT_CD == "ERY CARI" ~ "ERY CARY",
+                                               TRUE ~ COVER_CAT_CD))
 
     }
 
@@ -120,7 +141,14 @@ load_NCRMP_benthic_cover_data <- function(project = "NULL", region){
       dat <- dplyr::bind_rows(dat1, dat2, dat3, dat4, dat5) %>%
         dplyr::filter(SUB_REGION_NAME != "Marquesas",
                       SUB_REGION_NAME != "Marquesas-Tortugas Trans") %>%
-        dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
+        dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))  %>%
+        # update some old species codes
+        dplyr::mutate(COVER_CAT_NAME = case_when(COVER_CAT_NAME == "Erythropodium caribaeorum" ~ "Encrusting gorgonian",
+                                                 COVER_CAT_NAME == "Diploria spp." ~ "Diploria spp",
+                                                 TRUE ~ COVER_CAT_NAME)) %>%
+        dplyr::mutate(COVER_CAT_CD = case_when(COVER_CAT_CD == "POF SPE." ~ "SPO OTHE",
+                                               COVER_CAT_CD == "ERY CARI" ~ "ERY CARY",
+                                               TRUE ~ COVER_CAT_CD))
 
     }
 

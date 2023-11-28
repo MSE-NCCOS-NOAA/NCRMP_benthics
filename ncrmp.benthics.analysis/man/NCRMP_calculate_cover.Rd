@@ -7,13 +7,18 @@
 NCRMP_calculate_cover(region, project = "NULL")
 }
 \arguments{
-\item{region}{A string indicating the region}
+\item{region}{A string indicating the region. Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".}
 
-\item{project}{A string indicating the project: "NCRMP" or "MIR". Default is NCRMP.}
+\item{project}{A string indicating the project: "NCRMP" or "MIR".}
 }
 \value{
-A dataframe
+A list of dataframes, including site level cover by species, site level cover by group, strata mean cover by group, and weighted regional mean cover by group.
 }
 \description{
-Creates percent cover dataframe
+Calculates percent cover at various levels and groups. Data sumamries include:
+1) percent cover by species at each site, 2) percent cover by group at each site,
+3) mean percent cover by group for each stratum, and 4) weighted regional mean
+percent cover, all for a given region. NCRMP utilizes a stratified random
+sampling design. Regional estimates of cover are weighted by the number of
+grid cells of a stratum in the sample frame.
 }

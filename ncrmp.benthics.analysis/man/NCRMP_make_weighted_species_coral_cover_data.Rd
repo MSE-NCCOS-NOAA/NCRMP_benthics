@@ -2,16 +2,25 @@
 % Please edit documentation in R/NCRMP_make_weighted_species_coral_cover_data.R
 \name{NCRMP_make_weighted_species_coral_cover_data}
 \alias{NCRMP_make_weighted_species_coral_cover_data}
-\title{Calculate weighted mean density & CVs}
+\title{Calculates weighted mean density & CVs of coral cover, by species}
 \usage{
 NCRMP_make_weighted_species_coral_cover_data(region, sppcvr, project = "NULL")
 }
 \arguments{
-\item{region}{A string indicating the project: "NCRMP" or "MIR". Default is NCRMP.}
+\item{region}{A string indicating the region. Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".}
+
+\item{sppcvr}{A dataframe of site and species level percent cover data.}
+
+\item{project}{A string indicating the project: "NCRMP" or "MIR".}
 }
 \value{
-A dataframe
+A list of dataframes, including a dataframe of strata mean cover by coral species
+and a dataframe of regional weighted mean cover by coral species
 }
 \description{
-Calculate weighted mean density & CVs
+Calculates weighted benthic cover data for individual coral species. NCRMP utilizes a stratified random
+sampling design. Regional estimates of coral cover are weighted by the number of grid cells of a stratum
+in the sample frame. Function calculates strata means, weighted strata means,
+and weighted regional estimates for for coral cover from benthic cover data.
+Support function called by [NCRMP_colony_percent cover()].
 }

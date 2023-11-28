@@ -20,7 +20,7 @@
 # NCRMP_DRM_calculate_colony_density
 #
 
-# NCRMP Caribbean Benthic analytics team: Groves, Viehman
+# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
 # Last update: Feb 2023
 
 
@@ -28,13 +28,17 @@
 
 #' Creates combined demo dataframes
 #'
-#'
+#' Loads combined dataframes of coral demographics data from all years of a single region. Can be just NCRMP
+#' data, or also NCRMP and DRM data combined.
+#' In regions with two stage data (SEFCRI, FLK, Tortugas) a list of dataframes is produces, one
+#' containing all the single stage data, one containing all the two stage data.
+#' This function is called by nearly all of the functions that run summary calculations from coral demographic data.
 #'
 #'
 #' @param project A string indicating the project, NCRMP, NCRMP and DRM combined, or MIR. Default is NCRMP.
-#' @param region A string indicating the region
-#' @param species_filter A string indicating whether to filter to a subset of species
-#' @return A dataframe
+#' @param region A string indicating the region. Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".
+#' @param species_filter An optional string indicating the species to subset to, if desired. Format is the 7 digits species code (e.g. Acropora cervicornis would be ACR CERV).
+#' @return A dataframe or list of dataframes containing all demographic data for specified region, and species, if selected. A list is produced for Florida regions, with one dataframe containing all single stage data and the other containing all two stage data.
 #' @importFrom magrittr "%>%"
 #' @importFrom dplyr "case_when"
 #' @export

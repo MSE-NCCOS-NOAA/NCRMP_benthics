@@ -2,18 +2,24 @@
 % Please edit documentation in R/NCRMP_make_weighted_LPI_data.R
 \name{NCRMP_make_weighted_LPI_data}
 \alias{NCRMP_make_weighted_LPI_data}
-\title{Creates weighted LPI data}
+\title{Creates weighted benthic cover data}
 \usage{
 NCRMP_make_weighted_LPI_data(inputdata, region, project = "NULL")
 }
 \arguments{
-\item{inputdata}{A dataframe}
+\item{inputdata}{A dataframe of benthic cover data summarized by cover group at each site in a single region.}
 
-\item{region}{A string indicating the region}
+\item{region}{A string indicating the region. Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".}
 }
 \value{
-A dataframe
+A list of dataframes, including a dataframe of strata means of cover groups
+and a dataframe of weighted regional estimates of cover groups, for specified region.
 }
 \description{
-Creates weighted LPI data
+Calcualtes weighted benthic cover data. NCRMP utilizes a stratified random
+sampling design. Regional estimates of benthic cover are weighted by the
+number of grid cells of a stratum in the sample frame.
+Function produces strata means, weighted strata means,
+and weighted regional estimates for benthic cover data.
+Support function called by [NCRMP_calculate_cover()].
 }

@@ -21,20 +21,28 @@
 # NCRMP_colony_percent_cover
 #
 
-# NCRMP Caribbean Benthic analytics team: Groves, Viehman
-# Last update: Feb 2023
+# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
+# Last update: Nov 2023
 
 
 ##############################################################################################################################
 
-#' Calculate weighted mean density & CVs
+#' Calculates weighted mean density & CVs of coral cover, by species
+#'
+#' Calculates weighted benthic cover data for individual coral species. NCRMP utilizes a stratified random
+#' sampling design. Regional estimates of coral cover are weighted by the number of grid cells of a stratum
+#' in the sample frame. Function calculates strata means, weighted strata means,
+#' and weighted regional estimates for for coral cover from benthic cover data.
+#' Support function called by [NCRMP_colony_percent cover()].
 #'
 #'
 #'
 #'
-#' @param region A string indicating the region
-#' @param region A string indicating the project: "NCRMP" or "MIR". Default is NCRMP.
-#' @return A dataframe
+#' @param region A string indicating the region. Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".
+#' @param sppcvr A dataframe of site and species level percent cover data.
+#' @param project A string indicating the project: "NCRMP" or "MIR".
+#' @return A list of dataframes, including a dataframe of strata mean cover by coral species
+#' and a dataframe of regional weighted mean cover by coral species
 #' @importFrom magrittr "%>%"
 #' @importFrom dplyr "mutate"
 #' @importFrom dplyr "n"
@@ -59,6 +67,7 @@ NCRMP_make_weighted_species_coral_cover_data <- function(region, sppcvr, project
                   COVER_CAT_NAME != "Siderastrea spp",
                   COVER_CAT_NAME != "Scolymia spp",
                   COVER_CAT_NAME != "Agaricia spp",
+                  COVER_CAT_NAME != "Diploria spp",
                   COVER_CAT_NAME != "Orbicella spp",
                   COVER_CAT_NAME != "Madracis spp",
                   COVER_CAT_NAME != "Other coral",
@@ -70,7 +79,7 @@ NCRMP_make_weighted_species_coral_cover_data <- function(region, sppcvr, project
                   COVER_CAT_NAME != "Tubastraea coccinea") %>%
     dplyr::mutate(SPECIES_NAME = COVER_CAT_NAME,
                   cvr = Percent_Cvr) %>%
-    dplyr::group_by(REGION, YEAR, SPECIES_NAME, ANALYSIS_STRATUM, HABITAT_CD) %>%  # removed  DEPTH_STRAT, b/c it's in STRAT_ANALYSIS
+    dplyr::group_by(REGION, YEAR, SPECIES_NAME, ANALYSIS_STRATUM) %>%  # removed  DEPTH_STRAT, b/c it's in STRAT_ANALYSIS
     # sample variance of density in stratum
     dplyr::summarize(mean = mean(cvr),
                      svar = var(cvr),
@@ -128,7 +137,7 @@ NCRMP_make_weighted_species_coral_cover_data <- function(region, sppcvr, project
                   cvr = Percent_Cvr) %>%
     # remove sites where species not present
     dplyr::filter(cvr > 0) %>%
-    dplyr::group_by(REGION, YEAR, SPECIES_NAME, ANALYSIS_STRATUM, HABITAT_CD) %>%
+    dplyr::group_by(REGION, YEAR, SPECIES_NAME, ANALYSIS_STRATUM) %>%
     dplyr::summarize(n_sites = length(cvr),
                      .groups = "keep") %>%
     dplyr::ungroup()

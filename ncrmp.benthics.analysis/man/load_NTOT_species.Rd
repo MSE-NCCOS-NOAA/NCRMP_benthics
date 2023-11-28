@@ -2,17 +2,21 @@
 % Please edit documentation in R/load_NTOT_species.R
 \name{load_NTOT_species}
 \alias{load_NTOT_species}
-\title{Creates weighted demo data, for individual species}
+\title{Creates weighting for coral demographic data, for individual species}
 \usage{
 load_NTOT_species(region, inputdata, project)
 }
 \arguments{
-\item{region}{A string indicating the region}
+\item{region}{A string indicating the region. Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".}
 
-\item{inputdata}{A dataframe}
+\item{inputdata}{A dataframe of stratum weights, specific to each species and year, in the region selected.}
 
-\item{project}{A string indicating the project, NCRMP or NCRMP and DRM combined}
+\item{project}{A string indicating the project: "NCRMP" or NCRMP and DRM combined ("NCRMP_DRM").}
 }
 \description{
-Creates weighted demo data, for individual species
+Calculates weighting scheme for individual species, to weight regional means for
+characteristics that are based on species presence, such as mortality and size. Weights here are based
+on the strata each species is present in, which is different than the weights used for density.
+Generally, weighting is based on the number of grid cells in the sample frame in each stratum, to provide
+regional estimates. Function called by [NCRMP_make_weighted_demo_data()]
 }
