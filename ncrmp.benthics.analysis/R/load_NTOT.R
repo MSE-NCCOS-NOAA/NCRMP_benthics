@@ -18,7 +18,7 @@
 # NCRMP_make_weighted_demo_data.R
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
-# Last update: Aug 2023
+# Last update: Dec 2023
 
 
 ##############################################################################################################################
