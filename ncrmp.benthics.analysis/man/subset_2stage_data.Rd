@@ -2,7 +2,7 @@
 % Please edit documentation in R/subset_2stage_data.R
 \name{subset_2stage_data}
 \alias{subset_2stage_data}
-\title{Title}
+\title{Subset 2 stage data}
 \usage{
 subset_2stage_data(region, project, year)
 }
@@ -17,5 +17,8 @@ subset_2stage_data(region, project, year)
 # A subsetted dataframe
 }
 \description{
-Title
+Subsets 2 stage data to single stage to provide data frames that can be used
+for the size frequency data summaries. This function should NOT be called and run
+but serves as base code for randomly subsetting 2 stage data into single stage
+and saving it to the package.
 }

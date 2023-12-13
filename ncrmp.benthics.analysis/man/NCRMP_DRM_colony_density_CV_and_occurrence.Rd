@@ -20,6 +20,8 @@ NCRMP_DRM_colony_density_CV_and_occurrence(
 
 \item{year}{A numeric indicating the year of interest, which will be plotted.}
 
+\item{project}{A string indicating the project, "NCRMP" or NCRMP and DRM combined ("NCRMP_DRM").}
+
 \item{path}{A string indicating the filepath for the figure.}
 }
 \value{

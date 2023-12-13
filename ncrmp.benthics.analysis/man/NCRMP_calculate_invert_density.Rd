@@ -2,20 +2,26 @@
 % Please edit documentation in R/NCRMP_calculate_invert_density.R
 \name{NCRMP_calculate_invert_density}
 \alias{NCRMP_calculate_invert_density}
-\title{Creates colony density and colony size summary dataframes}
+\title{Creates summary dataframes of Diadema density from NCRMP benthic assessment.
+NCRMP utilizes a stratified random sampling design.
+Regional estimates of Diadema density are weighted by the number of
+grid cells of a stratum in the sample frame.}
 \usage{
 NCRMP_calculate_invert_density(region, project = "NULL")
 }
 \arguments{
-\item{region}{A string indicating the region}
+\item{region}{A string indicating the region. Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".}
 
 \item{project}{A string indicating the project: "NCRMP" or "MIR". Default is NCRMP.}
-
-\item{inputdf}{A dataframe}
 }
 \value{
-A dataframe
+A list dataframes including 1) Diadema density at each site,
+2) mean Diadema density by strata, and 3) weighted regional mean Diadema density,
+all for a given region.
 }
 \description{
-Creates colony density and colony size summary dataframes
+Creates summary dataframes of Diadema density from NCRMP benthic assessment.
+NCRMP utilizes a stratified random sampling design.
+Regional estimates of Diadema density are weighted by the number of
+grid cells of a stratum in the sample frame.
 }

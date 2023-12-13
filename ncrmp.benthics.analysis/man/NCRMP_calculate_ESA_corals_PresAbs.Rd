@@ -2,13 +2,16 @@
 % Please edit documentation in R/NCRMP_calculate_ESA_corals_PresAbs.R
 \name{NCRMP_calculate_ESA_corals_PresAbs}
 \alias{NCRMP_calculate_ESA_corals_PresAbs}
-\title{Creates colony density and colony size summary dataframes}
+\title{Creates ESA presence/absence dataframes by strata and site}
 \usage{
 NCRMP_calculate_ESA_corals_PresAbs()
 }
 \value{
-A dataframe
+A list of dataframes including 1) strata level ESA coral presence/absence,
+2) site level ESA coral presence/absence, and 3) a check that all region/years are
+included.
 }
 \description{
-Creates colony density and colony size summary dataframes
+Creates summaries of ESA coral presence/absence collected from LPI data at both
+strata and site level for all years and regions.
 }

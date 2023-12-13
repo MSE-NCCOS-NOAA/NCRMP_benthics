@@ -21,7 +21,7 @@
 # Analysis Rmarkdown, etc.
 #
 
-# NCRMP Caribbean Benthic analytics team: Groves, Viehman
+# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
 # Last update: Mar 2020
 
 
@@ -29,13 +29,26 @@
 
 #' Creates colony mortality summary dataframes
 #'
+#' Calculates mean old and recent coral mortality at each site, strata, and
+#' region from the NCRMP or NCRMP+DRM coral demographic data.
+#' Means are also calculated for each species at each strata and for the region.
+#' Regional estimates of mortality are weighted by the number of grid cells
+#' of a stratum in the sample frame.
 #'
 #'
 #'
-#' @param project A string indicating the project, NCRMP ("NCRMP") or NCRMP and DRM combined ("NCRMO_DRM")
-#' @param region A string indicating the region. Options include: "FLK", "SEFCRI", "Tortugas", "STX", "STTSTJ", and "GOM"
-#' @param species_filter A boolean value indicating whether to filter to a subset of species
-#' @return A dataframe
+#'
+#'
+#' @param project A string indicating the project, NCRMP ("NCRMP") or NCRMP and DRM combined ("NCRMO_DRM").
+#' @param region A string indicating the region. Options include: "FLK", "SEFCRI", "Tortugas", "STX", "STTSTJ", and "GOM".
+#' @param species_filter An optional string indicating whether to filter to a subset of species.
+#' @return A list of dataframes including 1) mean old mortality at each site, 2)
+#' mean recent mortality at each site, 3) mean old mortality in each strata, 4)
+#' mean recent mortality in each strata, 5) mean old mortality for each species in
+#' each strata, 6) mean recent mortality for each species in each strata, 7)
+#' regional estimate for old mortality, 8) regional estimate for recent mortality,
+#' 9) regional estimate for old mortality for each species, 10) regional
+#' estimate for recent mortality for each species.
 #' @importFrom magrittr "%>%"
 #' @export
 #'

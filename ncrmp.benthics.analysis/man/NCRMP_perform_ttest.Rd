@@ -2,7 +2,7 @@
 % Please edit documentation in R/NCRMP_perform_ttest.R
 \name{NCRMP_perform_ttest}
 \alias{NCRMP_perform_ttest}
-\title{Creates percent cover dataframe}
+\title{Performs t-test comparing estimates}
 \usage{
 NCRMP_perform_ttest(
   dataframe,
@@ -15,9 +15,9 @@ NCRMP_perform_ttest(
 )
 }
 \arguments{
-\item{dataframe}{A dataframe of yearly domain estimates for a single subjurisdiction}
+\item{dataframe}{A dataframe of yearly domain estimates for a single subjurisdiction.}
 
-\item{metric1}{The metric you are testing: density, hard coral cover, macroalgae cover, disease prevalence, bleaching prevalence}
+\item{metric1}{The metric you are testing: density, hard coral cover, macroalgae cover, disease prevalence, bleaching prevalence.}
 
 \item{metric2}{The column name of the metric you are testing: avCvr, avDen, etc.}
 
@@ -28,8 +28,11 @@ NCRMP_perform_ttest(
 \item{n_years}{You must specify the number of sampling years completed in the subjurisdiction if test_type = "Years", currently 4 for St. Thomas & St. John and 3 for all other regions.}
 }
 \value{
-A dataframe
+A dataframe and test results as a list.
 }
 \description{
-Creates percent cover dataframe
+Function to perform t-test on various summaries of NCRMP data.
+Typically, comparisons are made between yearly domain estimates (e.g. mean
+coral cover by year) in a single region. But comparisons could be made between
+inside/outside a protected area.
 }

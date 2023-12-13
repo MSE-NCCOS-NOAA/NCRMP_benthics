@@ -20,20 +20,28 @@
 # Analysis Rmarkdown, etc.
 #
 
-# NCRMP Caribbean Benthic analytics team: Groves, Viehman
+# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
 # Last update: Jan 2023
 
 
 ##############################################################################################################################
 
-#' Creates species list, species richness and species diversity dataframes from NCRMP and DRM data
+#' Calculate disease and bleaching prevalence by sites
+#'
+#' Calculates disease and bleaching prevalence by sites. Specifically the
+#' presence/absence of disease and bleaching at each site and the number of sites
+#' where disease and/or bleaching are present in each strata and region.
 #'
 #'
 #'
 #'
-#' @param project A string indicating the project, NCRMP or NCRMP and DRM combined
-#' @param region A string indicating the region
-#' @return A dataframe
+#' @param project A string indicating the project, NCRMP or NCRMP and DRM combined ("NCRMP_DRM").
+#' @param region A string indicating the region. Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".
+#' @param species_filter An optional concatenated string indicating whether to filter to a subset of species
+#' @return A list dataframes including 1) presence/absence of disease and bleaching
+#' at each site, 2) number of sites with disease and bleaching in each strata, and
+#' 3) number of sites with disease and bleaching in the region, for all years of a
+#' specified region.
 #' @importFrom magrittr "%>%"
 #' @export
 #'
@@ -110,8 +118,28 @@ NCRMP_DRM_calculate_disease_prevalence_sites <- function(project, region, specie
       dplyr::ungroup()
   }
 
+
+  if(region == "SEFCRI" | region == "FLK" | region == "Tortugas"){
+
+    dis_ble_prev_strata <- dis_ble_prev_site %>%
+      dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
+      dplyr::group_by(REGION, YEAR, ANALYSIS_STRATUM) %>%
+      dplyr::summarise(dis_sites = sum(dis_present),
+                       ble_sites = sum(ble_present),
+                       total_sites = length(unique(PRIMARY_SAMPLE_UNIT)))
+
+    dis_ble_prev_region <- dis_ble_prev_strata %>%
+      dplyr::group_by(REGION, YEAR) %>%
+      dplyr::summarise(dis_sites = sum(dis_sites),
+                       ble_sites = sum(ble_sites),
+                       total_sites = sum(total_sites),
+                       dis_prev = (dis_sites/total_sites)*100,
+                       ble_prev = (ble_sites/total_sites)*100)
+  } else{
+
   dis_ble_prev_strata <- dis_ble_prev_site %>%
-    dplyr::group_by(REGION, YEAR, STRAT) %>%
+    dplyr::mutate(ANALYSIS_STRATUM = STRAT) %>%
+    dplyr::group_by(REGION, YEAR, ANALYSIS_STRATUM) %>%
     dplyr::summarise(dis_sites = sum(dis_present),
                      ble_sites = sum(ble_present),
                      total_sites = length(unique(PRIMARY_SAMPLE_UNIT)))
@@ -123,6 +151,7 @@ NCRMP_DRM_calculate_disease_prevalence_sites <- function(project, region, specie
                      total_sites = sum(total_sites),
                      dis_prev = (dis_sites/total_sites)*100,
                      ble_prev = (ble_sites/total_sites)*100)
+  }
 
 
 

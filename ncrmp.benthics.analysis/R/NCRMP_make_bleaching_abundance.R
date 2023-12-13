@@ -20,13 +20,16 @@
 # Analysis Rmarkdown, etc.
 #
 
-# NCRMP Caribbean Benthic analytics team: Viehman and Groves
-# Last update: Aug 2022
+# NCRMP Caribbean Benthic analytics team: Viehman, Groves, Williams
+# Last update: Dec 2023
 
 
 ##############################################################################################################################
 
 #' Creates abundance per bleaching category dataframe for all regions and all years
+#'
+#' Calculates the number of bleached colonies per species at each site from all
+#' years and regions of NCRMP data.
 #'
 #'
 #'
@@ -46,7 +49,7 @@ NCRMP_make_bleaching_abundance <- function(){
 
   dat <- NCRMP_demo_All_regions_years %>%
     # subset to species present, site data and bleaching columns of interest
-    dplyr::filter(N == 1) %>%
+    dplyr::filter(N == 1 & JUV == 0) %>%
     dplyr::select(1:28, 35) %>%
     dplyr::group_by(REGION, PRIMARY_SAMPLE_UNIT, YEAR, MONTH, DAY, HABITAT_CD,
                     STRAT, RUGOSITY_CD, WTD_RUG, LAT_DEGREES, LON_DEGREES, MAPGRID_NR,

@@ -14,6 +14,10 @@
 # length_estimates
 # size_domain_est
 # length_domain_est
+# length_freq_estimates
+# length_freq_domain_est
+# domain_mort_spp
+# strat_mort
 
 # CallS:
 # analysis ready data
@@ -22,24 +26,36 @@
 # Analysis Rmarkdown, etc.
 #
 
-# NCRMP Caribbean Benthic analytics team: Davis, Groves, Viehman
-# Last update: Jan 2023
+# NCRMP Caribbean Benthic analytics team: Davis, Groves, Viehman, Williams
+# Last update: Aug 2023
 
 
 ##############################################################################################################################
 
 #' Outputs the strata and domain estimates for 3D surface area and length
 #'
+#' Creates regional weighted densities at size (3D surface and length),
+#' as well as regional weighted relative length frequencies from NCRMP coral
+#' demographic data. NCRMP utilizes a stratified random
+#' sampling design. Regional estimates are weighted by the number of
+#' grid cells of a stratum in the sample frame. For coral size data, weighting
+#' is done only by strata where species is present.
 #'
 #'
 #'
-#' @param project A string indicating the project, NCRMP or NCRMP and DRM combined
-#' @param region A string indicating the region
-#' @param years A string indicating the two years to compare. Must be NCRMP sampling years.
-#' @param size_bin_count A number indicating the desired number of bins for 3d surface area
-#' @param length_bin_count A number indicating the desired number of bins for length
-#' @param species_filter A string indicating whether to filter to a subset of species
-#' @return A dataframe
+#'
+#'
+#'
+#'
+#' @param project A string indicating the project, NCRMP or NCRMP and DRM combined ("NCRMP_DRM").
+#' @param region A string indicating the region.  Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".
+#' @param years A concatenation of numerics indicating the two years to compare. Must be NCRMP sampling years if project = "NCRMP".
+#' @param size_bin_count A number indicating the desired number of bins for 3d surface area.
+#' As function is currently set up, this is not used.
+#' @param length_bin_count A number indicating the desired number of bins for length.
+#' As function is currently set up, this is not used.
+#' @param species_filter A concatenated string indicating whether to filter to a subset of species
+#' @return A list of dataframes.
 #' @importFrom magrittr "%>%"
 #' @importFrom dplyr "case_when"
 #' @export
