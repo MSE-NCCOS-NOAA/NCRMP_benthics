@@ -563,7 +563,7 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype, 
       diversity_est <- inputdata %>%
         # group by analysis level strata
         dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
-        dplyr::group_by(YEAR, ANALYSIS_STRATUM, STRAT) %>% # Modify this line to changes analysis substrate
+        dplyr::group_by(YEAR, ANALYSIS_STRATUM, STRAT, PROT) %>% # Modify this line to changes analysis substrate
         dplyr::summarise(
           # compute average diversity
           avSimp = mean(Simpson, na.rm = T),
@@ -840,7 +840,7 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype, 
       size_est <- inputdata %>%
         # group by analysis level strata
         dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
-        dplyr::group_by(YEAR, ANALYSIS_STRATUM, STRAT) %>% # Modify this line to changes analysis substrate
+        dplyr::group_by(YEAR, ANALYSIS_STRATUM, STRAT, PROT) %>% # Modify this line to changes analysis substrate
         dplyr::summarise(# compute average size
           avcm2 = mean(avg_cm2),
           avcm3 = mean(avg_cm3),
@@ -885,7 +885,7 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype, 
         size_est <- inputdata %>%
           # group by analysis level strata
           dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
-          dplyr::group_by(YEAR, ANALYSIS_STRATUM, STRAT) %>% # Modify this line to changes analysis substrate
+          dplyr::group_by(YEAR, ANALYSIS_STRATUM, STRAT, PROT) %>% # Modify this line to changes analysis substrate
           dplyr::summarise(# compute average size
             av_maxdiam = mean(avg_maxdiam),
             # compute stratum variance

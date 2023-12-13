@@ -11,15 +11,25 @@ NCRMP_DRM_calculate_mean_colony_size(
 )
 }
 \arguments{
-\item{project}{A string indicating the project, NCRMP or NCRMP and DRM combined}
+\item{project}{A string indicating the project, NCRMP or NCRMP and DRM combined ("NCRMP_DRM").}
 
-\item{region}{A string indicating the region}
+\item{region}{A string indicating the region. Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".}
 
-\item{species_filter}{A string indicating whether to filter to a subset of species}
+\item{species_filter}{An optional string indicating whether to filter to a subset of species}
 }
 \value{
-A dataframe
+A list of dataframes including at most 1) mean size by species for each
+site, 2) mean size by site, 3) mean 2D size by strata, 4) mean 3D size by strata,
+5) mean 2D size by species and strata, 6) mean 3D size by species and strata,
+7) mean maximum diameter by species and strata, 8) regional estimates for size,
+and 9), regional estimates for maximum diameter by species.
 }
 \description{
-Creates mean colony size summary dataframes
+Calculates mean colony size (3D, 2D, and maximum diameter)
+by species and site, by site, by strata, and regional
+estimates. Also calculates species-specific regional estimates.
+Regional estimates of size are weighted by the
+number of grid cells of a stratum in the sample frame. Note calculations
+for 3D and 2D means aver not available for NCRMP+DRM data because DRM
+does not collect perpendicular diameter.
 }

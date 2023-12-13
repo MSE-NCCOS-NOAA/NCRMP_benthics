@@ -1,9 +1,38 @@
+## Function to re-format coral demographic data into Darwin Core standards
+
+# Purpose:
+# Re-format analysis-ready coral demographic data into Darwin Core formats
+
+
+## Tag: data analysis
+
+
+# outputs created in this file --------------
+# a table that checks for duplicate occurrence ID's
+# Darwin format coral demographic data
+
+
+# CallS:
+# analysis ready data
+
+# output gets called by:
+#
+#
+
+# NCRMP Caribbean Benthic analytics team: Groves, viehman, Williams
+# Last update: Dec 2023
+
+
+##############################################################################################################################
+
+
+
 
 #' Format analysis ready demo data into Darwin Core
 #'
-#' @param dat A dataframe of analysis ready demo data to be converted into Darwin Core
+#' @param dat A dataframe of analysis ready coral demographic data to be converted into Darwin Core format.
 #'
-#' @return A list of multiple dataframes including formatted data
+#' @return A list of multiple dataframes including re-formatted data and another that checks for duplicate occurrence ID's.
 #' @importFrom magrittr "%>%"
 #' @export
 #'

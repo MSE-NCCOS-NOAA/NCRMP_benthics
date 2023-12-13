@@ -101,7 +101,7 @@ NCRMP_make_weighted_density_CV_data <- function(region, sppdens, project = "NULL
     # strata_means
     strata_means <- species_dens_long %>%
       dplyr::mutate(ANALYSIS_STRATUM = STRAT) %>%
-      dplyr::group_by(REGION, YEAR, SPECIES_CD, ANALYSIS_STRATUM, HABITAT_CD) %>%
+      dplyr::group_by(REGION, YEAR, SPECIES_CD, ANALYSIS_STRATUM) %>% # HABITAT was previously included here, which is WRONG for GOM data...
       # sample variance of density in stratum
       dplyr::summarize(mean = mean(dens),
                        svar = var(dens),
@@ -123,7 +123,7 @@ NCRMP_make_weighted_density_CV_data <- function(region, sppdens, project = "NULL
 
     strata_means <- species_dens_long %>%
       dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
-      dplyr::group_by(REGION, YEAR, SPECIES_CD, ANALYSIS_STRATUM, HABITAT_CD) %>%
+      dplyr::group_by(REGION, YEAR, SPECIES_CD, ANALYSIS_STRATUM) %>% # HABITAT was previously included here, which is WRONG for FL data...
       # sample variance of density in stratum
       dplyr::summarize(mean = mean(dens),
                        svar = var(dens),

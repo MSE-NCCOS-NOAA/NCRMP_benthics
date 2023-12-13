@@ -23,7 +23,7 @@
 # Analysis Rmarkdown, etc.
 #
 
-# NCRMP Caribbean Benthic analytics team: Groves, Viehman
+# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
 # Last update: Feb 2023
 
 
@@ -31,7 +31,7 @@
 
 #' Creates percent cover dataframe
 #'
-#' Calculates percent cover at various levels and groups. Data sumamries include:
+#' Calculates percent cover at various levels and groups. Data summaries include:
 #' 1) percent cover by species at each site, 2) percent cover by group at each site,
 #' 3) mean percent cover by group for each stratum, and 4) weighted regional mean
 #' percent cover, all for a given region. NCRMP utilizes a stratified random
@@ -57,13 +57,14 @@ NCRMP_calculate_cover <- function(region, project = "NULL"){
   # make sure the lat/longs and prot are stored correctly
   dat <- dat %>%
     dplyr::mutate(LAT_DEGREES = sprintf("%0.4f", LAT_DEGREES),
-                  LON_DEGREES = sprintf("%0.4f", LON_DEGREES))
+                  LON_DEGREES = sprintf("%0.4f", LON_DEGREES),
+                  PROT = as.factor(PROT))
 
-  if(project == "NCRMP" && region == "SEFCRI" ||
-     project == "NCRMP" && region == "FLK" ||
-     project == "NCRMP" && region == "Tortugas"){
-    dat <- dat %>% dplyr::mutate(PROT = as.factor(PROT))
-  }
+  # if(project == "NCRMP" && region == "SEFCRI" ||
+  #    project == "NCRMP" && region == "FLK" ||
+  #    project == "NCRMP" && region == "Tortugas"){
+  #   dat <- dat %>% dplyr::mutate(PROT = as.factor(PROT))
+  # }
 
   # Load species list
 
@@ -217,7 +218,7 @@ NCRMP_calculate_cover <- function(region, project = "NULL"){
 
       dat1 <-  dat %>%
         dplyr::mutate(Percent_Cvr = HARDBOTTOM_P+SOFTBOTTOM_P+RUBBLE_P) %>%  # previously Percent_Cvr = rowSums(.[31:33])
-        dplyr::inner_join(.,ncrmp_frrp_sppcodes2,  by = c( "COVER_CAT_CD" = "fl_ncrmp_code")) %>%
+        dplyr::left_join(.,ncrmp_frrp_sppcodes2,  by = c( "COVER_CAT_CD" = "fl_ncrmp_code")) %>%
         dplyr::select(-HARDBOTTOM_P, -SOFTBOTTOM_P, -RUBBLE_P) %>%
         dplyr::mutate(PROT = as.factor(PROT)) %>%
         dplyr::group_by(YEAR, REGION, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, STATION_NR, LAT_DEGREES, LON_DEGREES,
@@ -280,8 +281,14 @@ NCRMP_calculate_cover <- function(region, project = "NULL"){
                           "RAMICRUSTA SPP.")
 
     # make unique sites df
-    allsites <- unique(dat3[, c("YEAR", "REGION", "SUB_REGION_NAME", 'ADMIN', "PRIMARY_SAMPLE_UNIT", "MONTH", "DAY",
-                                "LAT_DEGREES", "LON_DEGREES", "ANALYSIS_STRATUM", "STRAT", "HABITAT_CD", "PROT")])
+    if(project == "NCRMP" & region %in% c("FLK", "SEFCRI", "Tortugas")){
+      allsites <- unique(dat3[, c("YEAR", "REGION", "SUB_REGION_NAME", 'ADMIN', "PRIMARY_SAMPLE_UNIT", "MONTH", "DAY",
+                                  "LAT_DEGREES", "LON_DEGREES", "ANALYSIS_STRATUM", "STRAT", "HABITAT_CD", "PROT")])
+    }
+    else{
+      allsites <- unique(dat3[, c("YEAR", "REGION", "SUB_REGION_NAME", 'ADMIN', "PRIMARY_SAMPLE_UNIT",
+                                  "LAT_DEGREES", "LON_DEGREES", "ANALYSIS_STRATUM", "STRAT", "HABITAT_CD", "PROT")])
+    }
 
     # add missiong groups to data
     groupsOfInterest2 <- data.frame(cover_group = groupsOfInterest, x = 1)

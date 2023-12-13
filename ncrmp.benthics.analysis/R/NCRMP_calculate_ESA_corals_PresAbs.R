@@ -1,6 +1,6 @@
 
 #### Function to query # ESA coral species per region, year, strata.
-# Also provides ESA coral species presence/absence by strata and region?
+# Also provides ESA coral species presence/absence by strata and site
 
 
 
@@ -23,17 +23,23 @@
 # Analysis Rmarkdown, etc.
 #
 
-# NCRMP Caribbean Benthic analytics team: Groves, Viehman
+# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
 # Last update: Jan 2023
 
 ##############################################################################################################################
 
-#' Creates colony density and colony size summary dataframes
+#' Creates ESA presence/absence dataframes by strata and site
+#'
+#' Creates summaries of ESA coral presence/absence collected from LPI data at both
+#' strata and site level for all years and regions.
 #'
 #'
 #'
 #'
-#' @return A dataframe
+#'
+#' @return A list of dataframes including 1) strata level ESA coral presence/absence,
+#' 2) site level ESA coral presence/absence, and 3) a check that all region/years are
+#' included.
 #' @importFrom magrittr "%>%"
 #' @export
 #'

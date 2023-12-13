@@ -43,6 +43,7 @@
 #'
 #' @param inputdata A dataframe of benthic cover data summarized by cover group at each site in a single region.
 #' @param region A string indicating the region. Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".
+#' @param project A string indicating the project. "NCRMP" is the only option.
 #' @return A list of dataframes, including a dataframe of strata means of cover groups
 #' and a dataframe of weighted regional estimates of cover groups, for specified region.
 #' @importFrom magrittr "%>%"
@@ -144,13 +145,15 @@ NCRMP_make_weighted_LPI_data <- function(inputdata, region, project = "NULL")
     dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, PROT, DEPTH_M, cover_group, n, avcvr, Var, SE, CV_perc) %>%
     dplyr::mutate(n = tidyr::replace_na(n, 0)) %>%
     # replace inf values so we can add the strata means
-    dplyr::mutate_if(is.numeric, list(~dplyr::na_if(., Inf)))
+    #dplyr::mutate_if(is.numeric, list(~dplyr::na_if(., Inf))) # this line throws errors for some people?
+    dplyr::mutate(CV_perc = case_when(CV_perc == Inf ~ NA_real_, TRUE ~ CV_perc))
 
 
   ## Domain Estimates
   Domain_est <- cover_est %>%
     # replace inf values so we can add the strata means
-    dplyr::mutate_if(is.numeric, list(~dplyr::na_if(., Inf))) %>%
+    #dplyr::mutate_if(is.numeric, list(~dplyr::na_if(., Inf))) # this line throws errors for some people?
+    dplyr::mutate(CV_perc = case_when(CV_perc == Inf ~ NA_real_, TRUE ~ CV_perc)) %>%
     dplyr::group_by(REGION, YEAR, cover_group) %>%
     dplyr::summarise(avCvr = sum(whavcvr, na.rm = T),
                      Var = sum(whsvar, na.rm = T),
