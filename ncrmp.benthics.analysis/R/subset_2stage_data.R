@@ -20,12 +20,7 @@
 ###############################################################################
 
 
-#' Subset 2 stage data
-#'
-#' Subsets 2 stage data to single stage to provide data frames that can be used
-#' for the size frequency data summaries. This function should NOT be called and run
-#' but serves as base code for randomly subsetting 2 stage data into single stage
-#' and saving it to the package.
+#' Title
 #'
 #' @param region A string indicating the region
 #' @param project A string indicating the project, NCRMP or NCRMP and DRM combined

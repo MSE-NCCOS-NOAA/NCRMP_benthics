@@ -24,20 +24,28 @@
 #
 
 # NCRMP Caribbean Benthic analytics team: Viehman and Groves
-# Last update: Apr 2019
+# Last update: Jan 2024
 
 
 ##############################################################################################################################
 
 #' Creates species list, species richness and species diversity dataframes from NCRMP and DRM data
 #'
+#' Creates data summaries of species richness and diversity, based on NCRMP
+#' coral demographic data.
+#' Species richness includes juveniles. Diversity is based only on adults.
+#' Note that there is no accounting for transect length at this point, for example,
+#' we do not calculate # of species/m^2. However, transect length may vary.
+#' For 2-stage data (Florida, NCRMP+DRM), richness and diversity are averaged
+#' between the 2 stations. No coral sites are not included in these estimates of
+#' richness and no adult coral sites are not included in the estimates of diversity.
 #'
 #'
 #'
-#' @param project A string indicating the project, NCRMP or NCRMP and DRM combined
-#' @param region A string indicating the region
-#' @param analysis_strat A string indicating the analysis level strata
-#' @return A dataframe
+#'
+#' @param project A string indicating the project, NCRMP ("NCRMP") or NCRMP and DRM combined ("NCRMP_DRM").
+#' @param region A string indicating the region. Options are: "SEFCRI", "FLK", "Tortugas", "STTSTJ", "STX, "GOM" or "PRICO".
+#' @return A list dataframes
 #' @importFrom magrittr "%>%"
 #' @importFrom vegan "diversity"
 #' @export
@@ -54,79 +62,42 @@ NCRMP_DRM_calculate_species_richness_diversity <- function(project, region){
   Carib <- c("STTSTJ", "STX", "PRICO")
 
   # Load data
+  tmp <- load_NCRMP_DRM_demo_data(project = project,
+                                  region = region)
 
-  # Florida
+  for(k in 1:length(tmp))assign(names(tmp)[k], tmp[[k]])
+
+  dat_1stage <- dat_1stage %>%
+    dplyr::mutate(LAT_DEGREES = sprintf("%0.4f", LAT_DEGREES),
+                  LON_DEGREES = sprintf("%0.4f", LON_DEGREES),
+                  PROT = as.factor(PROT))
+
+  if(length(tmp) > 1){
+    dat_2stage <- dat_2stage %>%
+      dplyr::mutate(LAT_DEGREES = sprintf("%0.4f", LAT_DEGREES),
+                    LON_DEGREES = sprintf("%0.4f", LON_DEGREES),
+                    PROT = as.factor(PROT))
+  }
+
+  # # Florida
 
   if(project == "NCRMP_DRM"){
-
+   # # THIS SECTION NEEDS UPDATING!!!
     if(region == "SEFCRI"){
 
-
-      tmp1 <- SEFCRI_2014_2stage_coral_demographics %>%
-        dplyr::mutate(SURVEY = "NCRMP")
-
-      tmp2 <- SEFCRI_2016_coral_demographics %>%
-        dplyr::mutate(SURVEY = "NCRMP")
-
-      tmp3 <- DRM_SEFCRI_2018_2stage_demo_data %>%
-        dplyr::mutate(SURVEY = "DRM")
-
-      tmp4 <- SEFCRI_2018_coral_demographics %>%
-        dplyr::mutate(SURVEY = "NCRMP")
-
-      dat <- rbind(tmp1, tmp2, tmp3, tmp4) %>%
-        dplyr::mutate(PROT = as.factor(PROT))
-
-      #Combine 1 stage or 2 stage data
-      dat_1stage <- rbind(tmp2, tmp4)
-
-      dat_2stage <- rbind(tmp1, tmp3)
+      dat <- dplyr::bind_rows(dat_1stage, dat_2stage)
 
     }
-
     if(region == "FLK"){
 
-      tmp1 <- FLK_2014_coral_demographics %>%
-        dplyr::mutate(SURVEY = "NCRMP")
-
-      tmp2 <- FLK_2016_coral_demographics %>%
-        dplyr::mutate(SURVEY = "NCRMP")
-
-      tmp3 <- DRM_FLK_2018_2stage_demo_data %>%
-        dplyr::mutate(SURVEY = "DRM")
-
-      tmp4 <- FLK_2018_coral_demographics %>%
-        dplyr::mutate(SURVEY = "NCRMP")
-
-      dat <- rbind(tmp1, tmp2, tmp3, tmp4)
-
-      #Combine 1 stage or 2 stage data
-      dat_1stage <- rbind(tmp1, tmp2, tmp4)
-
-      dat_2stage <- rbind(tmp3)
+      dat <- dplyr::bind_rows(dat_1stage, dat_2stage)
 
     }
 
     if(region == "Tortugas"){
 
-      tmp1 <- TortugasMarq_2014_coral_demographics %>%
-        dplyr::mutate(SURVEY = "NCRMP")
+      dat <- dplyr::bind_rows(dat_1stage, dat_2stage)
 
-      tmp2 <- TortugasMarq_2016_coral_demographics %>%
-        dplyr::mutate(SURVEY = "NCRMP")
-
-      tmp3 <- Tortugas_2018_coral_demographics %>%
-        dplyr::mutate(SURVEY = "NCRMP/DRM")
-
-      tmp4 <- FRRP_Tort_2017_2stage_demo_data %>%
-        dplyr::mutate(SURVEY = "DRM")
-
-      dat <- rbind(tmp1, tmp2, tmp3, tmp4)
-
-      #Combine 1 stage or 2 stage data
-      dat_1stage <- rbind(tmp1, tmp2)
-
-      dat_2stage <- rbind(tmp3, tmp4)
     }
 
   }
@@ -136,169 +107,82 @@ NCRMP_DRM_calculate_species_richness_diversity <- function(project, region){
     if(region == "SEFCRI"){
 
 
-      dat_2stage <- SEFCRI_2014_2stage_coral_demographics %>%
-        dplyr::mutate(SURVEY = "NCRMP")
-
-      dat_1stage <- dplyr::bind_rows(SEFCRI_2016_coral_demographics, SEFCRI_2018_coral_demographics)  %>%
-        dplyr::mutate(SURVEY = "NCRMP")
-
-
-      dat <- rbind(dat_1stage, dat_2stage)
-
+      dat <- dplyr::bind_rows(dat_1stage, dat_2stage)
 
     }
 
     if(region == "FLK"){
-
-      tmp1 <- FLK_2014_coral_demographics %>%
-        dplyr::mutate(SURVEY = "NCRMP",
-                      YEAR = 2014)  # Some sampling occurred in 2015 - set all to 2014
-
-      tmp2 <- FLK_2016_coral_demographics %>%
-        dplyr::mutate(SURVEY = "NCRMP")
-
-      tmp3 <- FLK_2018_coral_demographics %>%
-        dplyr::mutate(SURVEY = "NCRMP")
-
-      dat <- rbind(tmp1, tmp2, tmp3)
-
-      #Combine 1 stage or 2 stage data
-      dat_1stage <- rbind(tmp1, tmp2, tmp3)
-
+      dat <- dat_1stage
     }
 
     if(region == "Tortugas"){
 
-      tmp1 <- TortugasMarq_2014_coral_demographics %>%
-        dplyr::mutate(SURVEY = "NCRMP")
-
-      tmp2 <- TortugasMarq_2016_coral_demographics %>%
-        dplyr::mutate(SURVEY = "NCRMP")
-
-      tmp3 <- Tortugas_2018_coral_demographics %>%
-        dplyr::mutate(SURVEY = "NCRMP/DRM")
-
-      dat <- rbind(tmp1, tmp2, tmp3)
-
-      #Combine 1 stage or 2 stage data
-      dat_1stage <- rbind(tmp1, tmp2)
-
-      dat_2stage <- tmp3
-
+      dat <- dplyr::bind_rows(dat_1stage, dat_2stage)
 
     }
 
-    ## Carib / GOM
+    # #   ## Carib / GOM
 
     if(region == "STTSTJ"){
 
-      tmp1 <- USVI_2013_coral_demographics %>%
-        dplyr::filter(REGION == "STTSTJ")
-
-      tmp2 <- USVI_2015_coral_demographics %>%
-        dplyr::filter(REGION == "STTSTJ")
-
-      tmp3 <- USVI_2017_coral_demographics %>%
-        dplyr::filter(REGION == "STTSTJ")
-
-      tmp4 <- USVI_2019_coral_demographics %>%
-        dplyr::filter(REGION == "STTSTJ")
-
-      # this get used for diversity
-      dat <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4) %>%
-        dplyr::mutate(SURVEY = "NCRMP")
-
-      # this get used for richness
-      #Combine 1 stage or 2 stage data
-      dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4) %>%
-        dplyr::mutate(SURVEY = "NCRMP")
-
-
+      dat <- dat_1stage
     }
 
     if(region == "STX"){
 
-      tmp1 <- USVI_2015_coral_demographics %>%
-        dplyr::filter(REGION == "STX")
-
-      tmp2 <- USVI_2017_coral_demographics %>%
-        dplyr::filter(REGION == "STX")
-
-      tmp3 <- USVI_2019_coral_demographics %>%
-        dplyr::filter(REGION == "STX")
-
-      dat <- dplyr::bind_rows(tmp1, tmp2) %>%
-        dplyr::mutate(SURVEY = "NCRMP")
-
-      #Combine 1 stage or 2 stage data
-      dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3) %>%
-        dplyr::mutate(SURVEY = "NCRMP")
-
-
+      dat <- dat_1stage
     }
 
     if(region == "PRICO"){
 
-      tmp1 <- PRICO_2014_coral_demographics
 
-      tmp2 <- PRICO_2016_coral_demographics %>%
-        dplyr::mutate(YEAR = 2016)
-
-      tmp3 <- PRICO_2019_coral_demographics
-
-      dat <- dplyr::bind_rows(tmp1, tmp2, tmp3) %>%
-        dplyr::mutate(SURVEY = "NCRMP")
-
-      #Combine 1 stage or 2 stage data
-      dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3) %>%
-        dplyr::mutate(SURVEY = "NCRMP")
-
+      dat <- dat_1stage
     }
 
     if(region == "GOM"){
 
-      tmp1 <- FGBNMS_2013_coral_demographics %>%
-        dplyr::mutate(SURVEY = "NCRMP",
-                      STRAT = "FGBNMS",
-                      REGION = "GOM")
-
-      tmp2 <- FGBNMS_2015_coral_demographics %>%
-        dplyr::mutate(SURVEY = "NCRMP",
-                      STRAT = "FGBNMS",
-                      REGION = "GOM")
-
-       tmp3 <- FGBNMS_2018_coral_demographics %>%
-        dplyr::mutate(SURVEY = "NCRMP")
-
-      dat <- rbind(tmp1, tmp2, tmp3)
-
-      #Combine 1 stage or 2 stage data
-      dat_1stage <- rbind(tmp1, tmp2, tmp3)
+      dat <- dat_1stage
 
     }
 
   }
 
+
   # Clean up species names
 
   # this get used later for diversity
   dat <- dat %>%
-    dplyr::mutate(SPECIES_NAME = dplyr::case_when(SPECIES_CD == "MEAN JACK" ~ "Meandrina jacksoni", TRUE ~ as.character(SPECIES_NAME) ),
-                  SPECIES_NAME = dplyr::case_when(SPECIES_CD == "DIP STRI" ~ "Pseudodiploria strigosa", TRUE ~ as.character(SPECIES_NAME)),
-                  SPECIES_NAME = dplyr::case_when(SPECIES_CD == "CLA ARBU" ~ "Cladacora arbuscula", TRUE ~ as.character(SPECIES_NAME)),
-                  SPECIES_NAME = dplyr::case_when(SPECIES_CD == "DIP CLIV" ~ "Pseudodiploria clivosa", TRUE ~ as.character(SPECIES_NAME))) %>%
-    dplyr::mutate(SPECIES_CD = dplyr::case_when(SPECIES_NAME == "Pseudodiploria strigosa" ~ "PSE STRI", TRUE ~ as.character(SPECIES_CD)),
-                  SPECIES_CD = dplyr::case_when(SPECIES_NAME == "Pseudodiploria clivosa" ~ "PSE CLIV", TRUE ~ as.character(SPECIES_CD)),
-                  SPECIES_CD = dplyr::case_when(SPECIES_NAME == "Meandrina jacksoni" ~ "MEA JACK", TRUE ~ as.character(SPECIES_CD)))
+    # FILTER OUT NO CORAL
+    dplyr::filter(SPECIES_CD != "NO. SCLE") %>%
+    # the below is likely fixed in the load demo code, but leaving here just in case
+    dplyr::mutate(SPECIES_NAME = dplyr::case_when(SPECIES_CD == "MEAN JACK" ~ "Meandrina jacksoni",
+                                                  SPECIES_CD == "DIP STRI" ~ "Pseudodiploria strigosa",
+                                                  SPECIES_CD == "CLA ARBU" ~ "Cladacora arbuscula",
+                                                  SPECIES_CD == "CLA ABRU" ~ "Cladacora arbuscula",
+                                                  SPECIES_CD == "DIP CLIV" ~ "Pseudodiploria clivosa",
+                                                  SPECIES_CD == "PSE CLIV" ~ "Pseudodiploria clivosa",
+                                                  SPECIES_CD == "PSE STRI" ~ "Pseudodiploria clivosa",
+                                                  TRUE ~ as.character(SPECIES_NAME))) %>%
+    dplyr::mutate(SPECIES_CD = dplyr::case_when(SPECIES_NAME == "Pseudodiploria strigosa" ~ "PSE STRI",
+                                                SPECIES_NAME == "Pseudodiploria clivosa" ~ "PSE CLIV",
+                                                SPECIES_NAME == "Meandrina jacksoni" ~ "MEA JACK",
+                                                TRUE ~ as.character(SPECIES_CD)))
 
   dat_1stage <- dat_1stage %>%
-    dplyr::mutate(SPECIES_NAME = dplyr::case_when(SPECIES_CD == "MEAN JACK" ~ "Meandrina jacksoni", TRUE ~ as.character(SPECIES_NAME) ),
-                  SPECIES_NAME = dplyr::case_when(SPECIES_CD == "DIP STRI" ~ "Pseudodiploria strigosa", TRUE ~ as.character(SPECIES_NAME)),
-                  SPECIES_NAME = dplyr::case_when(SPECIES_CD == "CLA ARBU" ~ "Cladacora arbuscula", TRUE ~ as.character(SPECIES_NAME)),
-                  SPECIES_NAME = dplyr::case_when(SPECIES_CD == "DIP CLIV" ~ "Pseudodiploria clivosa", TRUE ~ as.character(SPECIES_NAME))) %>%
-    dplyr::mutate(SPECIES_CD = dplyr::case_when(SPECIES_NAME == "Pseudodiploria strigosa" ~ "PSE STRI", TRUE ~ as.character(SPECIES_CD)),
-                  SPECIES_CD = dplyr::case_when(SPECIES_NAME == "Pseudodiploria clivosa" ~ "PSE CLIV", TRUE ~ as.character(SPECIES_CD)),
-                  SPECIES_CD = dplyr::case_when(SPECIES_NAME == "Meandrina jacksoni" ~ "MEA JACK", TRUE ~ as.character(SPECIES_CD)))
+    # FILTER OUT NO CORAL
+    dplyr::filter(SPECIES_CD != "NO. SCLE") %>%
+    dplyr::mutate(SPECIES_NAME = dplyr::case_when(SPECIES_CD == "MEAN JACK" ~ "Meandrina jacksoni",
+                                                  SPECIES_CD == "DIP STRI" ~ "Pseudodiploria strigosa",
+                                                  SPECIES_CD == "CLA ARBU" ~ "Cladacora arbuscula",
+                                                  SPECIES_CD == "CLA ABRU" ~ "Cladacora arbuscula",
+                                                  SPECIES_CD == "DIP CLIV" ~ "Pseudodiploria clivosa",
+                                                  SPECIES_CD == "PSE CLIV" ~ "Pseudodiploria clivosa",
+                                                  SPECIES_CD == "PSE STRI" ~ "Pseudodiploria clivosa",
+                                                  TRUE ~ as.character(SPECIES_NAME))) %>%
+    dplyr::mutate(SPECIES_CD = dplyr::case_when(SPECIES_NAME == "Pseudodiploria strigosa" ~ "PSE STRI",
+                                                SPECIES_NAME == "Pseudodiploria clivosa" ~ "PSE CLIV",
+                                                SPECIES_NAME == "Meandrina jacksoni" ~ "MEA JACK",
+                                                TRUE ~ as.character(SPECIES_CD)))
 
 
   if(project == "NCRMP_DRM" ||
@@ -306,13 +190,20 @@ NCRMP_DRM_calculate_species_richness_diversity <- function(project, region){
      project == "NCRMP" && region == "Tortugas") {
 
     dat_2stage <- dat_2stage %>%
-      dplyr::mutate(SPECIES_NAME = dplyr::case_when(SPECIES_CD == "MEAN JACK" ~ "Meandrina jacksoni", TRUE ~ as.character(SPECIES_NAME) ),
-                    SPECIES_NAME = dplyr::case_when(SPECIES_CD == "DIP STRI" ~ "Pseudodiploria strigosa", TRUE ~ as.character(SPECIES_NAME)),
-                    SPECIES_NAME = dplyr::case_when(SPECIES_CD == "CLA ARBU" ~ "Cladacora arbuscula", TRUE ~ as.character(SPECIES_NAME)),
-                    SPECIES_NAME = dplyr::case_when(SPECIES_CD == "DIP CLIV" ~ "Pseudodiploria clivosa", TRUE ~ as.character(SPECIES_NAME))) %>%
-      dplyr::mutate(SPECIES_CD = dplyr::case_when(SPECIES_NAME == "Pseudodiploria strigosa" ~ "PSE STRI", TRUE ~ as.character(SPECIES_CD)),
-                    SPECIES_CD = dplyr::case_when(SPECIES_NAME == "Pseudodiploria clivosa" ~ "PSE CLIV", TRUE ~ as.character(SPECIES_CD)),
-                    SPECIES_CD = dplyr::case_when(SPECIES_NAME == "Meandrina jacksoni" ~ "MEA JACK", TRUE ~ as.character(SPECIES_CD)))
+      # FILTER OUT NO CORAL
+      dplyr::filter(SPECIES_CD != "NO. SCLE") %>%
+      dplyr::mutate(SPECIES_NAME = dplyr::case_when(SPECIES_CD == "MEAN JACK" ~ "Meandrina jacksoni",
+                                                    SPECIES_CD == "DIP STRI" ~ "Pseudodiploria strigosa",
+                                                    SPECIES_CD == "CLA ARBU" ~ "Cladacora arbuscula",
+                                                    SPECIES_CD == "CLA ABRU" ~ "Cladacora arbuscula",
+                                                    SPECIES_CD == "DIP CLIV" ~ "Pseudodiploria clivosa",
+                                                    SPECIES_CD == "PSE CLIV" ~ "Pseudodiploria clivosa",
+                                                    SPECIES_CD == "PSE STRI" ~ "Pseudodiploria clivosa",
+                                                    TRUE ~ as.character(SPECIES_NAME))) %>%
+      dplyr::mutate(SPECIES_CD = dplyr::case_when(SPECIES_NAME == "Pseudodiploria strigosa" ~ "PSE STRI",
+                                                  SPECIES_NAME == "Pseudodiploria clivosa" ~ "PSE CLIV",
+                                                  SPECIES_NAME == "Meandrina jacksoni" ~ "MEA JACK",
+                                                  TRUE ~ as.character(SPECIES_CD)))
 
   }
 
@@ -365,11 +256,10 @@ NCRMP_DRM_calculate_species_richness_diversity <- function(project, region){
                     !grepl('SPE.', SPECIES_CD),
                     !grepl('ANCX', SPECIES_CD)) %>% # Filter out SPE
       dplyr::mutate(PROT = as.factor(PROT)) %>% # Change PROT to factor for ggplot will recognize it as a grouping variable
-      dplyr::group_by(REGION, SURVEY, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, STATION_NR, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT, SPECIES_NAME) %>% #No need to include region, will be added from ntot in wh. function
-      dplyr::summarise(IndSumSite = sum(N))  %>%
-      dplyr::mutate(present = 1) %>%
-      dplyr::group_by(REGION, SURVEY, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, STATION_NR, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT) %>%
-      dplyr::summarise(SppSumSite = sum(present)) %>%
+      # calculate number of species at each station first
+      dplyr::group_by(REGION, SURVEY, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, STATION_NR, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT) %>% #No need to include region, will be added from ntot in wh. function
+      dplyr::summarise(SppSumSite = length(unique(SPECIES_NAME))) %>%
+      # average for 2 stage data
       dplyr::group_by(REGION, SURVEY, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT) %>%
       dplyr::summarise(SPP_RICHNESS = mean(SppSumSite)) %>%
       dplyr::ungroup()
@@ -394,7 +284,8 @@ NCRMP_DRM_calculate_species_richness_diversity <- function(project, region){
                     SUB_REGION_NAME != "Marquesas",
                     SUB_REGION_NAME != "Marquesas-Tortugas Trans",
                     !grepl('SPE.', SPECIES_CD),
-                    !grepl('ANCX', SPECIES_CD)) %>% # Filter out SPE
+                    !grepl('ANCX', SPECIES_CD),
+                    SPECIES_CD != "OTH CORA") %>% # Filter out SPE
       dplyr::mutate(PROT = as.factor(PROT)) %>% # Change PROT to factor for ggplot will recognize it as a grouping variable
       dplyr::group_by(REGION, SURVEY, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT, SPECIES_NAME) %>% #No need to include region, will be added from ntot in wh. function
       dplyr::summarise(SppSumSite = sum(N)) %>%
@@ -424,43 +315,105 @@ NCRMP_DRM_calculate_species_richness_diversity <- function(project, region){
   ###### Calculate coral diversity with Simpson, Inv. Simpson and Shannon Indices #####
 
 
-    # Site level
+  if(project == "NCRMP_DRM" ||
+     project == "NCRMP" && region == "SEFCRI"||
+     project == "NCRMP" && region == "Tortugas"){
+
+    # Site level -- when there is 2 stage data, this is station level
     sites <- dat %>%
+      # Update in Jan. 2024 - exclude juveniles - we don't count these (only once/site), so including them in diversity metrics is improper
       dplyr::filter(N == 1,
+                    JUV == 0,
                     SUB_REGION_NAME != "Marquesas",
                     SUB_REGION_NAME != "Marquesas-Tortugas Trans",
                     !grepl('SPE.', SPECIES_CD),
                     !grepl('ANCX', SPECIES_CD))  %>%
-      dplyr::mutate(PRIMARY_SAMPLE_UNIT = as.character(PRIMARY_SAMPLE_UNIT),
-                    REGION = region) %>%
-      dplyr::group_by(REGION, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, PROT) %>%
-      dplyr::summarize(PSU = unique(PRIMARY_SAMPLE_UNIT)) %>%
-      dplyr::ungroup()
+      dplyr::filter(SPECIES_CD != "OTH CORA") %>%
+      dplyr::mutate(PRIMARY_SAMPLE_UNIT = as.character(PRIMARY_SAMPLE_UNIT)) %>%
+      dplyr::select(REGION, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, STATION_NR, LAT_DEGREES, LON_DEGREES, STRAT, PROT) %>%
+      dplyr::distinct(.)
 
-    species_wide_site <- dat %>%
+    species_site <- dat %>%
+      # Update in Jan. 2024 - exclude juveniles - we don't count these (only once/site), so including them in diversity metrics is improper
       dplyr::filter(N == 1,
+                    JUV == 0,
                     SUB_REGION_NAME != "Marquesas",
                     SUB_REGION_NAME != "Marquesas-Tortugas Trans",
                     !grepl('SPE.', SPECIES_CD),
                     !grepl('ANCX', SPECIES_CD)) %>%
-      dplyr::mutate(PRIMARY_SAMPLE_UNIT = as.character(PRIMARY_SAMPLE_UNIT),
-                    REGION = region) %>% #Convert PSU to character to make sure vegan::diversity does not use it as counts
-      dplyr::group_by(REGION, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, PROT, SPECIES_NAME) %>%
-      dplyr::summarise(SPP_Count = sum(N)) %>%
+      dplyr::filter(SPECIES_CD != "OTH CORA") %>%
+      dplyr::mutate(PRIMARY_SAMPLE_UNIT = as.character(PRIMARY_SAMPLE_UNIT)) %>% #Convert PSU to character to make sure vegan::diversity does not use it as counts
+      dplyr::group_by(REGION, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, STATION_NR, LAT_DEGREES, LON_DEGREES, STRAT, PROT, SPECIES_NAME) %>%
+      dplyr::summarise(SPP_Count = sum(N))
+    species_wide_site <- species_site %>%
       tidyr::spread(., key = SPECIES_NAME, value = SPP_Count, fill = 0) %>%
       dplyr::ungroup()
 
-    species_only_site <-  species_wide_site[, c(4, 10:ncol(species_wide_site))]
+    spp <- unique(species_site$SPECIES_NAME)
+
+    species_only_site <- species_wide_site %>% select(YEAR, PRIMARY_SAMPLE_UNIT, STATION_NR, spp)
 
     species_diversity_site <- species_only_site %>%
-      dplyr::mutate(Simpson =  vegan::diversity(species_only_site[, -1], index = "simpson")) %>%
-      dplyr::mutate(Inv_Simpson =  vegan::diversity(species_only_site[, -1], index = "invsimpson")) %>%
-      dplyr::mutate(Shannon =  vegan::diversity(species_only_site[, -1], index = "shannon")) %>%
-      dplyr::select(PRIMARY_SAMPLE_UNIT, Simpson, Inv_Simpson, Shannon ) %>%
-      dplyr::inner_join(., sites) %>%
+      dplyr::mutate(Simpson =  vegan::diversity(species_only_site[, -c(1:2)], index = "simpson")) %>%
+      dplyr::mutate(Inv_Simpson =  vegan::diversity(species_only_site[, -c(1:2)], index = "invsimpson")) %>%
+      dplyr::mutate(Shannon =  vegan::diversity(species_only_site[, -c(1:2)], index = "shannon")) %>%
+      dplyr::select(YEAR, PRIMARY_SAMPLE_UNIT, STATION_NR, Simpson, Inv_Simpson, Shannon ) %>%
+      # this originally didn't account for repeated PSU's across years.
+      dplyr::full_join(., sites, by = c("YEAR", "PRIMARY_SAMPLE_UNIT", "STATION_NR")) %>%
+      # average 2 stage data
+      dplyr::group_by(REGION, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, PROT) %>%
+      dplyr::summarize(Simpson = mean(Simpson),
+                       Inv_Simpson = mean(Inv_Simpson),
+                       Shannon = mean(Shannon)) %>%
       dplyr::select(REGION, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, PROT, Simpson, Inv_Simpson, Shannon) %>%
       dplyr::ungroup()
 
+  } else{
+
+    # Site level
+    sites <- dat %>%
+      # Update in Jan. 2024 - exclude juveniles - we don't count these (only once/site), so including them in diversity metrics is improper
+      dplyr::filter(N == 1,
+                    JUV == 0,
+                    SUB_REGION_NAME != "Marquesas",
+                    SUB_REGION_NAME != "Marquesas-Tortugas Trans",
+                    !grepl('SPE.', SPECIES_CD),
+                    !grepl('ANCX', SPECIES_CD))  %>%
+      dplyr::filter(SPECIES_CD != "OTH CORA") %>%
+      dplyr::mutate(PRIMARY_SAMPLE_UNIT = as.character(PRIMARY_SAMPLE_UNIT)) %>%
+      dplyr::select(REGION, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, PROT) %>%
+      dplyr::distinct(.)
+
+    species_site <- dat %>%
+      # Update in Jan. 2024 - exclude juveniles - we don't count these (only once/site), so including them in diversity metrics is improper
+      dplyr::filter(N == 1,
+                    JUV == 0,
+                    SUB_REGION_NAME != "Marquesas",
+                    SUB_REGION_NAME != "Marquesas-Tortugas Trans",
+                    !grepl('SPE.', SPECIES_CD),
+                    !grepl('ANCX', SPECIES_CD)) %>%
+      dplyr::filter(SPECIES_CD != "OTH CORA") %>%
+      dplyr::mutate(PRIMARY_SAMPLE_UNIT = as.character(PRIMARY_SAMPLE_UNIT)) %>% #Convert PSU to character to make sure vegan::diversity does not use it as counts
+      dplyr::group_by(REGION, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, PROT, SPECIES_NAME) %>%
+      dplyr::summarise(SPP_Count = sum(N))
+    species_wide_site <- species_site %>%
+      tidyr::spread(., key = SPECIES_NAME, value = SPP_Count, fill = 0) %>%
+      dplyr::ungroup()
+
+    spp <- unique(species_site$SPECIES_NAME)
+
+    species_only_site <- species_wide_site %>% select(YEAR, PRIMARY_SAMPLE_UNIT, spp)
+
+    species_diversity_site <- species_only_site %>%
+      dplyr::mutate(Simpson =  vegan::diversity(species_only_site[, -c(1:2)], index = "simpson")) %>%
+      dplyr::mutate(Inv_Simpson =  vegan::diversity(species_only_site[, -c(1:2)], index = "invsimpson")) %>%
+      dplyr::mutate(Shannon =  vegan::diversity(species_only_site[, -c(1:2)], index = "shannon")) %>%
+      dplyr::select(YEAR, PRIMARY_SAMPLE_UNIT, Simpson, Inv_Simpson, Shannon ) %>%
+      # this originally didn't account for repeated PSU's across years.
+      dplyr::full_join(., sites, by = c("YEAR", "PRIMARY_SAMPLE_UNIT")) %>%
+      dplyr::select(REGION, YEAR, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, PROT, Simpson, Inv_Simpson, Shannon) %>%
+      dplyr::ungroup()
+  }
 
     # Calculate regional diversity using weighting function
 

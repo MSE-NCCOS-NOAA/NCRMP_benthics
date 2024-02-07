@@ -23,7 +23,7 @@
 # Analysis Rmarkdown, etc.
 #
 
-# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
+# NCRMP Caribbean Benthic analytics team: Groves, Viehman
 # Last update: Feb 2023
 
 
@@ -31,7 +31,7 @@
 
 #' Creates percent cover dataframe
 #'
-#' Calculates percent cover at various levels and groups. Data summaries include:
+#' Calculates percent cover at various levels and groups. Data sumamries include:
 #' 1) percent cover by species at each site, 2) percent cover by group at each site,
 #' 3) mean percent cover by group for each stratum, and 4) weighted regional mean
 #' percent cover, all for a given region. NCRMP utilizes a stratified random

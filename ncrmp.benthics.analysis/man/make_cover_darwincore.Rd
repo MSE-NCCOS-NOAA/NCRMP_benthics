@@ -7,15 +7,15 @@
 make_cover_darwincore(dat, region, year)
 }
 \arguments{
-\item{dat}{A dataframe of analysis ready LPI data to be converted into Darwin Core.}
+\item{dat}{A dataframe of analysis ready LPI data to be converted into Darwin Core}
 
-\item{region}{A string indicating the region. Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".}
+\item{region}{A string indicating the region}
 
-\item{year}{A numeric indicating the year.}
+\item{year}{A string indicating the year}
 }
 \value{
-A list of multiple dataframes including re-formatted data and percent cover by species and site.
+A list of multiple dataframes including formatted data
 }
 \description{
-Re-formats analysis ready benthic cover (LPI) data into Darwin Core standards.
+Format analysis ready LPI data into Darwin Core
 }

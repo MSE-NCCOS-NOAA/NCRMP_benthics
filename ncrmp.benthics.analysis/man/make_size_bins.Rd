@@ -28,9 +28,9 @@ make_size_bins(
 A list of six dataframes
 }
 \description{
-DEPRECATED. Use [NCRMP_make_size_bins()] instead.
+Calculates bin sizes for strata and domain estimates of size and length
 }
 \examples{
 analyzed_species <- c("ACR CERV", "ACR PALM", "ORB ANNU")
-make_size_bins(region = "SEFCRI", years = c(2014, 2020), species_filter = analyzed_species)
+make_size_bins(region = "SEFCRI", years = c(2014, 2020), species_filter = analyzed_species) 
 }

@@ -20,7 +20,7 @@
 # Analysis Rmarkdown, etc.
 #
 
-# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
+# NCRMP Caribbean Benthic analytics team: Groves, Viehman
 # Last update: Feb 2023
 
 

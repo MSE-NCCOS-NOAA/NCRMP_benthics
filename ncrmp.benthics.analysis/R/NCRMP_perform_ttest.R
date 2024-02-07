@@ -18,29 +18,24 @@
 # Analysis Rmarkdown, etc.
 #
 
-# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
+# NCRMP Caribbean Benthic analytics team: Groves, Viehman
 # Last update: Feb 2023
 
 
 ##############################################################################################################################
 
-#' Performs t-test comparing estimates
-#'
-#' Function to perform t-test on various summaries of NCRMP data.
-#' Typically, comparisons are made between yearly domain estimates (e.g. mean
-#' coral cover by year) in a single region. But comparisons could be made between
-#' inside/outside a protected area.
+#' Creates percent cover dataframe
 #'
 #'
 #'
 #'
-#' @param dataframe A dataframe of yearly domain estimates for a single subjurisdiction.
-#' @param metric1 The metric you are testing: density, hard coral cover, macroalgae cover, disease prevalence, bleaching prevalence.
+#' @param dataframe A dataframe of yearly domain estimates for a single subjurisdiction
+#' @param metric1 The metric you are testing: density, hard coral cover, macroalgae cover, disease prevalence, bleaching prevalence
 #' @param metric2 The column name of the metric you are testing: avCvr, avDen, etc.
 #' @param alpha The alpha level you want to test, ex. 0.05
 #' @param test_type You can compare domain estimates between years or inside/ outside a protected area for a single year, enter "Years" or "PROT"
 #' @param n_years You must specify the number of sampling years completed in the subjurisdiction if test_type = "Years", currently 4 for St. Thomas & St. John and 3 for all other regions.
-#' @return A dataframe and test results as a list.
+#' @return A dataframe
 #' @importFrom magrittr "%>%"
 #' @export
 #'

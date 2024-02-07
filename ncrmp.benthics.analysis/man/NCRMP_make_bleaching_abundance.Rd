@@ -10,6 +10,5 @@ NCRMP_make_bleaching_abundance()
 A dataframe
 }
 \description{
-Calculates the number of bleached colonies per species at each site from all
-years and regions of NCRMP data.
+Creates abundance per bleaching category dataframe for all regions and all years
 }
