@@ -2,7 +2,7 @@
 % Please edit documentation in R/NCRMP_DRM_calculate_disease_prevalence_sites.R
 \name{NCRMP_DRM_calculate_disease_prevalence_sites}
 \alias{NCRMP_DRM_calculate_disease_prevalence_sites}
-\title{Calculate disease and bleaching prevalence by sites}
+\title{Creates species list, species richness and species diversity dataframes from NCRMP and DRM data}
 \usage{
 NCRMP_DRM_calculate_disease_prevalence_sites(
   project,
@@ -11,20 +11,13 @@ NCRMP_DRM_calculate_disease_prevalence_sites(
 )
 }
 \arguments{
-\item{project}{A string indicating the project, NCRMP or NCRMP and DRM combined ("NCRMP_DRM").}
+\item{project}{A string indicating the project, NCRMP or NCRMP and DRM combined}
 
-\item{region}{A string indicating the region. Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".}
-
-\item{species_filter}{An optional concatenated string indicating whether to filter to a subset of species}
+\item{region}{A string indicating the region}
 }
 \value{
-A list dataframes including 1) presence/absence of disease and bleaching
-at each site, 2) number of sites with disease and bleaching in each strata, and
-3) number of sites with disease and bleaching in the region, for all years of a
-specified region.
+A dataframe
 }
 \description{
-Calculates disease and bleaching prevalence by sites. Specifically the
-presence/absence of disease and bleaching at each site and the number of sites
-where disease and/or bleaching are present in each strata and region.
+Creates species list, species richness and species diversity dataframes from NCRMP and DRM data
 }

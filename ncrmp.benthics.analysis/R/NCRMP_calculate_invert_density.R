@@ -21,25 +21,21 @@
 # Analysis Rmarkdown, etc.
 #
 
-# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
+# NCRMP Caribbean Benthic analytics team: Groves, Viehman
 # Last update: Feb 2023
 
 
 ##############################################################################################################################
 
-#' Creates summary dataframes of Diadema density from NCRMP benthic assessment.
-#' NCRMP utilizes a stratified random sampling design.
-#' Regional estimates of Diadema density are weighted by the number of
-#' grid cells of a stratum in the sample frame.
+#' Creates colony density and colony size summary dataframes
 #'
 #'
 #'
 #'
-#' @param region A string indicating the region. Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".
+#' @param inputdf A dataframe
+#' @param region A string indicating the region
 #' @param project A string indicating the project: "NCRMP" or "MIR". Default is NCRMP.
-#' @return A list dataframes including 1) Diadema density at each site,
-#' 2) mean Diadema density by strata, and 3) weighted regional mean Diadema density,
-#' all for a given region.
+#' @return A dataframe
 #' @importFrom magrittr "%>%"
 #' @export
 #'

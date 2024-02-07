@@ -65,6 +65,38 @@ load_NTOT_species <- function(region, inputdata, project){
       spp <- unique(tmp$SPECIES_CD)
       # add an empty data frame to populate with the filtered NTOTs
       ntot <- data.frame()
+
+      ### UPDATE IN DEC. 2023!!
+      # PROT is re-coded here to 0 for ALL sites as fish and benthics met 12/19/23
+      # to determine that it is not appropriate to keep PROT in the analysis strat
+      # in FLK because the data aren't allocated that way
+      # NTOTs must be re-calculated with PROT=0 here
+      FLK_2014_NTOT <- FLK_2014_NTOT %>%
+        dplyr::mutate(PROT = 0) %>%
+        dplyr::group_by(REGION, YEAR, PROT, STRAT, GRID_SIZE) %>%
+        dplyr::summarize(NTOT = sum(NTOT)) %>%
+        dplyr::ungroup()
+      FLK_2016_NTOT <- FLK_2016_NTOT %>%
+        dplyr::mutate(PROT = 0) %>%
+        dplyr::group_by(REGION, YEAR, PROT, STRAT, GRID_SIZE) %>%
+        dplyr::summarize(NTOT = sum(NTOT)) %>%
+        dplyr::ungroup()
+      FLK_2018_NTOT <- FLK_2018_NTOT %>%
+        dplyr::mutate(PROT = 0) %>%
+        dplyr::group_by(REGION, YEAR, PROT, STRAT, GRID_SIZE) %>%
+        dplyr::summarize(NTOT = sum(NTOT)) %>%
+        dplyr::ungroup()
+      FLK_2020_NTOT <- FLK_2020_NTOT %>%
+        dplyr::mutate(PROT = 0) %>%
+        dplyr::group_by(REGION, YEAR, PROT, STRAT, GRID_SIZE) %>%
+        dplyr::summarize(NTOT = sum(NTOT)) %>%
+        dplyr::ungroup()
+      FLK_2022_NTOT <- FLK_2022_NTOT %>%
+        dplyr::mutate(PROT = 0) %>%
+        dplyr::group_by(REGION, YEAR, PROT, STRAT, GRID_SIZE) %>%
+        dplyr::summarize(NTOT = sum(NTOT)) %>%
+        dplyr::ungroup()
+
       # create a data frame of the full NTOTs for FLK
       NTOT_all <- dplyr::bind_rows(FLK_2014_NTOT, FLK_2016_NTOT, FLK_2018_NTOT, FLK_2020_NTOT,FLK_2022_NTOT) %>%
         dplyr::mutate(REGION = "FLK",
@@ -107,6 +139,38 @@ load_NTOT_species <- function(region, inputdata, project){
       spp <- unique(tmp$SPECIES_CD)
       # add an empty data frame to populate with the filtered NTOTs
       ntot <- data.frame()
+
+      ### UPDATE IN DEC. 2023!!
+      # PROT is re-coded here to 0 for ALL sites as fish and benthics met 12/19/23
+      # to determine that it is not appropriate to keep PROT in the analysis strat
+      # in FLK because the data aren't allocated that way
+      # NTOTs must be re-calculated with PROT=0 here
+      FLK_2014_NTOT <- FLK_2014_NTOT %>%
+        dplyr::mutate(PROT = 0) %>%
+        dplyr::group_by(REGION, YEAR, PROT, STRAT, GRID_SIZE) %>%
+        dplyr::summarize(NTOT = sum(NTOT)) %>%
+        dplyr::ungroup()
+      FLK_2016_NTOT <- FLK_2016_NTOT %>%
+        dplyr::mutate(PROT = 0) %>%
+        dplyr::group_by(REGION, YEAR, PROT, STRAT, GRID_SIZE) %>%
+        dplyr::summarize(NTOT = sum(NTOT)) %>%
+        dplyr::ungroup()
+      FLK_2018_NTOT <- FLK_2018_NTOT %>%
+        dplyr::mutate(PROT = 0) %>%
+        dplyr::group_by(REGION, YEAR, PROT, STRAT, GRID_SIZE) %>%
+        dplyr::summarize(NTOT = sum(NTOT)) %>%
+        dplyr::ungroup()
+      FLK_2020_NTOT <- FLK_2020_NTOT %>%
+        dplyr::mutate(PROT = 0) %>%
+        dplyr::group_by(REGION, YEAR, PROT, STRAT, GRID_SIZE) %>%
+        dplyr::summarize(NTOT = sum(NTOT)) %>%
+        dplyr::ungroup()
+      FLK_2022_NTOT <- FLK_2022_NTOT %>%
+        dplyr::mutate(PROT = 0) %>%
+        dplyr::group_by(REGION, YEAR, PROT, STRAT, GRID_SIZE) %>%
+        dplyr::summarize(NTOT = sum(NTOT)) %>%
+        dplyr::ungroup()
+
       # create a data frame of the full NTOTs for FLK
       NTOT_all <- dplyr::bind_rows(FLK_2014_NTOT, FLK_2016_NTOT %>% dplyr::mutate(YEAR = 2015),
                                    FLK_2016_NTOT, FLK_2018_NTOT %>% dplyr::mutate(YEAR = 2017),
@@ -351,7 +415,7 @@ load_NTOT_species <- function(region, inputdata, project){
     # Filter NTOT to only strata sampled that year
     # Make a dataframe of just the YEAR and STRAT
     tmp <- inputdata %>%
-      dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
+      dplyr::mutate(ANALYSIS_STRATUM = STRAT) %>%
       dplyr::group_by(YEAR, ANALYSIS_STRATUM, SPECIES_CD, SPECIES_NAME) %>%
       dplyr::summarise(N = length(ANALYSIS_STRATUM))
 
@@ -367,7 +431,10 @@ load_NTOT_species <- function(region, inputdata, project){
                                  USVI_2021_NTOT %>% dplyr::filter(REGION == "STTSTJ") %>% dplyr::mutate(YEAR = 2017),
                                  USVI_2021_NTOT %>% dplyr::filter(REGION == "STTSTJ") %>% dplyr::mutate(YEAR = 2019),
                                  USVI_2021_NTOT %>% dplyr::filter(REGION == "STTSTJ")) %>%
-      dplyr::mutate(ANALYSIS_STRATUM = STRAT)
+      dplyr::mutate(ANALYSIS_STRATUM = STRAT,
+                    PROT = NA_character_) %>%
+      dplyr::group_by(REGION, YEAR, ANALYSIS_STRATUM, HABITAT_CD, DEPTH_STRAT, PROT) %>%
+      dplyr::summarise(NTOT = sum(NTOT))
 
 
     # Use a loop to create a unique lists for each year of strata sampled
@@ -382,6 +449,7 @@ load_NTOT_species <- function(region, inputdata, project){
           # filter to strata present in year i
           dplyr::filter(ANALYSIS_STRATUM %in% Filter) %>%
           # re-calculate ntot
+          dplyr::ungroup() %>%
           dplyr::mutate(ngrtot = sum(NTOT),
                         SPECIES_CD = s)
 
@@ -398,7 +466,7 @@ load_NTOT_species <- function(region, inputdata, project){
     # Filter NTOT to only strata sampled that year
     # Make a dataframe of just the YEAR and STRAT
     tmp <- inputdata %>%
-      dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
+      dplyr::mutate(ANALYSIS_STRATUM = STRAT) %>%
       dplyr::group_by(YEAR, ANALYSIS_STRATUM, SPECIES_CD, SPECIES_NAME) %>%
       dplyr::summarise(N = length(ANALYSIS_STRATUM))
 
@@ -414,7 +482,10 @@ load_NTOT_species <- function(region, inputdata, project){
                                  USVI_2021_NTOT %>% dplyr::filter(REGION == "STX") %>% dplyr::mutate(YEAR = 2017),
                                  USVI_2021_NTOT %>% dplyr::filter(REGION == "STX") %>% dplyr::mutate(YEAR = 2019),
                                  USVI_2021_NTOT %>% dplyr::filter(REGION == "STX")) %>%
-      dplyr::mutate(ANALYSIS_STRATUM = STRAT)
+      dplyr::mutate(ANALYSIS_STRATUM = STRAT,
+                    PROT = NA_character_) %>%
+      dplyr::group_by(REGION, YEAR, ANALYSIS_STRATUM, HABITAT_CD, DEPTH_STRAT, PROT) %>%
+      dplyr::summarise(NTOT = sum(NTOT))
 
 
     # Use a loop to create a unique lists for each year of strata sampled
@@ -429,6 +500,7 @@ load_NTOT_species <- function(region, inputdata, project){
           # filter to strata present in year i
           dplyr::filter(ANALYSIS_STRATUM %in% Filter) %>%
           # re-calculate ntot
+          dplyr::ungroup() %>%
           dplyr::mutate(ngrtot = sum(NTOT),
                         SPECIES_CD = s)
 
@@ -445,7 +517,7 @@ load_NTOT_species <- function(region, inputdata, project){
     # Filter NTOT to only strata sampled that year
     # Make a dataframe of just the YEAR and STRAT
     tmp <- inputdata %>%
-      dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
+      dplyr::mutate(ANALYSIS_STRATUM = STRAT) %>%
       dplyr::group_by(YEAR, ANALYSIS_STRATUM, SPECIES_CD, SPECIES_NAME) %>%
       dplyr::summarise(N = length(ANALYSIS_STRATUM))
 
@@ -460,7 +532,10 @@ load_NTOT_species <- function(region, inputdata, project){
                                  PRICO_2021_NTOT %>% dplyr::mutate(YEAR = 2016),
                                  PRICO_2021_NTOT %>% dplyr::mutate(YEAR = 2019),
                                  PRICO_2021_NTOT) %>%
-      dplyr::mutate(ANALYSIS_STRATUM = STRAT)
+      dplyr::mutate(ANALYSIS_STRATUM = STRAT,
+                    PROT = NA_character_) %>%
+      dplyr::group_by(REGION, YEAR, ANALYSIS_STRATUM, HABITAT_CD, DEPTH_STRAT, PROT) %>%
+      dplyr::summarise(NTOT = sum(NTOT))
 
 
     # Use a loop to create a unique lists for each year of strata sampled
@@ -475,6 +550,7 @@ load_NTOT_species <- function(region, inputdata, project){
           # filter to strata present in year i
           dplyr::filter(ANALYSIS_STRATUM %in% Filter) %>%
           # re-calculate ntot
+          dplyr::ungroup() %>%
           dplyr::mutate(ngrtot = sum(NTOT),
                         SPECIES_CD = s)
 
@@ -492,7 +568,7 @@ load_NTOT_species <- function(region, inputdata, project){
     # Filter NTOT to only strata sampled that year
     # Make a dataframe of just the YEAR and STRAT
     tmp <- inputdata %>%
-      dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
+      dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS") %>%
       dplyr::group_by(YEAR, ANALYSIS_STRATUM, SPECIES_CD, SPECIES_NAME) %>%
       dplyr::summarise(N = length(ANALYSIS_STRATUM))
 
@@ -507,7 +583,12 @@ load_NTOT_species <- function(region, inputdata, project){
                                  FGBNMS_2022_NTOT %>% dplyr::mutate(YEAR = 2015),
                                  FGBNMS_2022_NTOT %>% dplyr::mutate(YEAR = 2018),
                                  FGBNMS_2022_NTOT) %>%
-      dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS")
+      dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS",
+                    PROT = NA_character_) %>%
+      dplyr::group_by(REGION, YEAR, ANALYSIS_STRATUM, DEPTH_STRAT, PROT) %>%
+      dplyr::summarise(NTOT = sum(NTOT),
+                       ngrtot = sum(NTOT)) %>%
+      dplyr::ungroup()
 
 
     # Use a loop to create a unique lists for each year of strata sampled
@@ -522,6 +603,7 @@ load_NTOT_species <- function(region, inputdata, project){
           # filter to strata present in year i
           dplyr::filter(ANALYSIS_STRATUM %in% Filter) %>%
           # re-calculate ntot
+          dplyr::ungroup() %>%
           dplyr::mutate(ngrtot = sum(NTOT),
                         SPECIES_CD = s)
 

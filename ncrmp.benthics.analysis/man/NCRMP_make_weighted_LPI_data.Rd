@@ -10,8 +10,6 @@ NCRMP_make_weighted_LPI_data(inputdata, region, project = "NULL")
 \item{inputdata}{A dataframe of benthic cover data summarized by cover group at each site in a single region.}
 
 \item{region}{A string indicating the region. Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".}
-
-\item{project}{A string indicating the project. "NCRMP" is the only option.}
 }
 \value{
 A list of dataframes, including a dataframe of strata means of cover groups

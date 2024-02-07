@@ -20,8 +20,8 @@
 # Analysis Rmarkdown, etc.
 #
 
-# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
-# Last update: Dec 2023
+# NCRMP Caribbean Benthic analytics team: Groves, Viehman
+# Last update: Jan 2023
 
 
 ##############################################################################################################################
@@ -29,26 +29,13 @@
 #' Creates colony density summary dataframes
 #'
 #'
-#' Calculates regional weighted mean coral density and coefficient of variation (CV), by species,
-#' from coral demographic data. NCRMP utilizes a stratified random
-#' sampling design. Regional estimates of density are weighted by the number of grid cells of a stratum
-#' in the sample frame. Function calculates strata means, weighted strata means,
-#' and weighted regional estimates for various measures from coral demographic data.
-#' Also calculates occurrence of each species in each year. Produces a figure
-#' of occurrence and CV by species for specified year.
-#' Utilizes [NCRMP_make_weighted_density_CV_data()] to calculate regional
-#' mean density, CV, and occurrence.
 #'
 #'
-#'
-#' @param region A string indicating the region.  Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".
-#' @param ptitle A string indicating the plot title.
-#' @param year A numeric indicating the year of interest. Only controls which data are plotted.
+#' @param region A string indicating the region
+#' @param ptitle A string indicating the plot title
+#' @param year A numeric indicating the year of interest
 #' @param path A string indicating the filepath for the figure
-#' @param project A sting indicating the project. Only option is "NCRMP".
-#' @return A list of dataframes, including one with all regional weighted mean densities,
-#' CV's, and occurrences per species per year, and another with the same but filtered
-#' to species/years where CV <= 20%
+#' @return A dataframe
 #' @importFrom magrittr "%>%"
 #' @importFrom ggplot2 "ggplot"
 #' @export

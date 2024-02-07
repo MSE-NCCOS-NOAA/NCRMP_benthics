@@ -19,27 +19,19 @@
 #
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
-# Last update: Feb 2023
+# Last update: Jan 2024
 
 
 ##############################################################################################################################
 
 #' Species domain estimates for disease prevalence & bleaching prevalence for NCRMP and NCRMP + DRM data
 #'
-#' Calculates regional domain estimates for disease and bleaching prevalence by species,
-#' for a specified region. NCRMP utilizes a stratified random sampling design.
-#' Regional estimates of prevalence are weighted by the number of
-#' grid cells of a stratum in the sample frame.
-#' Uses data summaries created by [NCRMP_DRM_calculate_disease_prevalence_colonies()] function
-#' (disease and bleaching prevalence by species and site).
 #'
 #'
 #'
-#'
-#' @param project A string indicating the project, NCRMP, MIR, or NCRMP and DRM combined ("NCRMP_DRM").
-#' @param region A string indicating the region. Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".
-#' @return A list dataframes, 1) bleaching prevalence domain estimates and
-#' 2) disease prevalence domain estimates, for all years of a given region.
+#' @param project A string indicating the project, NCRMP, MIR, or NCRMP and DRM combined
+#' @param region A string indicating the region
+#' @return A dataframe
 #' @importFrom magrittr "%>%"
 #' @export
 #'
@@ -92,11 +84,7 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
                                                  "DIP CLIV" = "PSE CLIV",
                                                  "DIP STRI" = "PSE STRI",
                                                  'CLA ARBU' = "CLA ABRU",
-                                                 "ORB ANCX"="ORB SPE.",))
-
-      ntot <- load_NTOT(region = region,
-                        inputdata = dat,
-                        project = project)
+                                                 "ORB ANCX"="ORB SPE."))
     }
   } else {
 
@@ -169,18 +157,26 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
                                                "ORB ANCX"="ORB SPE."))
     }
 
-    ntot <- load_NTOT(region = region,
-                      inputdata = dat,
-                      project = project)
 
   }
 
+
+  ## Load NTOT
+  # prior to Jan. 2024, we used the full NTOT for these calculations.
+  # However, this was incorrect, because if a species was not present in
+  # a strata, it's bleaching/disease prevalence is NA, not 0
+  # So the strata where it's missing don't contribute to the full weight.
+  # and the weighting doesn't add up to 1.
+  # Instead, we use the species-specific NTOT (similar to what's used for size)
+  dat <- dat %>% dplyr::mutate(SPECIES_NAME = SPECIES_CD)
+  ntot <- load_NTOT_species(region = region,
+                            inputdata = dat,
+                            project = project)
 
 
   ## coral data processing
 
   dat_ble_wide <- dat %>%
-    # select for most recent year
     # remove other metrics
     dplyr::select(-Total_ble, -Total_dis, -Total_col, -DIS_PREV) %>%
     # filter out spp columns
@@ -195,7 +191,9 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
       SPECIES_CD != "PSE SPE.",
       SPECIES_CD != "OTH CORA",
       SPECIES_CD != "POR SPE.",
-      SPECIES_CD != "SCL SPE.")
+      SPECIES_CD != "SCL SPE.",
+      SPECIES_CD != "OCU SPE.",
+      SPECIES_CD != "ISO SPE.")
   # %>%
   #   # add in zeros for species that didn't occur per site. Easiest to flip to wide format ( 1 row per site) for this
   #   tidyr::spread(., SPECIES_CD, BLE_PREV
@@ -221,7 +219,10 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
       SPECIES_CD != "SOL SPE.",
       SPECIES_CD != "PSE SPE.",
       SPECIES_CD != "POR SPE.",
-      SPECIES_CD != "SCL SPE.")
+      SPECIES_CD != "SCL SPE.",
+      SPECIES_CD != "OCU SPE.",
+      SPECIES_CD != "ISO SPE."
+      )
   # %>%
   #   # add in zeros for species that didn't occur per site. Easiest to flip to wide format ( 1 row per site) for this
   #   tidyr::spread(., SPECIES_CD, DIS_PREV,
@@ -262,7 +263,8 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
   } else {
 
   dat1 <- dplyr::left_join(dat_dis_wide, dat_ble_wide) %>%
-    dplyr::group_by(YEAR, STRAT, SPECIES_CD) %>% # Modify this line to changes analysis stratum
+    dplyr::mutate(ANALYSIS_STRATUM = STRAT) %>%
+    dplyr::group_by(YEAR, ANALYSIS_STRATUM, STRAT, SPECIES_CD) %>% # Modify this line to changes analysis stratum
     dplyr::summarise(# compute average density
       avDprev = mean(DIS_PREV, na.rm = T),
       avBprev = mean(BLE_PREV, na.rm = T),
@@ -284,9 +286,9 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
 
   }
 
-  dat2 <-dat1 %>%
+  dat2 <- dat1 %>%
     # Merge ntot with coral_est_spp
-    dplyr::full_join(., ntot) %>%
+    dplyr::left_join(., ntot) %>%
     # stratum estimates
     dplyr::mutate(whavDprev = wh * avDprev,
                   whavBprev = wh * avBprev,
@@ -296,6 +298,16 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
                   whstdB = wh * stdB,
                   n_sites = tidyr::replace_na(n_sites, 0))  %>%
     dplyr::ungroup()
+
+  # run a check to make sure weights add up to 1
+  # check <- dat2 %>%
+  #   dplyr::group_by(YEAR, SPECIES_CD) %>%
+  #   dplyr::summarize(weight_total = sum(wh))
+  # unique(check$weight_total)
+
+
+  # prep species codes file
+  ncrmp_frrp_sppcodes2 <- ncrmp_frrp_sppcodes %>% dplyr::filter(FRRP_name != "Undaria spp")
 
   ## Domain Estimates
   DomainEst <- dat2 %>%
@@ -312,7 +324,7 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
                      #.groups is experimental with dplyr
                      .groups = "keep") %>%
     dplyr::ungroup() %>%
-    dplyr::left_join(., ncrmp_frrp_sppcodes %>%
+    dplyr::left_join(., ncrmp_frrp_sppcodes2 %>%
                        dplyr::select(fl_ncrmp_code, species_name),
                      by = c('SPECIES_CD' = 'fl_ncrmp_code')) %>%
     dplyr::filter(!is.na(SPECIES_CD))

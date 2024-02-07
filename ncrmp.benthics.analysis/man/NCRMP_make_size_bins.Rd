@@ -14,28 +14,21 @@ NCRMP_make_size_bins(
 )
 }
 \arguments{
-\item{region}{A string indicating the region.  Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".}
+\item{region}{A string indicating the region}
 
-\item{project}{A string indicating the project, NCRMP or NCRMP and DRM combined ("NCRMP_DRM").}
+\item{project}{A string indicating the project, NCRMP or NCRMP and DRM combined}
 
-\item{years}{A concatenation of numerics indicating the two years to compare. Must be NCRMP sampling years if project = "NCRMP".}
+\item{years}{A string indicating the two years to compare. Must be NCRMP sampling years.}
 
-\item{size_bin_count}{A number indicating the desired number of bins for 3d surface area.
-As function is currently set up, this is not used.}
+\item{size_bin_count}{A number indicating the desired number of bins for 3d surface area}
 
-\item{length_bin_count}{A number indicating the desired number of bins for length.
-As function is currently set up, this is not used.}
+\item{length_bin_count}{A number indicating the desired number of bins for length}
 
-\item{species_filter}{A concatenated string indicating whether to filter to a subset of species}
+\item{species_filter}{A string indicating whether to filter to a subset of species}
 }
 \value{
-A list of dataframes.
+A dataframe
 }
 \description{
-Creates regional weighted densities at size (3D surface and length),
-as well as regional weighted relative length frequencies from NCRMP coral
-demographic data. NCRMP utilizes a stratified random
-sampling design. Regional estimates are weighted by the number of
-grid cells of a stratum in the sample frame. For coral size data, weighting
-is done only by strata where species is present.
+Outputs the strata and domain estimates for 3D surface area and length
 }

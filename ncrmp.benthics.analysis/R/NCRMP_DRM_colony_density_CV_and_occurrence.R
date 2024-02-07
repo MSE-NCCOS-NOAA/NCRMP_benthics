@@ -44,7 +44,6 @@
 #' @param ptitle A string indicating the plot title, usually the region.
 #' @param year A numeric indicating the year of interest, which will be plotted.
 #' @param path A string indicating the filepath for the figure.
-#' @param project A string indicating the project, "NCRMP" or NCRMP and DRM combined ("NCRMP_DRM").
 #' @return A list dataframes. First, a dataframe of regional weighted mean density, CV,
 #' and occurrence, by species for a given region. Second, a dataframe of the same,
 #' filtered to only species/years where CV is less than or equal to 20%.

@@ -7,10 +7,10 @@
 make_demo_darwincore(dat)
 }
 \arguments{
-\item{dat}{A dataframe of analysis ready coral demographic data to be converted into Darwin Core format.}
+\item{dat}{A dataframe of analysis ready demo data to be converted into Darwin Core}
 }
 \value{
-A list of multiple dataframes including re-formatted data and another that checks for duplicate occurrence ID's.
+A list of multiple dataframes including formatted data
 }
 \description{
 Format analysis ready demo data into Darwin Core

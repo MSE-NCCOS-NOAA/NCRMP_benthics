@@ -1,7 +1,5 @@
 ## Function to calculate bin sizes for strata and domain estimates of size and length
 
-# DEPRECATED! - use NCRMP_make_size_bins() instead.
-
 # Purpose:
 # Calculate bins and create dataframes from make_size_plot function
 
@@ -20,8 +18,6 @@
 
 #' Calculates bin sizes for strata and domain estimates of size and length
 #'
-#' DEPRECATED. Use [NCRMP_make_size_bins()] instead.
-#'
 #'
 #'
 #' @param region A string indicating the region
@@ -30,14 +26,14 @@
 #' @param size_bin_count The number of desired bins for 3d surface area
 #' @param size_bin_count The number of desired bins for length
 #' @param species_filter A character vector of species codes to be observed (default = NULL i.e. no filter)
-#'
+#' 
 #' @return A list of six dataframes
 #' @importFrom magrittr "%>%"
 #' @export make_size_bins
-#'
-#' @examples
+#' 
+#' @examples 
 #' analyzed_species <- c("ACR CERV", "ACR PALM", "ORB ANNU")
-#' make_size_bins(region = "SEFCRI", years = c(2014, 2020), species_filter = analyzed_species)
+#' make_size_bins(region = "SEFCRI", years = c(2014, 2020), species_filter = analyzed_species) 
 
 
 #Make Size Bin Function
@@ -48,8 +44,7 @@
 make_size_bins <- function(region, project = "NCRMP", years,
                            size_bin_count = 10, length_bin_count = 10,
                            species_filter = NULL) {
-  .Deprecated("NCRMP_make_size_bins")
-
+  
   analyzed_species <- c(
     "ACR CERV", #A. cervicornis
     "ACR PALM", #A. palmata
@@ -67,42 +62,42 @@ make_size_bins <- function(region, project = "NCRMP", years,
     "AGA AGAR", #A. agaricites
     "STE INTE" #S. inercepta
   )
-
-
-
+  
+  
+  
   #p - a constant for 3d surface area calculation
   p = 1.6
-
+  
   #pull the demo data using the NCRMP function
   #outputs a list of two dfs: dat_1stage and dat_2stage
   demos <- load_NCRMP_DRM_demo_data(project = project, region = region)
-
+  
   if (region == "SEFCRI" ) {
     #SEFCRI dat_1stage has one extra column for MEAN_RUG that is not needed
     demos <- dplyr::bind_rows(demos$dat_1stage, demos$dat_2stage) %>%
       #filter by year
       dplyr::filter(YEAR %in% years, !is.na(SPECIES_NAME))
   }
-
+  
   if (region == "Tortugas") {
     #Tortugas requires dat_1stage and dat_2stage to be comined
     demos <- dplyr::bind_rows(demos$dat_1stage, demos$dat_2stage) %>%
       #filter by year
       dplyr::filter(YEAR %in% years)
   }
-
+  
   if (region %in% c("FLK", "PRICO", "STTSTJ", "STX")) {
     #Florida Keys only has dat_1stage needed
     demos <- demos$dat_1stage %>%
       dplyr::filter(YEAR %in% years)
   }
-
+  
   if (!is.null(species_filter)) {
-
+    
     demos <- demos %>%
       dplyr::filter(SPECIES_CD %in% species_filter)
   }
-
+  
   #3D Surface Area Calculation
   size_3d_demos <- demos %>%
     #calculate the 3d surface area
@@ -158,8 +153,8 @@ make_size_bins <- function(region, project = "NCRMP", years,
     dplyr::summarise(bin_tally = n(), .groups = "keep") %>%
     dplyr::arrange(SPECIES_CD, YEAR, PRIMARY_SAMPLE_UNIT, STRAT, PROT,
                    bin_num)
-
-
+  
+  
   #Length Calculation
   length_demos <- demos %>%
     #Year as factor (no calc needed as length = MAX_DIAMETER)
@@ -200,7 +195,7 @@ make_size_bins <- function(region, project = "NCRMP", years,
         floor((MAX_DIAMETER - min)/bin_width) + 1),
       bin_low = dplyr::if_else(
         bin_num == 1, 4, round(min + (bin_width * (bin_num-1))+2,2)),
-
+      
       bin_high = round(bin_width +min + (bin_width * (bin_num-1))+1,2),
       bin_name = paste(bin_low, bin_high, sep = "-")) %>%
     #summarize findings by bin count
@@ -209,9 +204,9 @@ make_size_bins <- function(region, project = "NCRMP", years,
     dplyr::summarise(bin_tally = n(), .groups = "keep") %>%
     dplyr::arrange(SPECIES_NAME, YEAR, PRIMARY_SAMPLE_UNIT, STRAT, PROT,
                    bin_num)
-
+  
   #CALCULATE ESTIMATES
-
+  
   #Estimates for 3D Surface Area
   size_estimates <- size_3d_demos %>%
     dplyr::mutate(
@@ -235,7 +230,7 @@ make_size_bins <- function(region, project = "NCRMP", years,
                   std = sqrt(svar), # std dev of bin_tally in stratum
                   SE=sqrt(Var), #SE of the mean bin_tally stratum
                   CV_perc=(SE/avtally)*100)
-
+  
   #Estimates for Length
   length_estimates <- length_demos %>%
     dplyr::mutate(
@@ -259,15 +254,15 @@ make_size_bins <- function(region, project = "NCRMP", years,
                   std = sqrt(svar), # std dev of bin_tally in stratum
                   SE=sqrt(Var), #SE of the mean bin_tally stratum
                   CV_perc=(SE/avtally)*100)
-
+  
   #inputdata is dummy, unused if project != DRM
   ntot <- ncrmp.benthics.analysis::load_NTOT(region = region, inputdata = demos,
                                              project = project) %>%
     dplyr::mutate(YEAR = as.factor(YEAR)) %>%
     dplyr::filter(YEAR %in% years)
-
+  
   # STRATUM SIZE ESTIMATES
-
+  
   size_estimates <- size_estimates  %>%
     # Merge ntot with coral_est_spp
     dplyr::full_join(ntot, by = c("REGION", "YEAR", "ANALYSIS_STRATUM")) %>%
@@ -278,7 +273,7 @@ make_size_bins <- function(region, project = "NCRMP", years,
                   n_sites = tidyr::replace_na(n_sites, 0))  %>%
     dplyr::ungroup() %>%
     filter(!is.na(SPECIES_NAME))
-
+  
   length_estimates <- length_estimates  %>%
     # Merge ntot with coral_est_spp
     dplyr::full_join(ntot, by = c("REGION", "YEAR", "ANALYSIS_STRATUM")) %>%
@@ -289,10 +284,10 @@ make_size_bins <- function(region, project = "NCRMP", years,
                   n_sites = tidyr::replace_na(n_sites, 0))  %>%
     dplyr::ungroup() %>%
     filter(!is.na(SPECIES_NAME))
-
-
+  
+  
   #End result: Return the list made up of strata est. and domain est.
-
+  
   # Domain Estimates
   ##Size Domain
   size_domain_est <- size_estimates %>%
@@ -306,8 +301,8 @@ make_size_bins <- function(region, project = "NCRMP", years,
                      .groups = "keep")  %>%
     dplyr::ungroup() %>%
     dplyr::arrange(SPECIES_CD, bin_num, YEAR)
-
-
+  
+  
   ##Length Domain
   length_domain_est <- length_estimates %>%
     dplyr::group_by(REGION, YEAR, SPECIES_NAME, SPECIES_CD, bin_num, bin_name) %>%
@@ -320,14 +315,14 @@ make_size_bins <- function(region, project = "NCRMP", years,
                      .groups = "keep")  %>%
     dplyr::ungroup() %>%
     dplyr::arrange(SPECIES_CD, bin_num, YEAR)
-
-
+  
+  
   output <- list(size_3d_demos = as.data.frame(size_3d_demos),
                  length_demos = as.data.frame(length_demos),
                  size_estimates = as.data.frame(size_estimates),
                  length_estimates = as.data.frame(length_estimates),
                  size_domain_est = as.data.frame(size_domain_est),
                  length_domain_est = as.data.frame(length_domain_est))
-
+  
   return(output)
 }
