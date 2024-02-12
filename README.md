@@ -43,7 +43,7 @@ Use of this data requires citation, please see https://coastalscience.noaa.gov/p
 
 For more information on the specific functions within the package, please see the vignette. 
 
-For questions or collaborations, please contact the repository owner, Sarah Groves, sarah.groves@noaa.gov 
+For questions or collaborations, please contact the repository owner, Shay Viehman, shay.viehman@noaa.gov 
 
 
 
