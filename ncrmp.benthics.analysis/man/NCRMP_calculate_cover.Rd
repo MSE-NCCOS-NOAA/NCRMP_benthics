@@ -15,7 +15,7 @@ NCRMP_calculate_cover(region, project = "NULL")
 A list of dataframes, including site level cover by species, site level cover by group, strata mean cover by group, and weighted regional mean cover by group.
 }
 \description{
-Calculates percent cover at various levels and groups. Data sumamries include:
+Calculates percent cover at various levels and groups. Data summaries include:
 1) percent cover by species at each site, 2) percent cover by group at each site,
 3) mean percent cover by group for each stratum, and 4) weighted regional mean
 percent cover, all for a given region. NCRMP utilizes a stratified random

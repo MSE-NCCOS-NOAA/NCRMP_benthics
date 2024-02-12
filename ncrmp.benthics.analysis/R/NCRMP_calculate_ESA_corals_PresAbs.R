@@ -1,6 +1,6 @@
 
 #### Function to query # ESA coral species per region, year, strata.
-# Also provides ESA coral species presence/absence by strata and region?
+# Also provides ESA coral species presence/absence by strata and site
 
 
 
@@ -23,17 +23,23 @@
 # Analysis Rmarkdown, etc.
 #
 
-# NCRMP Caribbean Benthic analytics team: Groves, Viehman
+# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
 # Last update: Jan 2023
 
 ##############################################################################################################################
 
-#' Creates colony density and colony size summary dataframes
+#' Creates ESA presence/absence dataframes by strata and site
+#'
+#' Creates summaries of ESA coral presence/absence collected from LPI data at both
+#' strata and site level for all years and regions.
 #'
 #'
 #'
 #'
-#' @return A dataframe
+#'
+#' @return A list of dataframes including 1) strata level ESA coral presence/absence,
+#' 2) site level ESA coral presence/absence, and 3) a check that all region/years are
+#' included.
 #' @importFrom magrittr "%>%"
 #' @export
 #'
@@ -63,19 +69,28 @@ NCRMP_calculate_ESA_corals_PresAbs <- function()
     dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
 
   # FLK
+  ### UPDATE IN DEC. 2023!!
+  # PROT is re-coded here to 0 for ALL sites as fish and benthics met 12/19/23
+  # to determine that it is not appropraite to keep PROT in the analysis strat
+  # in FLK because the data aren't allocated that way
+  # only affects FLK data
   tmp3 <- FLK_2014_2stage_inverts_ESAcorals %>%
     dplyr::mutate(YEAR = 2014,
+                  PROT = 0,
                   ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
 
   tmp4 <- FLK_2016_inverts_ESAcorals %>%
-    dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
+    dplyr::mutate(PROT = 0,
+                  ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
 
   tmp4.1 <- FLK_2018_inverts_ESAcorals %>%
-    dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
+    dplyr::mutate(PROT = 0,
+                  ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
     dplyr::select(-RUGOSITY_CD)
 
   tmp4.2 <- FLK_2020_inverts_ESAcorals %>%
-    dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
+    dplyr::mutate(PROT = 0,
+                  ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
 
   tmp4.3 <- FLK_2022_inverts_ESAcorals %>%
     dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
@@ -86,7 +101,8 @@ NCRMP_calculate_ESA_corals_PresAbs <- function()
     # fix any that get left out manually, they fell outside the grid and JB fixed them
     dplyr::mutate(PROT_og = case_when(PRIMARY_SAMPLE_UNIT == 1006 ~ 0, PRIMARY_SAMPLE_UNIT == 1382 ~ 1, TRUE ~ PROT_og)) %>%
     dplyr::select(-PROT) %>%
-    dplyr::rename("PROT" = PROT_og)
+    dplyr::rename("PROT" = PROT_og) %>%
+    dplyr::mutate(PROT = 0)
 
   # Tortugas
   tmp5 <- TortugasMarq_2014_inverts_ESAcorals %>%
@@ -118,6 +134,8 @@ NCRMP_calculate_ESA_corals_PresAbs <- function()
   FL <- dplyr::bind_rows(tmp1, tmp2, tmp2.1, tmp2.2, tmp2.3, tmp3, tmp4, tmp4.1, tmp4.2, tmp4.3, tmp5, tmp6, tmp7, tmp7.1, tmp7.2 )  %>%
   # Change to factor - there are letters in the FGBNMS MAPGRID NRs
   dplyr::mutate(MAPGRID_NR = as.factor(MAPGRID_NR))
+
+
 
 
   # Carib / GOM

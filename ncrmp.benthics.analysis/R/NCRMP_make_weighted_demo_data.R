@@ -31,7 +31,7 @@
 # NCRMP_DRM_calculate_mean_colony_size
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
-# Last update: Aug 2023
+# Last update: Jan 2024
 
 
 ##############################################################################################################################
@@ -527,6 +527,12 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype, 
     mortality_strata_species <-  mortality_est %>%
       dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, STRAT, PROT, SPECIES_CD, SPECIES_NAME, n, avmort, Var, SE, CV_perc)
 
+    # ntot check - sum of weights should = 1
+    ntot_check <- mortality_est %>%
+      dplyr::group_by(YEAR, SPECIES_CD) %>%
+      dplyr::summarize(wh_sum = sum(wh))
+
+
     ## Domain Estimates
     # region/population means
     Domain_est_species <- mortality_est %>%
@@ -547,7 +553,8 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype, 
     # Create list to export
     output <- list(
       "mortality_strata_species" = mortality_strata_species,
-      "Domain_est_species" = Domain_est_species)
+      "Domain_est_species" = Domain_est_species,
+      "ntot_check" = ntot_check)
 
     return(output)
   }
@@ -1188,6 +1195,11 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype, 
       size_est_maxdiam_strata_species <-  size_est_species %>%
         dplyr::select(REGION, YEAR, SPECIES_CD, SPECIES_NAME, ANALYSIS_STRATUM, STRAT, PROT, NTOT, ngrtot, wh, n_sites, av_maxdiam, svar_maxdiam, std_maxdiam)
 
+      # ntot check - should add up to 1
+      ntot_check <- size_est_species %>%
+        dplyr::group_by(YEAR, SPECIES_CD) %>%
+        dplyr::summarize(wh_sum = sum(wh))
+
       ## Domain Estimates
       Domain_est_species <- size_est_species %>%
         dplyr::group_by(REGION, YEAR, SPECIES_CD, SPECIES_NAME) %>%
@@ -1215,6 +1227,11 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype, 
       size_est_maxdiam_strata_species <-  size_est_species %>%
         dplyr::select(REGION, YEAR, SPECIES_CD, SPECIES_NAME, ANALYSIS_STRATUM, STRAT, PROT, NTOT, ngrtot, wh, n_sites, av_maxdiam, svar_maxdiam, std_maxdiam)
 
+      # ntot check - should add up to 1
+      ntot_check <- size_est_species %>%
+        dplyr::group_by(YEAR, SPECIES_CD) %>%
+        dplyr::summarize(wh_sum = sum(wh))
+
       ## Domain Estimates
       Domain_est_species <- size_est_species %>%
         dplyr::group_by(REGION, YEAR, SPECIES_CD, SPECIES_NAME) %>%
@@ -1238,12 +1255,14 @@ NCRMP_make_weighted_demo_data <- function(project, inputdata, region, datatype, 
         "size_est_cm2_strata_species" = size_est_cm2_strata_species,
         'size_est_cm3_strata_species' = size_est_cm3_strata_species,
         "size_est_maxdiam_strata_species" = size_est_maxdiam_strata_species,
-        "Domain_est_species" = Domain_est_species)
+        "Domain_est_species" = Domain_est_species,
+        "ntot_check" = ntot_check)
     }
     if(project == "NCRMP_DRM"){
       output <- list(
         "size_est_maxdiam_strata_species" = size_est_maxdiam_strata_species,
-        "Domain_est_species" = Domain_est_species)
+        "Domain_est_species" = Domain_est_species,
+        "ntot_check" = ntot_check)
     }
 
     return(output)

@@ -18,7 +18,7 @@
 # NCRMP_make_weighted_demo_data.R
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
-# Last update: Aug 2023
+# Last update: Dec 2023
 
 
 ##############################################################################################################################
@@ -154,8 +154,39 @@ if(region == "FLK") {
     Years <- sort(unique(tmp$YEAR))
     # add an empty data frame to populate with the filtered NTOTs
     ntot <- data.frame()
+    ### UPDATE IN DEC. 2023!!
+    # PROT is re-coded here to 0 for ALL strata as fish and benthics met 12/19/23
+    # to determine that it is not appropriate to keep PROT in the analysis strat
+    # in FLK because the data aren't allocated that way
+    # NTOTs must be re-calculated with PROT=0 here
+    FLK_2014_NTOT <- FLK_2014_NTOT %>%
+      dplyr::mutate(PROT = 0) %>%
+      dplyr::group_by(REGION, YEAR, PROT, STRAT, GRID_SIZE) %>%
+      dplyr::summarize(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup()
+    FLK_2016_NTOT <- FLK_2016_NTOT %>%
+      dplyr::mutate(PROT = 0) %>%
+      dplyr::group_by(REGION, YEAR, PROT, STRAT, GRID_SIZE) %>%
+      dplyr::summarize(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup()
+    FLK_2018_NTOT <- FLK_2018_NTOT %>%
+      dplyr::mutate(PROT = 0) %>%
+      dplyr::group_by(REGION, YEAR, PROT, STRAT, GRID_SIZE) %>%
+      dplyr::summarize(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup()
+    FLK_2020_NTOT <- FLK_2020_NTOT %>%
+      dplyr::mutate(PROT = 0) %>%
+      dplyr::group_by(REGION, YEAR, PROT, STRAT, GRID_SIZE) %>%
+      dplyr::summarize(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup()
+    FLK_2022_NTOT <- FLK_2022_NTOT %>%
+      dplyr::mutate(PROT = 0) %>%
+      dplyr::group_by(REGION, YEAR, PROT, STRAT, GRID_SIZE) %>%
+      dplyr::summarize(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup()
+
     # create a data frame of the full NTOTs for FLK
-    NTOT_all <- dplyr::bind_rows(FLK_2014_NTOT, FLK_2016_NTOT, FLK_2018_NTOT, FLK_2020_NTOT,FLK_2022_NTOT) %>%
+    NTOT_all <- dplyr::bind_rows(FLK_2014_NTOT, FLK_2016_NTOT, FLK_2018_NTOT, FLK_2020_NTOT, FLK_2022_NTOT) %>%
       dplyr::mutate(REGION = "FLK",
                     ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
 
@@ -194,6 +225,38 @@ if(region == "FLK") {
     Years <- sort(unique(tmp$YEAR))
     # add an empty data frame to populate with the filtered NTOTs
     ntot <- data.frame()
+
+    ### UPDATE IN DEC. 2023!!
+    # PROT is re-coded here to 0 for ALL strata as fish and benthics met 12/19/23
+    # to determine that it is not appropriate to keep PROT in the analysis strat
+    # in FLK because the data aren't allocated that way
+    # NTOTs must be re-calculated with PROT=0 here
+    FLK_2014_NTOT <- FLK_2014_NTOT %>%
+      dplyr::mutate(PROT = 0) %>%
+      dplyr::group_by(REGION, YEAR, PROT, STRAT, GRID_SIZE) %>%
+      dplyr::summarize(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup()
+    FLK_2016_NTOT <- FLK_2016_NTOT %>%
+      dplyr::mutate(PROT = 0) %>%
+      dplyr::group_by(REGION, YEAR, PROT, STRAT, GRID_SIZE) %>%
+      dplyr::summarize(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup()
+    FLK_2018_NTOT <- FLK_2018_NTOT %>%
+      dplyr::mutate(PROT = 0) %>%
+      dplyr::group_by(REGION, YEAR, PROT, STRAT, GRID_SIZE) %>%
+      dplyr::summarize(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup()
+    FLK_2020_NTOT <- FLK_2020_NTOT %>%
+      dplyr::mutate(PROT = 0) %>%
+      dplyr::group_by(REGION, YEAR, PROT, STRAT, GRID_SIZE) %>%
+      dplyr::summarize(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup()
+    FLK_2022_NTOT <- FLK_2022_NTOT %>%
+      dplyr::mutate(PROT = 0) %>%
+      dplyr::group_by(REGION, YEAR, PROT, STRAT, GRID_SIZE) %>%
+      dplyr::summarize(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup()
+
     # create a data frame of the full NTOTs for FLK
     NTOT_all <- dplyr::bind_rows(FLK_2014_NTOT, FLK_2016_NTOT %>% dplyr::mutate(YEAR = 2015),
                                  FLK_2016_NTOT, FLK_2018_NTOT %>% dplyr::mutate(YEAR = 2017),
@@ -436,6 +499,7 @@ if(region == "STX"){
 
   ntot21 <- USVI_2021_NTOT %>%
     dplyr::filter(REGION == "STX") %>%
+    dplyr::filter(!(STRAT == "BDRK_SHLW" | STRAT == "BDRK_DEEP")) %>% # 2021 we didnt sample BDRK shallow OR deep
     dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
     dplyr::summarise(NTOT = sum(NTOT)) %>%
     dplyr::ungroup() %>%

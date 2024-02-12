@@ -19,7 +19,7 @@
 #
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
-# Last update: Nov 2023
+# Last update: Dec 2023
 
 
 ##############################################################################################################################
@@ -94,7 +94,7 @@ load_NCRMP_benthic_cover_data <- function(project = "NULL", region){
       dat1 <- FLK_2014_2stage_benthic_cover %>%
         dplyr::mutate(YEAR = 2014)
 
-      dat2 <- FLK_2016_benthic_cover %>% dplyr::filter(!(is.na(STRAT)))
+      dat2 <- FLK_2016_benthic_cover %>% dplyr::filter(!(is.na(STRAT))) %>% dplyr::filter(!(is.na(COVER_CAT_CD))) # Noticed in Dec. 2023 that there are sites where no cover data was collected
 
       dat3 <- FLK_2018_benthic_cover
 
@@ -111,7 +111,7 @@ load_NCRMP_benthic_cover_data <- function(project = "NULL", region){
         dplyr::rename("PROT" = PROT_og)
 
       dat <- dplyr::bind_rows(dat1, dat2, dat3, dat4, dat5) %>%
-        dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
+        dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>% # This could be deleted given Dec. 2023 update below.
         # update some old species codes
         dplyr::mutate(COVER_CAT_NAME = case_when(COVER_CAT_CD == "MAD MIRA" ~ "Madracis auretenra", # species name updated
                                                  COVER_CAT_NAME == "Erythropodium caribaeorum" ~ "Encrusting gorgonian",
@@ -121,6 +121,15 @@ load_NCRMP_benthic_cover_data <- function(project = "NULL", region){
                                                COVER_CAT_CD == "POF SPE." ~ "SPO OTHE",
                                                COVER_CAT_CD == "ERY CARI" ~ "ERY CARY",
                                                TRUE ~ COVER_CAT_CD))
+
+      ### UPDATE IN DEC. 2023!!
+      # PROT is re-coded here to 0 for ALL sites as fish and benthics met 12/19/23
+      # to determine that it is not appropraite to keep PROT in the analysis strat
+      # in FLK because the data aren't allocated that way
+      # only affects FLK data
+      dat <- dat %>%
+        dplyr::mutate(PROT = as.factor(0),
+                      ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
 
     }
 
@@ -199,7 +208,12 @@ load_NCRMP_benthic_cover_data <- function(project = "NULL", region){
 
     if(region == "PRICO"){
 
-      dat1 <- PRICO_2014_benthic_cover
+      dat1 <- PRICO_2014_benthic_cover %>%
+        # update some species codes
+        dplyr::mutate(COVER_CAT_NAME = case_when(COVER_CAT_NAME == "Cladocora abruscula" ~ "Cladocora arbuscula",
+                                                 TRUE ~ as.character(COVER_CAT_NAME))) %>%
+        dplyr::mutate(COVER_CAT_CD = case_when(COVER_CAT_NAME == "Cladocora arbuscula" ~ "CLA ABRU",
+                                               TRUE ~ as.character(COVER_CAT_CD)))
 
       dat2 <- PRICO_2016_benthic_cover %>%
         dplyr::mutate(YEAR = 2016)

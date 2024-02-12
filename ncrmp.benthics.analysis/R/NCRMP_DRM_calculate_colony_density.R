@@ -20,21 +20,30 @@
 # Analysis Rmarkdown, etc.
 #
 
-# NCRMP Caribbean Benthic analytics team: Groves, Viehman
-# Last update: Mar 2022
+# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
+# Last update: Dec 2023
 
 
 ##############################################################################################################################
 
 #' Creates colony density summary dataframes
 #'
+#' Calculates coral density from NCRMP coral demographic data at the site level,
+#' strata mean level, and regional weighted mean level (all across species), as well
+#' site at the species level.  NCRMP utilizes a stratified random sampling design.
+#' Regional estimates of coral density are weighted by the number of
+#' grid cells of a stratum in the sample frame.
 #'
 #'
 #'
-#' @param project A string indicating the project, NCRMP or NCRMP and DRM combined
-#' @param region A string indicating the region
-#' @param species_filter A string indicating whether to filter to a subset of species
-#' @return A dataframe
+#'
+#'
+#' @param project A string indicating the project, NCRMP or NCRMP and DRM combined ("NCRMP_DRM").
+#' @param region A string indicating the region.  Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".
+#' @param species_filter A string indicating whether to filter to a subset of species.
+#' @return A list of dataframes includeind 1) coral density by species at each site,
+#' 2) total coral density at each site, 3) mean total coral density for each strata,
+#' and 4) weighted mean regional total coral density.
 #' @importFrom magrittr "%>%"
 #' @export
 #'
@@ -61,7 +70,7 @@ NCRMP_DRM_calculate_colony_density <- function(project = "NULL", region, species
       dplyr::ungroup() %>%
       dplyr::filter(SUB_REGION_NAME != "Marquesas",
                     SUB_REGION_NAME != "Marquesas-Tortugas Trans",
-                    N == 1,
+                    #N == 1, # as of Dec. 2023 we filtered to presences too, but this eliminates zero coral sites and we don't want that. Zeroes need to be included.
                     JUV == 0) %>%
       dplyr::mutate(PROT = as.factor(PROT),
                     LAT_DEGREES = sprintf("%0.4f", LAT_DEGREES),
@@ -76,7 +85,7 @@ NCRMP_DRM_calculate_colony_density <- function(project = "NULL", region, species
     density_species_1stage <- dat_1stage %>%
       dplyr::filter(SUB_REGION_NAME != "Marquesas",
                     SUB_REGION_NAME != "Marquesas-Tortugas Trans",
-                    #N == 1,
+                    #N == 1, # as of Dec. 2023 we filtered to presences too, but this eliminates zero coral sites and we don't want that. Zeroes need to be included.
                     JUV == 0) %>%
       dplyr::mutate(PROT = as.factor(PROT),
                     LAT_DEGREES = sprintf("%0.4f", LAT_DEGREES),
@@ -93,7 +102,7 @@ NCRMP_DRM_calculate_colony_density <- function(project = "NULL", region, species
       dplyr::ungroup() %>%
       dplyr::filter(SUB_REGION_NAME != "Marquesas",
                     SUB_REGION_NAME != "Marquesas-Tortugas Trans",
-                    N == 1,
+                    # N == 1, # as of Dec. 2023 we filtered to presences too, but this eliminates zero coral sites and we don't want that. Zeroes need to be included.
                     JUV == 0) %>%
       dplyr::mutate(PROT = as.factor(PROT),
                     LAT_DEGREES = sprintf("%0.4f", LAT_DEGREES),
@@ -112,7 +121,7 @@ NCRMP_DRM_calculate_colony_density <- function(project = "NULL", region, species
     density_species_2stage <- dat_2stage %>%
       dplyr::filter(SUB_REGION_NAME != "Marquesas",
                     SUB_REGION_NAME != "Marquesas-Tortugas Trans",
-                    N == 1,
+                    # N == 1, # as of Dec. 2023 we filtered to presences too, but this eliminates zero coral sites and we don't want that. Zeroes need to be included.
                     JUV == 0) %>%
       dplyr::mutate(PROT = as.factor(PROT),
                     LAT_DEGREES = sprintf("%0.4f", LAT_DEGREES),
@@ -130,12 +139,25 @@ NCRMP_DRM_calculate_colony_density <- function(project = "NULL", region, species
 
     density_species <- dplyr::bind_rows(density_species_1stage, density_species_2stage)
 
+    # make data so there is a row for EVERY species observed across all years
+    # do this by making a wide form, then returning to long
+    spp <- density_species %>% dplyr::select(SPECIES_CD, SPECIES_NAME) %>% dplyr::distinct(.)
+    density_species <- density_species %>%
+      tidyr::pivot_wider(id_cols = c(REGION, SURVEY, YEAR, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT,
+                                     LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT),
+                         names_from = SPECIES_CD, values_from = DENSITY) %>%
+      tidyr::pivot_longer(cols = spp$SPECIES_CD, names_to = "SPECIES_CD", values_to = "DENSITY") %>%
+      dplyr::mutate(DENSITY = case_when(is.na(DENSITY) ~ 0,
+                                        TRUE ~ DENSITY)) %>%
+      dplyr::left_join(., spp, by = "SPECIES_CD") %>%
+      dplyr::select(REGION, SURVEY, YEAR, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT, SPECIES_CD, SPECIES_NAME, DENSITY)
+
   } else {
 
     density_species <- dat_1stage %>%
       dplyr::filter(SUB_REGION_NAME != "Marquesas",
                     SUB_REGION_NAME != "Marquesas-Tortugas Trans",
-                    N == 1,
+                    # N == 1, # as of Dec. 2023 we filtered to presences too, but this eliminates zero coral sites and we don't want that. Zeroes need to be included.
                     JUV == 0) %>%
       dplyr::mutate(PROT = as.factor(PROT),
                     LAT_DEGREES = sprintf("%0.4f", LAT_DEGREES),
@@ -147,11 +169,25 @@ NCRMP_DRM_calculate_colony_density <- function(project = "NULL", region, species
       dplyr::select(-METERS_COMPLETED) %>%
       dplyr::mutate(PRIMARY_SAMPLE_UNIT = as.factor(PRIMARY_SAMPLE_UNIT))
 
+    # make data so there is a row for EVERY species observed across all years
+    # do this by making a wide form, then returning to long
+    spp <- density_species %>% dplyr::select(SPECIES_CD, SPECIES_NAME) %>% dplyr::distinct(.)
+    density_species <- density_species %>%
+      tidyr::pivot_wider(id_cols = c(REGION, SURVEY, YEAR, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT,
+                                     LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, MIN_DEPTH, MAX_DEPTH,
+                                     PROT),
+                         names_from = SPECIES_CD, values_from = DENSITY) %>%
+      tidyr::pivot_longer(cols = spp$SPECIES_CD, names_to = "SPECIES_CD", values_to = "DENSITY") %>%
+      dplyr::mutate(DENSITY = case_when(is.na(DENSITY) ~ 0,
+                                        TRUE ~ DENSITY)) %>%
+      dplyr::left_join(., spp, by = "SPECIES_CD") %>%
+      dplyr::select(REGION, SURVEY, YEAR, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, MIN_DEPTH, MAX_DEPTH, PROT, SPECIES_CD, SPECIES_NAME, DENSITY)
+
 
     density_site <- dat_1stage %>%
       dplyr::filter(SUB_REGION_NAME != "Marquesas",
                     SUB_REGION_NAME != "Marquesas-Tortugas Trans",
-                    N == 1,
+                    # N == 1, # as of Dec. 2023 we filtered to presences too, but this eliminates zero coral sites and we don't want that. Zeroes need to be included.
                     JUV == 0) %>%
       dplyr::mutate(PROT = as.factor(PROT),
                     LAT_DEGREES = sprintf("%0.4f", LAT_DEGREES),
@@ -159,6 +195,7 @@ NCRMP_DRM_calculate_colony_density <- function(project = "NULL", region, species
       dplyr::group_by(REGION, SURVEY, YEAR, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES, STRAT, HABITAT_CD, PROT, METERS_COMPLETED) %>%
       dplyr::summarise(ABUNDANCE = sum(N), .groups = "keep") %>%
       dplyr::mutate(DENSITY = ABUNDANCE/METERS_COMPLETED) %>%
+      dplyr::ungroup() %>%
       dplyr::select(-ABUNDANCE, -METERS_COMPLETED) %>%
       dplyr::ungroup() %>%
       dplyr::mutate(PRIMARY_SAMPLE_UNIT = as.factor(PRIMARY_SAMPLE_UNIT))

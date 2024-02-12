@@ -21,7 +21,7 @@
 #
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
-# Last update: Feb 2023
+# Last update: Dec 2023
 
 
 ##############################################################################################################################
@@ -81,7 +81,10 @@ load_NCRMP_DRM_demo_data <- function(project = "NULL", region, species_filter = 
         dplyr::mutate(SURVEY = "DRM",
                       PRIMARY_SAMPLE_UNIT = as.factor(PRIMARY_SAMPLE_UNIT),
                       STRAT = dplyr::case_when(STRAT == "NEAR2"~"NEAR1", TRUE ~ as.character(STRAT))) %>%
-        dplyr::filter(STRAT != 'NA0')
+        dplyr::filter(STRAT != 'NA0') %>%
+        # update species names
+        dplyr::mutate(SPECIES_NAME = case_when(SPECIES_NAME == "Undaria spp" ~ "Agaricia spp",
+                                               TRUE ~ SPECIES_NAME))
 
       tmp4 <- SEFCRI_2018_coral_demographics %>%
         dplyr::mutate(SURVEY = "NCRMP")
@@ -132,7 +135,10 @@ load_NCRMP_DRM_demo_data <- function(project = "NULL", region, species_filter = 
       tmp3 <- DRM_FLK_2014_2022_2stage_coral_demographics %>%
         dplyr::mutate(SURVEY = "DRM") %>%
         dplyr::filter(!is.na(MAPGRID_NR),
-                      !is.na(STRAT))
+                      !is.na(STRAT)) %>%
+        # update species names
+        dplyr::mutate(SPECIES_NAME = case_when(SPECIES_NAME == "Undaria spp" ~ "Agaricia spp",
+                                               TRUE ~ SPECIES_NAME))
 
       tmp4 <- FLK_2018_coral_demographics %>%
         dplyr::mutate(SURVEY = "NCRMP")
@@ -174,6 +180,14 @@ load_NCRMP_DRM_demo_data <- function(project = "NULL", region, species_filter = 
                                                SPECIES_CD == "CLA ABRU" ~ "Cladocora arbuscula",
                                                TRUE ~ as.character(SPECIES_NAME)))
 
+
+      ### UPDATE IN DEC. 2023!!
+      # PROT is re-coded here to 0 for ALL sites as fish and benthics met 12/19/23
+      # to determine that it is not appropraite to keep PROT in the analysis strat
+      # in FLK because the data aren't allocated that way
+      # only affects FLK data
+      dat_1stage <- dat_1stage %>% dplyr::mutate(PROT = as.factor(0))
+      dat_2stage <- dat_2stage %>% dplyr::mutate(PROT = as.factor(0))
 
       if(species_filter == "TRUE"){
         #Combine 1 stage or 2 stage data
@@ -244,7 +258,10 @@ load_NCRMP_DRM_demo_data <- function(project = "NULL", region, species_filter = 
                           YEAR == 2021 & PRIMARY_SAMPLE_UNIT == 2646 & STATION_NR == 9578 |
                           YEAR == 2021 & PRIMARY_SAMPLE_UNIT == 2698 & STATION_NR == 9330 |
                           YEAR == 2021 & PRIMARY_SAMPLE_UNIT == 2716 & STATION_NR == 9315 |
-                          YEAR == 2021 & PRIMARY_SAMPLE_UNIT == 3023 & STATION_NR == 9299))
+                          YEAR == 2021 & PRIMARY_SAMPLE_UNIT == 3023 & STATION_NR == 9299)) %>%
+        # update species names
+        dplyr::mutate(SPECIES_NAME = case_when(SPECIES_NAME == "Undaria spp" ~ "Agaricia spp",
+                                               TRUE ~ SPECIES_NAME))
 
       tmp5 <- Tortugas_2020_coral_demographics %>%
         dplyr::mutate(SURVEY = dplyr::case_when(MONTH == 8 ~ "NCRMP", MONTH == 9 ~ "DRM"), # assign DRM/NCRMP data to DRM so it can be combined with the second stage version of the data in the DRM cruise
@@ -336,6 +353,14 @@ load_NCRMP_DRM_demo_data <- function(project = "NULL", region, species_filter = 
                                                SPECIES_CD == "PSE STRI" ~ "Pseudodiploria strigosa",
                                                SPECIES_CD == "CLA ABRU" ~ "Cladocora arbuscula",
                                                TRUE ~ as.character(SPECIES_NAME)))
+
+
+      ### UPDATE IN DEC. 2023!!
+      # PROT is re-coded here to 0 for ALL sites as fish and benthics met 12/19/23
+      # to determine that it is not appropraite to keep PROT in the analysis strat
+      # in FLK because the data aren't allocated that way
+      # only affects FLK data
+      dat_1stage <- dat_1stage %>% dplyr::mutate(PROT = as.factor(0))
 
 
       if(species_filter == "TRUE"){

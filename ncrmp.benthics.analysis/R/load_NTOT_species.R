@@ -19,7 +19,7 @@
 # NCRMP_make_weighted_demo_data.R
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
-# Last update: Aug 2023
+# Last update: Jan 2024
 
 
 ##############################################################################################################################
@@ -434,7 +434,8 @@ load_NTOT_species <- function(region, inputdata, project){
       dplyr::mutate(ANALYSIS_STRATUM = STRAT,
                     PROT = NA_character_) %>%
       dplyr::group_by(REGION, YEAR, ANALYSIS_STRATUM, HABITAT_CD, DEPTH_STRAT, PROT) %>%
-      dplyr::summarise(NTOT = sum(NTOT))
+      dplyr::summarise(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup()
 
 
     # Use a loop to create a unique lists for each year of strata sampled
@@ -449,7 +450,6 @@ load_NTOT_species <- function(region, inputdata, project){
           # filter to strata present in year i
           dplyr::filter(ANALYSIS_STRATUM %in% Filter) %>%
           # re-calculate ntot
-          dplyr::ungroup() %>%
           dplyr::mutate(ngrtot = sum(NTOT),
                         SPECIES_CD = s)
 
@@ -485,7 +485,8 @@ load_NTOT_species <- function(region, inputdata, project){
       dplyr::mutate(ANALYSIS_STRATUM = STRAT,
                     PROT = NA_character_) %>%
       dplyr::group_by(REGION, YEAR, ANALYSIS_STRATUM, HABITAT_CD, DEPTH_STRAT, PROT) %>%
-      dplyr::summarise(NTOT = sum(NTOT))
+      dplyr::summarise(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup()
 
 
     # Use a loop to create a unique lists for each year of strata sampled
@@ -500,7 +501,6 @@ load_NTOT_species <- function(region, inputdata, project){
           # filter to strata present in year i
           dplyr::filter(ANALYSIS_STRATUM %in% Filter) %>%
           # re-calculate ntot
-          dplyr::ungroup() %>%
           dplyr::mutate(ngrtot = sum(NTOT),
                         SPECIES_CD = s)
 
@@ -535,7 +535,8 @@ load_NTOT_species <- function(region, inputdata, project){
       dplyr::mutate(ANALYSIS_STRATUM = STRAT,
                     PROT = NA_character_) %>%
       dplyr::group_by(REGION, YEAR, ANALYSIS_STRATUM, HABITAT_CD, DEPTH_STRAT, PROT) %>%
-      dplyr::summarise(NTOT = sum(NTOT))
+      dplyr::summarise(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup()
 
 
     # Use a loop to create a unique lists for each year of strata sampled
@@ -550,7 +551,6 @@ load_NTOT_species <- function(region, inputdata, project){
           # filter to strata present in year i
           dplyr::filter(ANALYSIS_STRATUM %in% Filter) %>%
           # re-calculate ntot
-          dplyr::ungroup() %>%
           dplyr::mutate(ngrtot = sum(NTOT),
                         SPECIES_CD = s)
 
@@ -603,7 +603,6 @@ load_NTOT_species <- function(region, inputdata, project){
           # filter to strata present in year i
           dplyr::filter(ANALYSIS_STRATUM %in% Filter) %>%
           # re-calculate ntot
-          dplyr::ungroup() %>%
           dplyr::mutate(ngrtot = sum(NTOT),
                         SPECIES_CD = s)
 
