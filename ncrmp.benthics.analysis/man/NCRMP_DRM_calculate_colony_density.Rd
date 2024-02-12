@@ -11,15 +11,21 @@ NCRMP_DRM_calculate_colony_density(
 )
 }
 \arguments{
-\item{project}{A string indicating the project, NCRMP or NCRMP and DRM combined}
+\item{project}{A string indicating the project, NCRMP or NCRMP and DRM combined ("NCRMP_DRM").}
 
-\item{region}{A string indicating the region}
+\item{region}{A string indicating the region.  Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".}
 
-\item{species_filter}{A string indicating whether to filter to a subset of species}
+\item{species_filter}{A string indicating whether to filter to a subset of species.}
 }
 \value{
-A dataframe
+A list of dataframes includeind 1) coral density by species at each site,
+2) total coral density at each site, 3) mean total coral density for each strata,
+and 4) weighted mean regional total coral density.
 }
 \description{
-Creates colony density summary dataframes
+Calculates coral density from NCRMP coral demographic data at the site level,
+strata mean level, and regional weighted mean level (all across species), as well
+site at the species level.  NCRMP utilizes a stratified random sampling design.
+Regional estimates of coral density are weighted by the number of
+grid cells of a stratum in the sample frame.
 }

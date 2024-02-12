@@ -7,8 +7,12 @@
 NCRMP_make_ESA_corals_FOI()
 }
 \value{
-A dataframe
+A list of dataframes including 1) FOI for each region in the most
+recent year for all ESA corals, and 2) FOI for each region in the most recent
+year for each ESA coral species.
 }
 \description{
-Calculate ESA FOI
+Calculates frequency of occurrence of ESA corals from the benthic assessment
+diver's data, for only the most recent year of data for all regions. Summaries
+are for both all ESA's and each ESA species.
 }

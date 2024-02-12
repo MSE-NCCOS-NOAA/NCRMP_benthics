@@ -1,12 +1,41 @@
+## Function to re-format LPI data into Darwin Core standards
+
+# Purpose:
+# Re-format analysis-ready LPI data into Darwin Core formats
+
+
+## Tag: data analysis
+
+
+# outputs created in this file --------------
+# percent cover by site and species
+# Darwin format cover data
+
+
+# CallS:
+# analysis ready data
+
+# output gets called by:
+#
+#
+
+# NCRMP Caribbean Benthic analytics team: Groves, viehman, Williams
+# Last update: Dec 2023
+
+
+##############################################################################################################################
+
 
 
 #' Format analysis ready LPI data into Darwin Core
 #'
-#' @param dat A dataframe of analysis ready LPI data to be converted into Darwin Core
-#' @param region A string indicating the region
-#' @param year A string indicating the year
+#' Re-formats analysis ready benthic cover (LPI) data into Darwin Core standards.
 #'
-#' @return A list of multiple dataframes including formatted data
+#' @param dat A dataframe of analysis ready LPI data to be converted into Darwin Core.
+#' @param region A string indicating the region. Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".
+#' @param year A numeric indicating the year.
+#'
+#' @return A list of multiple dataframes including re-formatted data and percent cover by species and site.
 #' @importFrom magrittr "%>%"
 #' @export
 #'
@@ -26,7 +55,7 @@ make_cover_darwincore <- function(dat, region, year){
       dplyr::filter(SUB_REGION_NAME != "Marquesas",
                     SUB_REGION_NAME != "Marquesas-Tortugas Trans") %>%
       dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
-  } else if(region == "FGBNMS"){
+  } else if(region == "GOM"){
     dat <- dat %>%
       dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS")
   } else{
@@ -77,7 +106,7 @@ make_cover_darwincore <- function(dat, region, year){
                     #Percent_Cvr = rowSums(.[28:30]),
                     LAT_DEGREES = sprintf("%0.4f", LAT_DEGREES),
                     LON_DEGREES = sprintf("%0.4f", LON_DEGREES)) %>%
-      dplyr::inner_join(.,ncrmp_frrp_sppcodes2,  by = c( "COVER_CAT_CD" = "fl_ncrmp_code")) %>%
+      dplyr::left_join(.,ncrmp_frrp_sppcodes2,  by = c( "COVER_CAT_CD" = "fl_ncrmp_code")) %>%
       dplyr::select(-HARDBOTTOM_P, -SOFTBOTTOM_P, -RUBBLE_P) %>%
       dplyr::mutate(PROT = as.factor(PROT)) %>%
       dplyr::ungroup() %>%
@@ -102,7 +131,7 @@ make_cover_darwincore <- function(dat, region, year){
                     #Percent_Cvr = rowSums(.[29:31]),
                     LAT_DEGREES = sprintf("%0.4f", LAT_DEGREES),
                     LON_DEGREES = sprintf("%0.4f", LON_DEGREES)) %>%
-      dplyr::inner_join(.,ncrmp_frrp_sppcodes2,  by = c( "COVER_CAT_CD" = "fl_ncrmp_code")) %>%
+      dplyr::left_join(.,ncrmp_frrp_sppcodes2,  by = c( "COVER_CAT_CD" = "fl_ncrmp_code")) %>%
       dplyr::select(-HARDBOTTOM_P, -SOFTBOTTOM_P, -RUBBLE_P) %>%
       dplyr::mutate(PROT = NA) %>%
       dplyr::select(REGION, YEAR, MONTH, DAY, SUB_REGION_NAME, ADMIN, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES,

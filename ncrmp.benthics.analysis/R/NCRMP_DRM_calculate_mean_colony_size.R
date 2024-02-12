@@ -20,7 +20,7 @@
 # Analysis Rmarkdown, etc.
 #
 
-# NCRMP Caribbean Benthic analytics team: Groves, Viehman
+# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
 # Last update: Jan 2023
 
 
@@ -28,13 +28,25 @@
 
 #' Creates mean colony size summary dataframes
 #'
+#' Calculates mean colony size (3D, 2D, and maximum diameter)
+#' by species and site, by site, by strata, and regional
+#' estimates. Also calculates species-specific regional estimates.
+#' Regional estimates of size are weighted by the
+#' number of grid cells of a stratum in the sample frame. Note calculations
+#' for 3D and 2D means aver not available for NCRMP+DRM data because DRM
+#' does not collect perpendicular diameter.
 #'
 #'
 #'
-#' @param project A string indicating the project, NCRMP or NCRMP and DRM combined
-#' @param region A string indicating the region
-#' @param species_filter A string indicating whether to filter to a subset of species
-#' @return A dataframe
+#'
+#' @param project A string indicating the project, NCRMP or NCRMP and DRM combined ("NCRMP_DRM").
+#' @param region A string indicating the region. Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".
+#' @param species_filter An optional string indicating whether to filter to a subset of species
+#' @return A list of dataframes including at most 1) mean size by species for each
+#' site, 2) mean size by site, 3) mean 2D size by strata, 4) mean 3D size by strata,
+#' 5) mean 2D size by species and strata, 6) mean 3D size by species and strata,
+#' 7) mean maximum diameter by species and strata, 8) regional estimates for size,
+#' and 9), regional estimates for maximum diameter by species.
 #' @importFrom magrittr "%>%"
 #' @export
 #'
@@ -57,7 +69,8 @@ NCRMP_DRM_calculate_mean_colony_size <- function(project = "NULL", region, speci
      project == "NCRMP" && region == "Tortugas") {
 
     size_species_1stage <- dat_1stage %>%
-      dplyr::mutate(total_mort = OLD_MORT + RECENT_MORT) %>%
+      dplyr::mutate(total_mort = OLD_MORT + RECENT_MORT,
+                    PROT = as.factor(PROT)) %>%
       dplyr::filter(SUB_REGION_NAME != "Marquesas",
                     SUB_REGION_NAME != "Marquesas-Tortugas Trans",
                     N == 1,
@@ -80,7 +93,8 @@ NCRMP_DRM_calculate_mean_colony_size <- function(project = "NULL", region, speci
       dplyr::ungroup()
 
     size_site_1stage <- dat_1stage %>%
-      dplyr::mutate(total_mort = OLD_MORT + RECENT_MORT) %>%
+      dplyr::mutate(total_mort = OLD_MORT + RECENT_MORT,
+                    PROT = as.factor(PROT)) %>%
       dplyr::filter(SUB_REGION_NAME != "Marquesas",
                     SUB_REGION_NAME != "Marquesas-Tortugas Trans",
                     N == 1,
@@ -104,7 +118,8 @@ NCRMP_DRM_calculate_mean_colony_size <- function(project = "NULL", region, speci
 
 
     size_species_2stage <- dat_2stage %>%
-      dplyr::mutate(total_mort = OLD_MORT + RECENT_MORT) %>%
+      dplyr::mutate(total_mort = OLD_MORT + RECENT_MORT,
+                    PROT = as.factor(PROT)) %>%
       dplyr::filter(SUB_REGION_NAME != "Marquesas",
                     SUB_REGION_NAME != "Marquesas-Tortugas Trans",
                     N == 1,
@@ -137,7 +152,8 @@ NCRMP_DRM_calculate_mean_colony_size <- function(project = "NULL", region, speci
 
 
     size_site_2stage <- dat_2stage %>%
-      dplyr::mutate(total_mort = OLD_MORT + RECENT_MORT) %>%
+      dplyr::mutate(total_mort = OLD_MORT + RECENT_MORT,
+                    PROT = as.factor(PROT)) %>%
       dplyr::filter(SUB_REGION_NAME != "Marquesas",
                     SUB_REGION_NAME != "Marquesas-Tortugas Trans",
                     N == 1,
@@ -249,6 +265,7 @@ NCRMP_DRM_calculate_mean_colony_size <- function(project = "NULL", region, speci
                                          species_filter = species_filter)
 
   for(k in 1:length(tmp2))assign(names(tmp2)[k], tmp2[[k]])
+  ntot_check_species <- ntot_check
 
 
   ################
@@ -268,7 +285,8 @@ NCRMP_DRM_calculate_mean_colony_size <- function(project = "NULL", region, speci
       "size_est_cm3_strata_species" = size_est_cm3_strata_species,
       "size_est_maxdiam_strata_species" = size_est_maxdiam_strata_species,
       "Domain_est_species" = Domain_est_species,
-      "Domain_est" = Domain_est)
+      "Domain_est" = Domain_est,
+      "ntot_check_species" = ntot_check_species)
   }
   if(project == "NCRMP_DRM"){
     output <- list(
@@ -276,7 +294,8 @@ NCRMP_DRM_calculate_mean_colony_size <- function(project = "NULL", region, speci
       "size_site" = size_site,
       "size_est_maxdiam_strata_species" = size_est_maxdiam_strata_species,
       "Domain_est_species" = Domain_est_species,
-      "Domain_est" = Domain_est)
+      "Domain_est" = Domain_est,
+      "ntot_check_species" = ntot_check_species)
   }
 
 

@@ -23,7 +23,7 @@
 # Analysis Rmarkdown, etc.
 #
 
-# NCRMP Caribbean Benthic analytics team: Groves, Viehman
+# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
 # Last update: Feb 2023
 
 
@@ -31,7 +31,7 @@
 
 #' Creates percent cover dataframe
 #'
-#' Calculates percent cover at various levels and groups. Data sumamries include:
+#' Calculates percent cover at various levels and groups. Data summaries include:
 #' 1) percent cover by species at each site, 2) percent cover by group at each site,
 #' 3) mean percent cover by group for each stratum, and 4) weighted regional mean
 #' percent cover, all for a given region. NCRMP utilizes a stratified random
@@ -338,7 +338,7 @@ NCRMP_calculate_cover <- function(region, project = "NULL"){
     # Add NTOT, # Cells sampled and calculate sampling weights in weighting function
 
 
-    tmp  <- NCRMP_make_weighted_LPI_data(inputdata = dat4, region, project = project)
+    tmp  <- NCRMP_make_weighted_LPI_data(inputdata = dat4, region = region, project = project)
 
 
     # unpack list

@@ -44,25 +44,25 @@ Note:
 * SEFCRI 2014 coral demographics, benthic cover and invertebrates/ESA corals data, FLK 2014 benthic cover and invertebrates/ESA corals data, and Tortugas 2018 coral demographic data are 2 stage (2 transects per site). Site level metrics for these regions and years are the mean of transect 1 and transect 2. Strata and regional means are then calculated from these site level data. 
 
 
-For questions, please contact the repository owner, Sarah Groves, sarah.groves@noaa.gov 
+For questions, please contact the repository owner, Shay Viehman, shay.viehman@noaa.gov 
 
 
 ### NCRMP Regions and sampling years
 
 * Florida:  
-    * Southeast Florida (SEFCRI; 2014, 2016)
-    * Florida Keys (FLK; 2014, 2016)
-    * Dry Tortugas (Tortugas; 2014, 2016, 2018) 
+    * Southeast Florida (SEFCRI; 2014, 2016, 2018, 2020, 2022)
+    * Florida Keys (FLK; 2014, 2016, 2018, 2020*, 2022)
+    * Dry Tortugas (Tortugas; 2014, 2016, 2018, 2020, 2022) 
 
 * Caribbean:
-    * St. Thomas & St. John (STTSTJ; 2013, 2015, 2017)
-    * St. Croix (STX; 2015, 2017)
-    * Puerto Rico (PRICO; 2014, 2016)
+    * St. Thomas & St. John (STTSTJ; 2013, 2015, 2017, 2019, 2021)
+    * St. Croix (STX; 2015, 2017, 2019, 2021)
+    * Puerto Rico (PRICO; 2014, 2016, 2019, 2021)
 
 * Gulf of Mexico:
-    * Flower Garden Banks National Marine Sanctuary (GOM; 2013, 2015, 2018)
+    * Flower Garden Banks National Marine Sanctuary (GOM; 2013, 2015, 2018, 2022)
     
-Upcoming data additions: Southeast Florida and Florida Keys 2018 (in 2019), Caribbean 2019 (in 2020)
+Upcoming data additions: Caribbean 2023 (in 2024)
 
 
 ## Installation 
@@ -116,7 +116,7 @@ require(ncrmp.benthics.analysis)
 require(ggplot2)
 
 # Load weighted strata means
-Hardcoral <- NCRMP_STTSTJ_2013_19_wh_cover_region %>%
+Hardcoral <- NCRMP_STTSTJ_2013_21_percent_cover_region %>%
   dplyr::ungroup() %>%
   # filter to just hardcoral
   dplyr::filter(cover_group == "HARD CORALS") %>%
@@ -148,11 +148,11 @@ __Add dataframe to the Global Environment__
 #
 # #The 'data' function will load a dataframe to the Global Environment keeping the existing name, 
 # 
-# data("NCRMP_DRM_FLK_2014_18_density_site")
+# data("NCRMP_DRM_FLK_2014_22_density_site")
 #
 # or you can give it a new name 
 #
-# dat <- NCRMP_DRM_FLK_2014_18_density_site
+# dat <- NCRMP_DRM_FLK_2014_22_density_site
 
 ```
 
@@ -189,14 +189,19 @@ Analysis ready NCRMP datasets for all regions and years are contained within thi
     * FLK_2016_coral_demographics,
     * SEFCRI_2014_2stage_benthic_cover                    
     * FGBNMS_2013_inverts_ESAcorals
+
+
+Additionally, there are two datasets that combine all regions and years into a single dataframe. 
+* NCRMP_benthic_cover_All_regions_years
+* NCRMP_demo_All_regions_years
   
    
 In addition, the following AR Florida DRM and Sanctuary Coral Reef Ecosystem Assessment Monitoring (SCREAM) datasets in NCRMP format are stored in the package. Combined DRM and SCREAM data are from 1999 to 2013 (not all regions are sampled each year) and individual DRM regions are 2014 to the most recent year of sampling.
 
 * preNCRMP_SCREAM_DRM_coral_demographics  
-* DRM_SEFCRI_2017_2stage_demo_data - includes data from 2014 - 2017 
-* DRM_FLK_2017_2stage_demo_data 
-* DRM_Tort_2017_2stage_demo_data 
+* DRM_SEFCRI_2014_2022_2stage_coral_demographics - includes data from 2014-2022 
+* DRM_FLK_2014_2022_2stage_coral_demographics - includes data from 2014-2022 
+* DRM_Tort_2014_2022_2stage_coral_demographics - includes data from 2014-2022 
 
 ### Summary dataframes 
 
@@ -213,34 +218,38 @@ Summary dataframes are provided for site, strata and weighted regional means. Ev
     * PROJECT_REGION_YEAR_datatype_level
   
 * Examples: 
-    * NCRMP_DRM_FLK_2014_18_dis_prev_site, 
-    * NCRMP_FGBNMS_2013_18_density_strata,                     
-    * NCRMP_FLK_2014_18_rec_mort_region,
-    * NCRMP_PRICO_2014_16_richness_strata,
-    * NCRMP_STX_2015_17_cover_region
+    * NCRMP_DRM_FLK_2014_22_dis_prev_site, 
+    * NCRMP_FGBNMS_2013_22_density_strata,                     
+    * NCRMP_FLK_2014_22_rec_mort_region,
+    * NCRMP_PRICO_2014_21_richness_strata,
+    * NCRMP_STX_2015_21_cover_region
     
-In addition, there are two dataframes that contain all regions and years
+In addition, there are three dataframes that contain all regions and years
 
-* NCRMP_AllRegions_Years_ESA_PresAbs
+* NCRMP_AllRegions_Years_ESA_PresAbs_Site
+* NCRMP_AllRegions_Years_ESA_PresAbs_Strat
 * NCRMP_bleaching_abundance_Allyears_Allregions
             
 ### Shapefiles and NTOT files 
 
-The most recent sampling grid shapefiles used for site allocation and associated NTOT (grid summary) files are also contained in the package. Grids can be used in R or exported as shapefiles. The NTOT files are required to properly apply the weighting scheme to summary data. The Florida Keys National Marine Sanctuary (FKNMS) and the Flower Garden Banks National Marine Sanctuary (FGBNMS) boundary polygons are also contained in the package. More boundary polygons for other regions will be added in future updates.
+The most recent sampling grid shapefiles used for site allocation and all NTOT (grid summary) files are also contained in the package. Grids can be used in R or exported as shapefiles. The NTOT files are required to properly apply the weighting scheme to summary data and often differ between years. The Florida Keys National Marine Sanctuary (FKNMS) and the Flower Garden Banks National Marine Sanctuary (FGBNMS) boundary polygons are also contained in the package. More boundary polygons for other regions will be added in future updates.
 
 * Sampling grids:
-    * SEFCRI_2016_sample_frame
-    * FLK_TORT_2018_sample_frame
-    * STTSTJ_2017_sample_frame_WGS1984
-    * STX_2017_sample_frame_WGS1984
-    * PRICO_2016_sample_frame_WGS1984
-    * FGBNMS_2015_sample_frame_WGS1984
+    * SEFCRI_2018_sample_frame
+    * FLK_2020_coral_demographics
+    * Tort_2020_sample_frame
+    * STTSTJ_2021_sample_frame_WGS1984
+    * STX_2021_sample_frame_WGS1984
+    * PRICO_2021_sample_frame_WGS1984
+    * FGBNMS_2018_sample_frame_WGS1984
 
 * NTOT files:
-    * USVI_2019_NTOT (STTSTJ & STX)
-    * FL_2018_NTOT (SEFCRI, FLK & Tortugas)
-    * PRICO_2016_NTOT
-    * FGBNMS_2018_NTOT
+    * USVI_2021_NTOT (STTSTJ & STX)
+    * FLK: FLK_2014_NTOT, FLK_2016_NTOT, FLK_2018_NTOT, FLK_2020_NTOT, FLK_2022_NTOT
+    * SEFCRI: SEFL_2014_NTOT, SEFL_2016_NTOT, SEFL_2018_NTOT, SEFL_2020_NTOT, SEFL_2020_NTOT
+    * Tortugas: Tort_2014_NTOT, Tort_2016_NTOT, Tort_2018_NTOT, Tort_2020_NTOT, Tort_2022_NTOT
+    * PRICO_2021_NTOT
+    * FGBNMS_2022_NTOT
 
 * Boundaries
     * FKNMS_boundary 

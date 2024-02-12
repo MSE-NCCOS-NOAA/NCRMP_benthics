@@ -45,7 +45,7 @@
 #'
 
 
-NCRMP_DRM_calculate_species_richness_diversity <- function(project, region){
+NCRMP_DRM_calculate_species_richness_diversity_deprecated <- function(project, region){
 
 
   # Define regional groups

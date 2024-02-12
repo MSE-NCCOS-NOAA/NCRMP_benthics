@@ -21,21 +21,25 @@
 # Analysis Rmarkdown, etc.
 #
 
-# NCRMP Caribbean Benthic analytics team: Groves, Viehman
-# Last update: Feb 2023
+# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
+# Last update: Jan 2024
 
 
 ##############################################################################################################################
 
-#' Creates colony density and colony size summary dataframes
+#' Creates summary dataframes of Diadema density from NCRMP benthic assessment.
+#' NCRMP utilizes a stratified random sampling design.
+#' Regional estimates of Diadema density are weighted by the number of
+#' grid cells of a stratum in the sample frame.
 #'
 #'
 #'
 #'
-#' @param inputdf A dataframe
-#' @param region A string indicating the region
+#' @param region A string indicating the region. Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".
 #' @param project A string indicating the project: "NCRMP" or "MIR". Default is NCRMP.
-#' @return A dataframe
+#' @return A list dataframes including 1) Diadema density at each site,
+#' 2) mean Diadema density by strata, and 3) weighted regional mean Diadema density,
+#' all for a given region.
 #' @importFrom magrittr "%>%"
 #' @export
 #'
@@ -79,6 +83,14 @@ NCRMP_calculate_invert_density <- function(region, project = "NULL") {
       dplyr::rename("PROT" = PROT_og)
 
     dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4)
+
+    ### UPDATE IN DEC. 2023!!
+    # PROT is re-coded here to 0 for ALL sites as fish and benthics met 12/19/23
+    # to determine that it is not appropraite to keep PROT in the analysis strat
+    # in FLK because the data aren't allocated that way
+    # only affects FLK data
+    dat_1stage <- dat_1stage %>% dplyr::mutate(PROT = as.factor(0))
+    dat_2stage <- dat_2stage %>% dplyr::mutate(PROT = as.factor(0))
 
     }
 
@@ -199,10 +211,20 @@ NCRMP_calculate_invert_density <- function(region, project = "NULL") {
 
      tmp3 <- FGBNMS_2018_inverts_ESAcorals %>%
       dplyr::mutate(SURVEY = "NCRMP",
-                    ANALYSIS_STRATUM = "FGBNMS")
+                    ANALYSIS_STRATUM = "FGBNMS",
+                    STRAT = "FGBNMS",
+                    REGION = "GOM",
+                    MAPGRID_NR = as.factor(MAPGRID_NR))
+
+     tmp4 <- FGBNMS_2022_inverts_ESAcorals %>%
+       dplyr::mutate(SURVEY = "NCRMP",
+                     ANALYSIS_STRATUM = "FGBNMS",
+                     STRAT = "FGBNMS",
+                     REGION = "GOM",
+                     MAPGRID_NR = as.factor(MAPGRID_NR))
 
     #Combine data
-    dat_1stage <- rbind(tmp1, tmp2, tmp3)
+    dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4)
 
   }
 

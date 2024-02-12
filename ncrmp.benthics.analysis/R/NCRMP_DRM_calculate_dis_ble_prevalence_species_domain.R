@@ -26,12 +26,20 @@
 
 #' Species domain estimates for disease prevalence & bleaching prevalence for NCRMP and NCRMP + DRM data
 #'
+#' Calculates regional domain estimates for disease and bleaching prevalence by species,
+#' for a specified region. NCRMP utilizes a stratified random sampling design.
+#' Regional estimates of prevalence are weighted by the number of
+#' grid cells of a stratum in the sample frame.
+#' Uses data summaries created by [NCRMP_DRM_calculate_disease_prevalence_colonies()] function
+#' (disease and bleaching prevalence by species and site).
 #'
 #'
 #'
-#' @param project A string indicating the project, NCRMP, MIR, or NCRMP and DRM combined
-#' @param region A string indicating the region
-#' @return A dataframe
+#'
+#' @param project A string indicating the project, NCRMP, MIR, or NCRMP and DRM combined ("NCRMP_DRM").
+#' @param region A string indicating the region. Options are: "SEFCRI", "FLK", "Tortugas", "STX", "STTSTJ", "PRICO", and "GOM".
+#' @return A list dataframes, 1) bleaching prevalence domain estimates and
+#' 2) disease prevalence domain estimates, for all years of a given region.
 #' @importFrom magrittr "%>%"
 #' @export
 #'
@@ -55,10 +63,6 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
         dplyr::mutate(SPECIES_CD=dplyr::recode(SPECIES_CD,
                                                "ORB ANCX"="ORB SPE.",
                                                "DIP STRI"="PSE STRI"))
-
-      ntot <- load_NTOT(region = region,
-                        inputdata = dat,
-                        project = project)
     }
 
     if(region == "FLK"){
@@ -71,9 +75,6 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
                                                  'CLA ARBU' = "CLA ABRU",
                                                  "ORB ANCX"="ORB SPE."))
 
-      ntot <- load_NTOT(region = region,
-                        inputdata = dat,
-                        project = project)
     }
 
     if(region == "Tortugas"){
@@ -85,12 +86,8 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
                                                  "DIP STRI" = "PSE STRI",
                                                  'CLA ARBU' = "CLA ABRU",
                                                  "ORB ANCX"="ORB SPE."))
-    }
-  } else {
 
-    #ntot <- load_NTOT(region = region,
-    #                  inputdata = "NULL",
-    #                  project = project)
+    }
   }
 
   if(project == "NCRMP"){
@@ -160,23 +157,15 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
 
   }
 
-
-  ## Load NTOT
-  # prior to Jan. 2024, we used the full NTOT for these calculations.
-  # However, this was incorrect, because if a species was not present in
-  # a strata, it's bleaching/disease prevalence is NA, not 0
-  # So the strata where it's missing don't contribute to the full weight.
-  # and the weighting doesn't add up to 1.
-  # Instead, we use the species-specific NTOT (similar to what's used for size)
   dat <- dat %>% dplyr::mutate(SPECIES_NAME = SPECIES_CD)
   ntot <- load_NTOT_species(region = region,
                             inputdata = dat,
                             project = project)
 
-
   ## coral data processing
 
   dat_ble_wide <- dat %>%
+    # select for most recent year
     # remove other metrics
     dplyr::select(-Total_ble, -Total_dis, -Total_col, -DIS_PREV) %>%
     # filter out spp columns
@@ -221,8 +210,7 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
       SPECIES_CD != "POR SPE.",
       SPECIES_CD != "SCL SPE.",
       SPECIES_CD != "OCU SPE.",
-      SPECIES_CD != "ISO SPE."
-      )
+      SPECIES_CD != "ISO SPE.")
   # %>%
   #   # add in zeros for species that didn't occur per site. Easiest to flip to wide format ( 1 row per site) for this
   #   tidyr::spread(., SPECIES_CD, DIS_PREV,
@@ -286,9 +274,9 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
 
   }
 
-  dat2 <- dat1 %>%
+  dat2 <-dat1 %>%
     # Merge ntot with coral_est_spp
-    dplyr::left_join(., ntot) %>%
+    dplyr::left_join(., ntot) %>% # use a left join because spp. data werwe filtered out but not from NTOT
     # stratum estimates
     dplyr::mutate(whavDprev = wh * avDprev,
                   whavBprev = wh * avBprev,
@@ -299,14 +287,13 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
                   n_sites = tidyr::replace_na(n_sites, 0))  %>%
     dplyr::ungroup()
 
-  # run a check to make sure weights add up to 1
-  # check <- dat2 %>%
-  #   dplyr::group_by(YEAR, SPECIES_CD) %>%
-  #   dplyr::summarize(weight_total = sum(wh))
-  # unique(check$weight_total)
+  # check ntot's and weighting
+  # weights should add up to 1 for each species in each year
+  ntot_check <- dat2 %>%
+    dplyr::group_by(YEAR, SPECIES_CD) %>%
+    dplyr::summarize(wh_total = sum(wh))
 
-
-  # prep species codes file
+  # set up species codes -- remove duplicate AGA spp.
   ncrmp_frrp_sppcodes2 <- ncrmp_frrp_sppcodes %>% dplyr::filter(FRRP_name != "Undaria spp")
 
   ## Domain Estimates
@@ -347,7 +334,8 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
   # Create list to export
   output <- list(
     'DomainEst_bl' = DomainEst_bl,
-    "DomainEst_dis" = DomainEst_dis)
+    "DomainEst_dis" = DomainEst_dis,
+    "ntot_check" = ntot_check)
 
   return(output)
 
