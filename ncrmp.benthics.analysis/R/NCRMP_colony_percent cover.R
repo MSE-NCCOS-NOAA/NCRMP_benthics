@@ -20,8 +20,8 @@
 # Analysis Rmarkdown, etc.
 #
 
-# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
-# Last update: Feb 2023
+# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams, Krampitz
+# Last update: Sept 2024
 
 
 ##############################################################################################################################
@@ -92,7 +92,7 @@ NCRMP_colony_percent_cover <- function(region, ptitle, file_path, project = "NUL
     # Puerto Rico
 
     tmp <- NCRMP_make_weighted_species_coral_cover_data(region = region,
-                                                        sppcvr = NCRMP_PRICO_2014_21_percent_cover_species,
+                                                        sppcvr = NCRMP_PRICO_2014_23_percent_cover_species,
                                                         project = project)
 
   }
@@ -101,14 +101,14 @@ NCRMP_colony_percent_cover <- function(region, ptitle, file_path, project = "NUL
 
     # STT-STJ
     tmp <- NCRMP_make_weighted_species_coral_cover_data(region = region,
-                                                        sppcvr = NCRMP_STTSTJ_2013_21_percent_cover_species,
+                                                        sppcvr = NCRMP_STTSTJ_2013_23_percent_cover_species,
                                                         project = project)
 
   }
 
   if(region=="STX") {
     tmp <- NCRMP_make_weighted_species_coral_cover_data(region = region,
-                                                        sppcvr = NCRMP_STX_2015_21_percent_cover_species,
+                                                        sppcvr = NCRMP_STX_2015_23_percent_cover_species,
                                                         project = project)
 
   }
@@ -131,7 +131,7 @@ NCRMP_colony_percent_cover <- function(region, ptitle, file_path, project = "NUL
     dplyr::ungroup() %>%
     # exclude occurrences of 0
     dplyr::filter(avCvr > 0,
-                  YEAR >= 2020) %>%
+                  YEAR >= 2022) %>%
 
     ggplot(.,
            aes(x = reorder(SPECIES_NAME, avCvr),
@@ -147,9 +147,8 @@ NCRMP_colony_percent_cover <- function(region, ptitle, file_path, project = "NUL
     scale_y_continuous(expand = c(0,0)) +
     theme(axis.title.x = element_blank(),
           axis.title.y = element_blank(),
-          #axis.text.y = element_blank(),
-          axis.ticks.y = element_blank(),
           axis.text.y = element_text(face ="italic"),
+          axis.ticks.y = element_blank(),
           plot.margin = unit(c(t = 1, r = 1, b = 1, l = 1), "mm"),
           plot.title = element_text(hjust = 0.5,
                                     size = 10,

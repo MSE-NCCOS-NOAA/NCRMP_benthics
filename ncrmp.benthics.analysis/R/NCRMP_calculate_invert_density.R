@@ -147,8 +147,11 @@ NCRMP_calculate_invert_density <- function(region, project = "NULL") {
     tmp5 <- USVI_2021_inverts_ESAcorals %>%
       dplyr::filter(REGION == "STTSTJ")
 
+    tmp6 <- USVI_2023_inverts_ESAcorals %>%
+      dplyr::filter(REGION == "STTSTJ")
+
     #Combine 1 stage or 2 stage data
-    dat_1stage <-dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4, tmp5) %>%
+    dat_1stage <-dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4, tmp5, tmp6) %>%
       dplyr::mutate(DIADEMA_NUM = as.numeric(DIADEMA_NUM))
 
 
@@ -170,9 +173,11 @@ NCRMP_calculate_invert_density <- function(region, project = "NULL") {
     tmp4 <- USVI_2021_inverts_ESAcorals %>%
       dplyr::filter(REGION == "STX")
 
-    #Combine 1 stage or 2 stage data
-    dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4)
+    tmp5 <- USVI_2023_inverts_ESAcorals %>%
+      dplyr::filter(REGION == "STX")
 
+    #Combine 1 stage or 2 stage data
+    dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4, tmp5)
 
   }
 
@@ -188,10 +193,11 @@ NCRMP_calculate_invert_density <- function(region, project = "NULL") {
 
     tmp4 <- PRICO_2021_inverts_ESAcorals
 
-    #Combine data
-    dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4) %>%
-      dplyr::mutate(ANALYSIS_STRATUM = STRAT)
+     tmp5 <- PRICO_2023_inverts_ESAcorals
 
+    #Combine data
+    dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4, tmp5) %>%
+      dplyr::mutate(ANALYSIS_STRATUM = STRAT)
   }
 
   ## Flower Garden Banks National Marine Sanctuary (GOM)
@@ -276,10 +282,10 @@ NCRMP_calculate_invert_density <- function(region, project = "NULL") {
                       STRAT, PROT) %>%
       dplyr::summarise(MIN_DEPTH = mean(MIN_DEPTH),
                        MAX_DEPTH = mean(MAX_DEPTH),
-                       LOBSTER_NUM = mean(LOBSTER_NUM),
-                       CONCH_NUM = mean(CONCH_NUM),
-                       DIADEMA_NUM = mean(DIADEMA_NUM),
-                       Diadema_dens = mean(Diadema_dens))
+                       LOBSTER_NUM = mean(LOBSTER_NUM, na.rm=T),
+                       CONCH_NUM = mean(CONCH_NUM, na.rm=T),
+                       DIADEMA_NUM = mean(DIADEMA_NUM, na.rm=T),
+                       Diadema_dens = mean(Diadema_dens, na.rm=T))
 
 
     diadema_density_site <- dplyr::bind_rows(dat1_1stage, dat1_2stage)

@@ -18,7 +18,7 @@
 # NCRMP_make_weighted_demo_data.R
 
 # NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
-# Last update: Dec 2023
+# Last update: Sep 2024
 
 
 ##############################################################################################################################
@@ -400,160 +400,190 @@ if(region == "Tortugas") {
 
 }
 
-if(region == "STTSTJ"){
+  if(region == "STTSTJ"){
 
-  ntot13 <- USVI_2021_NTOT %>%
-    dplyr::filter(REGION == "STTSTJ",
-                  STRAT != "HARD_SHLW") %>% # Hard shlw was not sampled in 2013
-    dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
-    dplyr::summarise(NTOT = sum(NTOT)) %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(YEAR = 2013,
-                  ANALYSIS_STRATUM = STRAT,
-                  PROT = NA_character_,
-                  ngrtot = sum(NTOT))
+    ntot13 <- USVI_2021_NTOT %>%
+      dplyr::filter(REGION == "STTSTJ",
+                    STRAT != "HARD_SHLW") %>% # Hard shlw was not sampled in 2013
+      dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
+      dplyr::summarise(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(YEAR = 2013,
+                    ANALYSIS_STRATUM = STRAT,
+                    PROT = NA_character_,
+                    ngrtot = sum(NTOT))
 
-  ntot15 <- USVI_2021_NTOT %>%
-    dplyr::filter(REGION == "STTSTJ") %>%
-    dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
-    dplyr::summarise(NTOT = sum(NTOT)) %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(YEAR = 2015,
-                  ANALYSIS_STRATUM = STRAT,
-                  PROT = NA_character_,
-                  ngrtot = sum(NTOT)) %>%
-    dplyr::ungroup()
+    ntot15 <- USVI_2021_NTOT %>%
+      dplyr::filter(REGION == "STTSTJ") %>%
+      dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
+      dplyr::summarise(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(YEAR = 2015,
+                    ANALYSIS_STRATUM = STRAT,
+                    PROT = NA_character_,
+                    ngrtot = sum(NTOT)) %>%
+      dplyr::ungroup()
 
-  ntot17 <- USVI_2021_NTOT %>%
-    dplyr::filter(REGION == "STTSTJ") %>%
-    dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
-    dplyr::summarise(NTOT = sum(NTOT)) %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(YEAR = 2017,
-                  ANALYSIS_STRATUM = STRAT,
-                  PROT = NA_character_,
-                  ngrtot = sum(NTOT)) %>%
-    dplyr::ungroup()
+    ntot17 <- USVI_2021_NTOT %>%
+      dplyr::filter(REGION == "STTSTJ") %>%
+      dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
+      dplyr::summarise(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(YEAR = 2017,
+                    ANALYSIS_STRATUM = STRAT,
+                    PROT = NA_character_,
+                    ngrtot = sum(NTOT)) %>%
+      dplyr::ungroup()
 
-  ntot19 <- USVI_2021_NTOT %>%
-    dplyr::filter(REGION == "STTSTJ") %>%
-    dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
-    dplyr::summarise(NTOT = sum(NTOT)) %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(YEAR = 2019,
-                  ANALYSIS_STRATUM = STRAT,
-                  PROT = NA_character_,
-                  ngrtot = sum(NTOT)) %>%
-    dplyr::ungroup()
+    ntot19 <- USVI_2021_NTOT %>%
+      dplyr::filter(REGION == "STTSTJ") %>%
+      dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
+      dplyr::summarise(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(YEAR = 2019,
+                    ANALYSIS_STRATUM = STRAT,
+                    PROT = NA_character_,
+                    ngrtot = sum(NTOT)) %>%
+      dplyr::ungroup()
 
-  ntot21 <- USVI_2021_NTOT %>%
-    dplyr::filter(REGION == "STTSTJ") %>%
-    dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
-    dplyr::summarise(NTOT = sum(NTOT)) %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(ANALYSIS_STRATUM = STRAT,
-                  PROT = NA_character_,
-                  ngrtot = sum(NTOT)) %>%
-    dplyr::ungroup()
+    ntot21 <- USVI_2021_NTOT %>%
+      dplyr::filter(REGION == "STTSTJ") %>%
+      dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
+      dplyr::summarise(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(ANALYSIS_STRATUM = STRAT,
+                    PROT = NA_character_,
+                    ngrtot = sum(NTOT)) %>%
+      dplyr::ungroup()
 
-
-  ntot <- dplyr::bind_rows(ntot13, ntot15, ntot17, ntot19, ntot21)
-
-
-}
-
-if(region == "STX"){
-
-  ntot15 <- USVI_2021_NTOT %>%
-    dplyr::filter(REGION == "STX",
-                  STRAT != "HARD_SHLW", # Hard shlw was not sampled in 2015
-                  STRAT != "HARD_DEEP") %>% # Hard deep was not sampled in 2015
-    dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
-    dplyr::summarise(NTOT = sum(NTOT)) %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(YEAR = 2015,
-                  ANALYSIS_STRATUM = STRAT,
-                  PROT = NA_character_,
-                  ngrtot = sum(NTOT))
-
-  ntot17 <- USVI_2021_NTOT %>%
-    dplyr::filter(REGION == "STX",
-                  STRAT != "HARD_SHLW") %>%
-    dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
-    dplyr::summarise(NTOT = sum(NTOT)) %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(YEAR = 2017,
-                  ANALYSIS_STRATUM = STRAT,
-                  PROT = NA_character_,
-                  ngrtot = sum(NTOT))
-
-  ntot19 <- USVI_2021_NTOT %>%
-    dplyr::filter(REGION == "STX") %>%
-    dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
-    dplyr::summarise(NTOT = sum(NTOT)) %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(YEAR = 2019,
-                  ANALYSIS_STRATUM = STRAT,
-                  PROT = NA_character_,
-                  ngrtot = sum(NTOT))
-
-  ntot21 <- USVI_2021_NTOT %>%
-    dplyr::filter(REGION == "STX") %>%
-    dplyr::filter(!(STRAT == "BDRK_SHLW" | STRAT == "BDRK_DEEP")) %>% # 2021 we didnt sample BDRK shallow OR deep
-    dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
-    dplyr::summarise(NTOT = sum(NTOT)) %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(ANALYSIS_STRATUM = STRAT,
-                  PROT = NA_character_,
-                  ngrtot = sum(NTOT))
+    ntot23 <- USVI_2023_NTOT %>%
+      dplyr::filter(REGION == "STTSTJ") %>%
+      dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
+      dplyr::summarise(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(ANALYSIS_STRATUM = STRAT,
+                    PROT = NA_character_,
+                    ngrtot = sum(NTOT)) %>%
+      dplyr::ungroup()
 
 
-  ntot <- dplyr::bind_rows(ntot15, ntot17, ntot19, ntot21)
+    ntot <- dplyr::bind_rows(ntot13, ntot15, ntot17, ntot19, ntot21, ntot23)
 
-}
 
-if(region == "PRICO"){
+  }
 
-  ntot14 <- PRICO_2021_NTOT %>%
-    dplyr::filter(STRAT != "HARD_DEEP", # Hard shlw was not sampled in 2014
-                  STRAT != "HARD_SHLW") %>% # Hard deep was not sampled in 2014
-    dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
-    dplyr::summarise(NTOT = sum(NTOT)) %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(YEAR = 2014,
-                  ANALYSIS_STRATUM = STRAT,
-                  PROT = NA_character_,
-                  ngrtot = sum(NTOT))
+  if(region == "STX"){
 
-  ntot16 <- PRICO_2021_NTOT %>%
-    dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
-    dplyr::summarise(NTOT = sum(NTOT)) %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(YEAR = 2016,
-                  ANALYSIS_STRATUM = STRAT,
-                  PROT = NA_character_,
-                  ngrtot = sum(NTOT))
+    ntot15 <- USVI_2021_NTOT %>%
+      dplyr::filter(REGION == "STX",
+                    STRAT != "HARD_SHLW", # Hard shlw was not sampled in 2015
+                    STRAT != "HARD_DEEP") %>% # Hard deep was not sampled in 2015
+      dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
+      dplyr::summarise(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(YEAR = 2015,
+                    ANALYSIS_STRATUM = STRAT,
+                    PROT = NA_character_,
+                    ngrtot = sum(NTOT))
 
-  ntot19 <- PRICO_2021_NTOT %>%
-    dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
-    dplyr::summarise(NTOT = sum(NTOT)) %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(YEAR = 2019,
-                  ANALYSIS_STRATUM = STRAT,
-                  PROT = NA_character_,
-                  ngrtot = sum(NTOT))
+    ntot17 <- USVI_2021_NTOT %>%
+      dplyr::filter(REGION == "STX",
+                    STRAT != "HARD_SHLW") %>%
+      dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
+      dplyr::summarise(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(YEAR = 2017,
+                    ANALYSIS_STRATUM = STRAT,
+                    PROT = NA_character_,
+                    ngrtot = sum(NTOT))
 
-  ntot21 <- PRICO_2021_NTOT %>%
-    dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
-    dplyr::summarise(NTOT = sum(NTOT)) %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(ANALYSIS_STRATUM = STRAT,
-                  PROT = NA_character_,
-                  ngrtot = sum(NTOT))
+    ntot19 <- USVI_2021_NTOT %>%
+      dplyr::filter(REGION == "STX") %>%
+      dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
+      dplyr::summarise(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(YEAR = 2019,
+                    ANALYSIS_STRATUM = STRAT,
+                    PROT = NA_character_,
+                    ngrtot = sum(NTOT))
 
-  ntot <- dplyr::bind_rows(ntot14, ntot16, ntot19, ntot21)
+    ntot21 <- USVI_2021_NTOT %>%
+      dplyr::filter(REGION == "STX") %>%
+      dplyr::filter(!(STRAT == "BDRK_SHLW" | STRAT == "BDRK_DEEP")) %>% # 2021 we didnt sample BDRK shallow OR deep
+      dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
+      dplyr::summarise(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(ANALYSIS_STRATUM = STRAT,
+                    PROT = NA_character_,
+                    ngrtot = sum(NTOT))
 
-}
+    ntot23 <- USVI_2023_NTOT %>%
+      dplyr::filter(REGION == "STX") %>%
+      dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
+      dplyr::summarise(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(ANALYSIS_STRATUM = STRAT,
+                    PROT = NA_character_,
+                    ngrtot = sum(NTOT))
+
+
+    ntot <- dplyr::bind_rows(ntot15, ntot17, ntot19, ntot21, ntot23)
+
+  }
+
+  if(region == "PRICO"){
+
+    ntot14 <- PRICO_2023_NTOT %>%
+      dplyr::filter(STRAT != "HARD_DEEP", # Hard shlw was not sampled in 2014
+                    STRAT != "HARD_SHLW") %>% # Hard deep was not sampled in 2014
+      dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
+      dplyr::summarise(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(YEAR = 2014,
+                    ANALYSIS_STRATUM = STRAT,
+                    PROT = NA_character_,
+                    ngrtot = sum(NTOT))
+
+    ntot16 <- PRICO_2023_NTOT %>%
+      dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
+      dplyr::summarise(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(YEAR = 2016,
+                    ANALYSIS_STRATUM = STRAT,
+                    PROT = NA_character_,
+                    ngrtot = sum(NTOT))
+
+    ntot19 <- PRICO_2023_NTOT %>%
+      dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
+      dplyr::summarise(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(YEAR = 2019,
+                    ANALYSIS_STRATUM = STRAT,
+                    PROT = NA_character_,
+                    ngrtot = sum(NTOT))
+
+    ntot21 <- PRICO_2023_NTOT %>%
+      dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
+      dplyr::summarise(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(YEAR = 2021,
+                    ANALYSIS_STRATUM = STRAT,
+                    PROT = NA_character_,
+                    ngrtot = sum(NTOT))
+
+    #2023 NTOT had HARD regions removed
+    ntot23 <- PRICO_2023_NTOT %>%
+      dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
+      dplyr::summarise(NTOT = sum(NTOT)) %>%
+      dplyr::ungroup() %>%
+      dplyr::filter(HABITAT_CD != "HARD") %>% #This might be redundant
+      dplyr::mutate(ANALYSIS_STRATUM = STRAT,
+                    PROT = NA_character_,
+                    ngrtot = sum(NTOT))
+
+    ntot <- dplyr::bind_rows(ntot14, ntot16, ntot19, ntot21, ntot23)
+
+  }
 
 if(region == "GOM"){
 

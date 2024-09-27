@@ -351,7 +351,7 @@ NCRMP_DRM_calculate_species_richness_diversity <- function(project, region){
 
     spp <- unique(species_site$SPECIES_NAME)
 
-    species_only_site <- species_wide_site %>% select(YEAR, PRIMARY_SAMPLE_UNIT, STATION_NR, spp)
+    species_only_site <- species_wide_site %>% dplyr::select(YEAR, PRIMARY_SAMPLE_UNIT, STATION_NR, spp)
 
     species_diversity_site <- species_only_site %>%
       dplyr::mutate(Simpson =  vegan::diversity(species_only_site[, -c(1:2)], index = "simpson")) %>%
@@ -402,7 +402,7 @@ NCRMP_DRM_calculate_species_richness_diversity <- function(project, region){
 
     spp <- unique(species_site$SPECIES_NAME)
 
-    species_only_site <- species_wide_site %>% select(YEAR, PRIMARY_SAMPLE_UNIT, spp)
+    species_only_site <- species_wide_site %>% dplyr::select(YEAR, PRIMARY_SAMPLE_UNIT, spp)
 
     species_diversity_site <- species_only_site %>%
       dplyr::mutate(Simpson =  vegan::diversity(species_only_site[, -c(1:2)], index = "simpson")) %>%

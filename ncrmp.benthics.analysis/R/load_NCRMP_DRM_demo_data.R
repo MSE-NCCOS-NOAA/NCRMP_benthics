@@ -20,8 +20,8 @@
 # NCRMP_DRM_calculate_colony_density
 #
 
-# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
-# Last update: Dec 2023
+# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams, Krampitz, Sturm
+# Last update: Sept 2024
 
 
 ##############################################################################################################################
@@ -389,7 +389,8 @@ load_NCRMP_DRM_demo_data <- function(project = "NULL", region, species_filter = 
                       YEAR = 2020,
                       STRAT = dplyr::case_when(STRAT == "T08" & PROT == 2 ~ 'T09', TRUE ~ as.character(STRAT)))
 
-      tmp5 <- Tortugas_2022_coral_demographics
+      tmp5 <- Tortugas_2022_coral_demographics %>%
+        dplyr::mutate(SURVEY = "NCRMP")
 
 
       dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp4, tmp5)  %>%
@@ -432,17 +433,20 @@ load_NCRMP_DRM_demo_data <- function(project = "NULL", region, species_filter = 
       tmp5 <- USVI_2021_coral_demographics %>%
         dplyr::filter(REGION == "STTSTJ")
 
+      tmp6 <- USVI_2023_coral_demographics %>%
+        dplyr::filter(REGION == "STTSTJ")
+
       if(species_filter == "FALSE" ||
          species_filter == "NULL"){
 
         #Combine 1 stage or 2 stage data
-        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4, tmp5) %>%
+        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4, tmp5, tmp6) %>%
           dplyr::mutate(SURVEY = "NCRMP")
       }
 
       if(species_filter == "TRUE"){
         #Combine 1 stage or 2 stage data
-        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4, tmp5) %>%
+        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4, tmp5, tmp6) %>%
           dplyr::mutate(SURVEY = "NCRMP") %>%
           dplyr::filter(SPECIES_CD %in% STTSTJ_filter)
       }
@@ -462,19 +466,22 @@ load_NCRMP_DRM_demo_data <- function(project = "NULL", region, species_filter = 
       tmp4 <- USVI_2021_coral_demographics %>%
         dplyr::filter(REGION == "STX")
 
+      tmp5 <- USVI_2023_coral_demographics %>%
+        dplyr::filter(REGION == "STX")
+
 
       if(species_filter == "FALSE" ||
          species_filter == "NULL"){
 
         #Combine 1 stage or 2 stage data
-        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4) %>%
+        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4, tmp5) %>%
           dplyr::mutate(SURVEY = "NCRMP")
       }
 
       if(species_filter == "TRUE"){
 
         #Combine 1 stage or 2 stage data
-        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4) %>%
+        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4, tmp5) %>%
           dplyr::mutate(SURVEY = "NCRMP") %>%
           dplyr::filter(SPECIES_CD %in% STX_filter)
       }
@@ -494,11 +501,13 @@ load_NCRMP_DRM_demo_data <- function(project = "NULL", region, species_filter = 
 
       tmp4 <- PRICO_2021_coral_demographics
 
+      tmp5 <- PRICO_2023_coral_demographics
+
       if(species_filter == "FALSE"||
          species_filter == "NULL"){
 
         #Combine 1 stage or 2 stage data
-        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4) %>%
+        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4, tmp5) %>%
           dplyr::mutate(SURVEY = "NCRMP")
 
       }
@@ -506,7 +515,7 @@ load_NCRMP_DRM_demo_data <- function(project = "NULL", region, species_filter = 
       if(species_filter == "TRUE"){
 
         #Combine 1 stage or 2 stage data
-        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4) %>%
+        dat_1stage <- dplyr::bind_rows(tmp1, tmp2, tmp3, tmp4, tmp5) %>%
           dplyr::mutate(SURVEY = "NCRMP") %>%
           dplyr::filter(SPECIES_CD %in% PR_filter)
 

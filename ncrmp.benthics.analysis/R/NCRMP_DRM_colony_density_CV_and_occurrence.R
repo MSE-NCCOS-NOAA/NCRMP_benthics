@@ -20,8 +20,8 @@
 # Analysis Rmarkdown, etc.
 #
 
-# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
-# Last update: Nov 2023
+# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams, Sturm
+# Last update: Sep 2024
 
 
 ##############################################################################################################################
@@ -58,126 +58,76 @@
 NCRMP_DRM_colony_density_CV_and_occurrence <- function(region, ptitle, year, file_path = "NULL", species_filter = "NULL", project){
 
   #############
-  # coral species used in allocation
+  # coral species used in allocation, updated for USVI/PR 2023
   #############
 
   if (species_filter == TRUE) {
-    if(region=="STX" || region=="STTSTJ") {
-
-      coral_species <- c("Orbicella annularis", "Orbicella faveolata", "Orbicella franksi", "Acropora cervicornis", "Acropora palmata", "Dendrogyra cylindrus", "Mycetophyllia ferox", "Colpophyllia natans",
-                         "Dichocoenia stokesii", "Diploria labyrinthiformis", "Eusmilia fastigiata", "Meandrina meandrites", "Pseudodiploria strigosa", "Pseudodiploria clivosa")
-    }
-
-    if(region=="PRICO") {
-
-      coral_species <- c("Orbicella annularis", "Orbicella faveolata", "Orbicella franksi", "Acropora cervicornis", "Acropora palmata", "Dendrogyra cylindrus", "Mycetophyllia ferox", "Colpophyllia natans",
-                         "Dichocoenia stokesii", "Diploria labyrinthiformis", "Eusmilia fastigiata", "Meandrina meandrites", "Pseudodiploria strigosa", "Pseudodiploria clivosa")
-    }
-
-
-
-    # FL- subset of species per region
-    # these were the species used for 2018 allocation- modify if needed
-    if(region=="FLK") {
+    if(region == "STTSTJ") {
+      coral_species <- c("Colpophyllia natans", "Diploria labyrinthiformis", "Madracis decactis", "Meandrina meandrites","Montastraea cavernosa", "Orbicella annularis", "Orbicella faveolata", "Pseudodiploria strigosa", "Siderastrea siderea")
+    } else if (region == "STX") {
+      coral_species <- c("Colpophyllia natans", "Dichocoenia stokesii", "Madracis decactis", "Montastraea cavernosa", "Orbicella annularis", "Orbicella franksi", "Pseudodiploria strigosa")
+    } else if (region == "PRICO") {
+      coral_species <- c("Colpophyllia natans", "Diploria labyrinthiformis", "Madracis decactis", "Meandrina meandrites","Montastraea cavernosa", "Orbicella annularis", "Orbicella faveolata", "Orbicella franksi", "Pseudodiploria strigosa")
+    } else if (region == "FLK") {
       coral_species <- c("Colpophyllia natans", "Montastraea cavernosa", "Orbicella faveolata", "Porites astreoides", "Siderastrea siderea", "Solenastrea bournoni")
-    }
-    if(region=="Tortugas") {
+    } else if (region == "Tortugas") {
       coral_species <- c("Colpophyllia natans", "Montastraea cavernosa", "Orbicella faveolata", "Porites astreoides", "Orbicella franksi", "Stephanocoenia intersepta")
+    } else if (region == "SEFCRI") {
+      coral_species <- c("Acropora cervicornis", "Dichocoenia stokesii", "Montastraea cavernosa", "Porites astreoides", "Pseudodiploria strigosa", "Siderastrea siderea")
     }
-    if(region=="SEFCRI") {
-      coral_species <- c("Acropora cervicornis", "Dichocoenia stokesii", "Montastraea cavernosa", "Porites astreoide", "Pseudodiploria strigosa", "Siderastrea siderea")
-    }
-
   }
 
-  if(region=="FLK" && project == "NCRMP") {
-
+  if(region == "FLK" && project == "NCRMP") {
     region_means <- NCRMP_make_weighted_density_CV_data(region = region,
                                                         sppdens = NCRMP_FLK_2014_22_density_species,
                                                         project = project)
-  }
-
-  if(region=="FLK" && project == "NCRMP_DRM") {
-
+  } else if (region == "FLK" && project == "NCRMP_DRM") {
     region_means <- NCRMP_make_weighted_density_CV_data(region = region,
                                                         sppdens = NCRMP_DRM_FLK_2014_22_density_species,
                                                         project = project)
-  }
-
-  if(region=="FLK" && project == "MIR") {
-
+  } else if (region == "FLK" && project == "MIR") {
     region_means <- NCRMP_make_weighted_density_CV_data(region = region,
                                                         sppdens = MIR_2022_density_species_DUMMY,
                                                         project = project)
-  }
-
-
-  if(region=="Tortugas" && project == "NCRMP") {
-
+  } else if (region == "Tortugas" && project == "NCRMP") {
     region_means <- NCRMP_make_weighted_density_CV_data(region = region,
                                                         sppdens = NCRMP_Tort_2014_22_density_species,
                                                         project = project)
-  }
-
-  if(region=="Tortugas" && project == "NCRMP_DRM") {
-
+  } else if (region == "Tortugas" && project == "NCRMP_DRM") {
     region_means <- NCRMP_make_weighted_density_CV_data(region = region,
                                                         sppdens = NCRMP_DRM_Tort_2014_22_density_species,
                                                         project = project)
-  }
-
-  if(region=="SEFCRI" && project == "NCRMP") {
-
+  } else if (region == "SEFCRI" && project == "NCRMP") {
     region_means <- NCRMP_make_weighted_density_CV_data(region = region,
                                                         sppdens = NCRMP_SEFCRI_2014_22_density_species,
                                                         project = project)
-  }
-
-  if(region=="SEFCRI" && project == "NCRMP_DRM") {
-
+  } else if (region == "SEFCRI" && project == "NCRMP_DRM") {
     region_means <- NCRMP_make_weighted_density_CV_data(region = region,
                                                         sppdens = NCRMP_DRM_SEFCRI_2014_22_density_species,
                                                         project = project)
-  }
-
-  if(region=="PRICO") {
-
+  } else if (region == "PRICO") {
     region_means <- NCRMP_make_weighted_density_CV_data(region = region,
-                                                        sppdens = NCRMP_PRICO_2014_21_density_species,
+                                                        sppdens = NCRMP_PRICO_2014_23_density_species,
                                                         project = project)
-  }
-
-  if(region=="STTSTJ") {
-
+  } else if (region == "STTSTJ") {
     region_means <- NCRMP_make_weighted_density_CV_data(region = region,
-                                                        sppdens = NCRMP_STTSTJ_2013_21_density_species,
+                                                        sppdens = NCRMP_STTSTJ_2013_23_density_species,
                                                         project = project)
-  }
-
-  if(region=="STX") {
-
+  } else if (region == "STX") {
     region_means <- NCRMP_make_weighted_density_CV_data(region = region,
-                                                        sppdens = NCRMP_STX_2015_21_density_species,
+                                                        sppdens = NCRMP_STX_2015_23_density_species,
                                                         project = project)
-  }
-
-
-  if(region=="GOM") {
-
+  } else if (region == "GOM") {
     region_means <- NCRMP_make_weighted_density_CV_data(region = region,
                                                         sppdens = NCRMP_FGBNMS_2013_22_density_species,
                                                         project = project)
   }
 
-
   if (species_filter == TRUE) {
-
     region_means <- region_means %>% dplyr::filter(SPECIES_CD %in% coral_species)
-
   }
 
-
-  if(region=="STX" || region=="STTSTJ" || region == "PRICO" || region == "GOM") {
+  if(region == "STX" || region == "STTSTJ" || region == "PRICO" || region == "GOM") {
 
     # Create plot pieces to export
     g.mid <- region_means %>%
