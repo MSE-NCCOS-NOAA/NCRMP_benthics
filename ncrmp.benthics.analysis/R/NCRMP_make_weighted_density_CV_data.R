@@ -21,8 +21,8 @@
 # NCRMP_colony_density_CV_and_occurrence
 #
 
-# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
-# Last update: Nov 2023
+# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams, Sturm
+# Last update: Sep 2024
 
 
 ##############################################################################################################################
@@ -59,9 +59,24 @@ NCRMP_make_weighted_density_CV_data <- function(region, sppdens, project = "NULL
                     inputdata = sppdens,
                     project = project)
 
+  ################UPDATE ALLOCATION SPECIES################################
+  ## Define allocation species for each region
+  allocation_species_list <- list(
+    STTSTJ = c("Colpophyllia natans", "Diploria labyrinthiformis", "Madracis decactis", "Meandrina meandrites", "Montastraea cavernosa", "Orbicella annularis", "Orbicella faveolata", "Pseudodiploria strigosa", "Siderastrea siderea"),
+    STX = c("Colpophyllia natans", "Dichocoenia stokesii", "Madracis decactis", "Montastraea cavernosa", "Orbicella annularis", "Orbicella franksi", "Pseudodiploria strigosa"),
+    PRICO = c("Colpophyllia natans", "Diploria labyrinthiformis", "Madracis decactis", "Meandrina meandrites", "Montastraea cavernosa", "Orbicella annularis", "Orbicella faveolata", "Orbicella franksi", "Pseudodiploria strigosa"),
+    FLK = c("Colpophyllia natans", "Montastraea cavernosa", "Orbicella faveolata", "Porites astreoides", "Siderastrea siderea", "Solenastrea bournoni"),
+    Tortugas = c("Colpophyllia natans", "Montastraea cavernosa", "Orbicella faveolata", "Porites astreoides", "Orbicella franksi", "Stephanocoenia intersepta"),
+    SEFCRI = c("Acropora cervicornis", "Dichocoenia stokesii", "Montastraea cavernosa", "Porites astreoides", "Pseudodiploria strigosa", "Siderastrea siderea")
+  )
+
+
+  # Get the list of allocation species for the given region
+  coral_species <- allocation_species_list[[region]]
+
   ## coral data processing
   species_dens_wide <- sppdens %>%
-    # remove abundance column
+    # remove abundance column, THIS WAS COMMENTED OUT BUT MAYBE NEEDED?
     #dplyr::select(-ABUNDANCE) %>% # abundance was eliminated in Dec. 2023 when we updated to include 0's in all density calculations for all species ever observed in the region
     # filter out spp columns
     dplyr::filter(
@@ -71,6 +86,9 @@ NCRMP_make_weighted_density_CV_data <- function(region, sppdens, project = "NULL
       SPECIES_NAME != "Siderastrea spp",
       SPECIES_NAME != "Orbicella annularis species complex",
       SPECIES_NAME != "Other coral") %>%
+    # Replace "Isophyllastrea rigida" with "Isophyllia rigida"
+    dplyr::mutate(SPECIES_NAME = dplyr::recode(SPECIES_NAME,
+                                               "Isophyllastrea rigida" = "Isophyllia rigida")) %>%
     # add in zeros for species that didn't occur per site. Easiest to flip to wide format (1 row per site) for this
     dplyr::select(-SPECIES_CD) %>%
     tidyr::spread(., SPECIES_NAME, DENSITY,
@@ -78,7 +96,7 @@ NCRMP_make_weighted_density_CV_data <- function(region, sppdens, project = "NULL
 
   if(project == "NCRMP_DRM"){
 
-      species_dens_long <- tidyr::gather(species_dens_wide, SPECIES_CD, dens, 12:ncol(species_dens_wide))
+    species_dens_long <- tidyr::gather(species_dens_wide, SPECIES_CD, dens, 12:ncol(species_dens_wide))
 
   }
   if(project == "NCRMP"){
@@ -185,6 +203,12 @@ NCRMP_make_weighted_density_CV_data <- function(region, sppdens, project = "NULL
     # exclude rows with -spp in name
     dplyr::filter(., !grepl('spp', SPECIES_CD)) %>%
     dplyr::mutate(n_sites_present = tidyr::replace_na(n_sites_present, 0))
+
+
+  # Add the allocation_species column
+  region_means <- region_means %>%
+    dplyr::mutate(allocation_species = ifelse(SPECIES_CD %in% coral_species, "Y", "N"))
+
 
   return(region_means)
 }

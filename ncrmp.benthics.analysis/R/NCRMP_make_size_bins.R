@@ -26,7 +26,7 @@
 # Analysis Rmarkdown, etc.
 #
 
-# NCRMP Caribbean Benthic analytics team: Davis, Groves, Viehman, Williams
+# NCRMP Caribbean Benthic analytics team: Davis, Groves, Viehman, Williams, Krampitz
 # Last update: Jan 2024
 
 
@@ -78,10 +78,10 @@ NCRMP_make_size_bins <- function(region, project, years,
     "MEA MEAN", #M. meandrites
     "DEN CYLI", #D. cylindrus
     "PSE STRI", #A. cervicornis
-    "DIP LABI", #D. labyrinthiformis
+    "DIP LABY", #D. labyrinthiformis
     "COL NATA", #C. natans
     "SID SIDE", #S. siderea
-    "POR ASTE", #P. astreoides
+    "POR ASTR", #P. astreoides
     "MON CAVE", #M. cavernosa
     "AGA AGAR", #A. agaricites
     "MAD AURE", #M. auretenra
@@ -730,8 +730,8 @@ NCRMP_make_size_bins <- function(region, project, years,
   # species and size bin specific NTOT (for mortality estimates)
   ntot_spp_bin <- strat_mort %>%
     # bring in the new ntot
-    dplyr::full_join(ntot) %>%
-    dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, SPECIES_NAME, SPECIES_CD, bin_num, bin_name, PROT, NTOT, ngrtot, wh) %>%
+    dplyr::full_join(ntot, by=c("REGION", "YEAR", "STRAT")) %>%
+    dplyr::select(REGION, YEAR, ANALYSIS_STRATUM, SPECIES_NAME, SPECIES_CD, bin_num, bin_name, NTOT, ngrtot, wh) %>%
     dplyr::distinct() %>%
     dplyr::group_by(REGION, YEAR, SPECIES_NAME, SPECIES_CD, bin_num, bin_name) %>%
     dplyr::summarize(ngrtot_spp = sum(NTOT))
@@ -739,7 +739,7 @@ NCRMP_make_size_bins <- function(region, project, years,
 
   strat_mort_wh_spp <- strat_mort %>%
     # bring in the new ntot
-    dplyr::full_join(ntot) %>%
+    dplyr::full_join(ntot, by=c("REGION", "YEAR", "STRAT")) %>%
     dplyr::full_join(., ntot_spp_bin, by = c("REGION", "YEAR", "SPECIES_NAME", "SPECIES_CD", "bin_num", "bin_name")) %>%
     dplyr::mutate(wh_new = NTOT/ngrtot_spp) %>%
     # stratum estimates

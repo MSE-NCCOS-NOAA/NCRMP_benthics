@@ -18,8 +18,8 @@
 # output gets called by:
 # NCRMP_make_weighted_demo_data.R
 
-# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
-# Last update: Jan 2024
+# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams, Krampitz
+# Last update: September 2024
 
 
 ##############################################################################################################################
@@ -426,11 +426,15 @@ load_NTOT_species <- function(region, inputdata, project){
     # add an empty data frame to populate with the filtered NTOTs
     ntot <- data.frame()
     # create a data frame of the full NTOTs for FLK
+
     NTOT_all <- dplyr::bind_rows(USVI_2021_NTOT %>% dplyr::filter(REGION == "STTSTJ") %>% dplyr::mutate(YEAR = 2013),
                                  USVI_2021_NTOT %>% dplyr::filter(REGION == "STTSTJ") %>% dplyr::mutate(YEAR = 2015),
                                  USVI_2021_NTOT %>% dplyr::filter(REGION == "STTSTJ") %>% dplyr::mutate(YEAR = 2017),
                                  USVI_2021_NTOT %>% dplyr::filter(REGION == "STTSTJ") %>% dplyr::mutate(YEAR = 2019),
-                                 USVI_2021_NTOT %>% dplyr::filter(REGION == "STTSTJ")) %>%
+                                 USVI_2021_NTOT %>% dplyr::filter(REGION == "STTSTJ"),
+                                 #until 2023, all of the NTOTs still had the "HARD" category
+                                 USVI_2023_NTOT %>% dplyr::filter(REGION == "STTSTJ")) %>%
+
       dplyr::mutate(ANALYSIS_STRATUM = STRAT,
                     PROT = NA_character_) %>%
       dplyr::group_by(REGION, YEAR, ANALYSIS_STRATUM, HABITAT_CD, DEPTH_STRAT, PROT) %>%
@@ -477,12 +481,16 @@ load_NTOT_species <- function(region, inputdata, project){
     # add an empty data frame to populate with the filtered NTOTs
     ntot <- data.frame()
     # create a data frame of the full NTOTs for FLK
-    NTOT_all <- dplyr::bind_rows(USVI_2021_NTOT %>% dplyr::filter(REGION == "STX") %>% dplyr::mutate(YEAR = 2013),
-                                 USVI_2021_NTOT %>% dplyr::filter(REGION == "STX") %>% dplyr::mutate(YEAR = 2015),
-                                 USVI_2021_NTOT %>% dplyr::filter(REGION == "STX") %>% dplyr::mutate(YEAR = 2017),
-                                 USVI_2021_NTOT %>% dplyr::filter(REGION == "STX") %>% dplyr::mutate(YEAR = 2019),
-                                 USVI_2021_NTOT %>% dplyr::filter(REGION == "STX")) %>%
-      dplyr::mutate(ANALYSIS_STRATUM = STRAT,
+    NTOT_all <- dplyr::bind_rows(
+
+                  USVI_2021_NTOT %>% dplyr::filter(REGION == "STX") %>% dplyr::mutate(YEAR = 2013),
+                  USVI_2021_NTOT %>% dplyr::filter(REGION == "STX") %>% dplyr::mutate(YEAR = 2015),
+                  USVI_2021_NTOT %>% dplyr::filter(REGION == "STX") %>% dplyr::mutate(YEAR = 2017),
+                  USVI_2021_NTOT %>% dplyr::filter(REGION == "STX") %>% dplyr::mutate(YEAR = 2019),
+                  USVI_2021_NTOT %>% dplyr::filter(REGION == "STX"),
+                  USVI_2023_NTOT %>% dplyr::filter(REGION == "STX")) %>%
+
+       dplyr::mutate(ANALYSIS_STRATUM = STRAT,
                     PROT = NA_character_) %>%
       dplyr::group_by(REGION, YEAR, ANALYSIS_STRATUM, HABITAT_CD, DEPTH_STRAT, PROT) %>%
       dplyr::summarise(NTOT = sum(NTOT)) %>%
@@ -528,10 +536,12 @@ load_NTOT_species <- function(region, inputdata, project){
     # add an empty data frame to populate with the filtered NTOTs
     ntot <- data.frame()
     # create a data frame of the full NTOTs for FLK
-    NTOT_all <- dplyr::bind_rows(PRICO_2021_NTOT %>% dplyr::mutate(YEAR = 2014),
-                                 PRICO_2021_NTOT %>% dplyr::mutate(YEAR = 2016),
-                                 PRICO_2021_NTOT %>% dplyr::mutate(YEAR = 2019),
-                                 PRICO_2021_NTOT) %>%
+      NTOT_all <- dplyr::bind_rows(PRICO_2023_NTOT %>% dplyr::mutate(YEAR = 2014),
+                                   PRICO_2023_NTOT %>% dplyr::mutate(YEAR = 2016),
+                                   PRICO_2023_NTOT %>% dplyr::mutate(YEAR = 2019),
+                                   PRICO_2023_NTOT %>% dplyr::mutate(YEAR = 2021),
+                                   PRICO_2023_NTOT %>% filter(HABITAT_CD != "HARD")) %>% #HARD removed in 2023 sampling
+
       dplyr::mutate(ANALYSIS_STRATUM = STRAT,
                     PROT = NA_character_) %>%
       dplyr::group_by(REGION, YEAR, ANALYSIS_STRATUM, HABITAT_CD, DEPTH_STRAT, PROT) %>%

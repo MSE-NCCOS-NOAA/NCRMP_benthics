@@ -117,22 +117,22 @@ NCRMP_colony_density_CV_and_occurrence <- function(region, ptitle, year, file_pa
   if(region=="PRICO") {
 
     region_means <- NCRMP_make_weighted_density_CV_data(region = region,
-                                                        sppdens = NCRMP_PRICO_2014_21_density_species,
-                                                        project = project)
+                                                        sppdens = NCRMP_PRICO_2014_23_density_species,
+                                                        project = "NCRMP")
   }
 
   if(region=="STTSTJ") {
 
     region_means <- NCRMP_make_weighted_density_CV_data(region = region,
-                                                        sppdens = NCRMP_STTSTJ_2013_21_density_species,
-                                                        project = project)
+                                                        sppdens = NCRMP_STTSTJ_2013_23_density_species,
+                                                        project = "NCRMP")
   }
 
   if(region=="STX") {
 
     region_means <- NCRMP_make_weighted_density_CV_data(region = region,
-                                                        sppdens = NCRMP_STX_2015_21_density_species,
-                                                        project = project)
+                                                        sppdens = NCRMP_STX_2015_23_density_species,
+                                                        project = "NCRMP")
   }
 
 
@@ -140,7 +140,7 @@ NCRMP_colony_density_CV_and_occurrence <- function(region, ptitle, year, file_pa
 
     region_means <- NCRMP_make_weighted_density_CV_data(region = region,
                                                         sppdens = NCRMP_FGBNMS_2013_22_density_species,
-                                                        project = project)
+                                                        project = "NCRMP")
   }
 
 

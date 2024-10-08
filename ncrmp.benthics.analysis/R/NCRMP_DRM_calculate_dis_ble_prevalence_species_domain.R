@@ -18,8 +18,8 @@
 # Analysis Rmarkdown, etc.
 #
 
-# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
-# Last update: Jan 2024
+# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams, Krampitz
+# Last update: Sept 2024
 
 
 ##############################################################################################################################
@@ -123,7 +123,7 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
     if(region == "STTSTJ"){
 
       # Load species/site level bleaching & disease data
-      dat <- NCRMP_STTSTJ_2013_21_dis_ble_prev_species %>%
+      dat <- NCRMP_STTSTJ_2013_23_dis_ble_prev_species %>%
         dplyr::mutate(SPECIES_CD=dplyr::recode(SPECIES_CD,
                                                "ORB ANCX"="ORB SPE."))
 
@@ -132,7 +132,7 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
     if(region == "STX"){
 
 
-      dat <- NCRMP_STX_2015_21_dis_ble_prev_species %>%
+      dat <- NCRMP_STX_2015_23_dis_ble_prev_species %>%
         dplyr::mutate(SPECIES_CD=dplyr::recode(SPECIES_CD,
                                                "ORB ANCX"="ORB SPE."))
 
@@ -140,7 +140,7 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
 
     if(region == "PRICO"){
 
-      dat <- NCRMP_PRICO_2014_21_dis_ble_prev_species %>%
+      dat <- NCRMP_PRICO_2014_23_dis_ble_prev_species %>%
         dplyr::mutate(SPECIES_CD=dplyr::recode(SPECIES_CD,
                                                "ORB ANCX"="ORB SPE."))
     }

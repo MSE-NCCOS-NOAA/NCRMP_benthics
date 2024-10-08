@@ -19,8 +19,8 @@
 # Tech memo Rmarkdown
 #
 
-# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
-# Last update: Jan 2023
+# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams, Sturm
+# Last update: Sep 2024
 
 
 ##############################################################################################################################
@@ -49,12 +49,13 @@ NCRMP_make_ESA_corals_FOI <- function(){
 
 
 
-esa_spp <- dplyr::bind_rows(USVI_2021_inverts_ESAcorals,
-                        PRICO_2021_inverts_ESAcorals,
+esa_spp <- dplyr::bind_rows(USVI_2023_inverts_ESAcorals,
+                        PRICO_2023_inverts_ESAcorals,
                         FLK_2022_inverts_ESAcorals,
                         Tortugas_2022_inverts_ESAcorals,
                         FGBNMS_2022_inverts_ESAcorals,
-                        SEFCRI_2022_inverts_ESAcorals %>% dplyr::select(-RUGOSITY_CD)) %>%
+                        SEFCRI_2022_inverts_ESAcorals
+                        %>% dplyr::select(-RUGOSITY_CD)) %>%
   # calculate totals by species by region
   dplyr::mutate(O_ANNULARIS = dplyr::case_when(O_ANNULARIS == "PS" ~ 1,
                                                O_ANNULARIS == "PT" ~ 1,
@@ -99,12 +100,13 @@ esa_spp <- dplyr::bind_rows(USVI_2021_inverts_ESAcorals,
 
 # get total # of sites surveyed for each species
 # calculate NAs by species (not counted)
-esa_Nsites <-  dplyr::bind_rows(USVI_2021_inverts_ESAcorals,
-                                PRICO_2021_inverts_ESAcorals,
+esa_Nsites <-  dplyr::bind_rows(USVI_2023_inverts_ESAcorals,
+                                PRICO_2023_inverts_ESAcorals,
                                 FLK_2022_inverts_ESAcorals,
                                 Tortugas_2022_inverts_ESAcorals,
                                 FGBNMS_2022_inverts_ESAcorals,
-                                SEFCRI_2022_inverts_ESAcorals %>% dplyr::select(-RUGOSITY_CD)) %>%
+                                SEFCRI_2022_inverts_ESAcorals
+                                 %>% dplyr::select(-RUGOSITY_CD)) %>%
   # calculate totals by species by region
   dplyr::mutate(O_ANNULARIS = dplyr::case_when(O_ANNULARIS == "PS" ~ 1,
                                                O_ANNULARIS == "PT" ~ 1,
@@ -160,12 +162,13 @@ FOI_species <- esa_spp %>%
   dplyr::mutate(foi = N/Nsites)
 
 
-esa_reg <- dplyr::bind_rows(USVI_2021_inverts_ESAcorals,
-                        PRICO_2021_inverts_ESAcorals,
-                        FLK_2022_inverts_ESAcorals,
-                        Tortugas_2022_inverts_ESAcorals,
-                        FGBNMS_2022_inverts_ESAcorals,
-                        SEFCRI_2022_inverts_ESAcorals %>% dplyr::select(-RUGOSITY_CD)) %>%
+esa_reg <- dplyr::bind_rows(USVI_2023_inverts_ESAcorals,
+                            PRICO_2023_inverts_ESAcorals,
+                            FLK_2022_inverts_ESAcorals,
+                            Tortugas_2022_inverts_ESAcorals,
+                            FGBNMS_2022_inverts_ESAcorals,
+                            SEFCRI_2022_inverts_ESAcorals
+                            %>% dplyr::select(-RUGOSITY_CD)) %>%
   # calculate totals by species by region
   dplyr::mutate(O_ANNULARIS = dplyr::case_when(O_ANNULARIS == "PS" ~ 1,
                                                O_ANNULARIS == "PT" ~ 1,

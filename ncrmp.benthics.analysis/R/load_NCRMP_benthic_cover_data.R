@@ -18,8 +18,8 @@
 # NCRMP_calculate_cover
 #
 
-# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams
-# Last update: Dec 2023
+# NCRMP Caribbean Benthic analytics team: Groves, Viehman, Williams, Krampitz
+# Last update: Sep 2024
 
 
 ##############################################################################################################################
@@ -181,7 +181,10 @@ load_NCRMP_benthic_cover_data <- function(project = "NULL", region){
       dat5 <- USVI_2021_benthic_cover %>%
         dplyr::filter(REGION == "STTSTJ")
 
-      dat <- dplyr::bind_rows(dat1, dat2, dat3, dat4, dat5) %>%
+      dat6 <- USVI_2023_benthic_cover %>%
+        dplyr::filter(REGION == "STTSTJ")
+
+      dat <- dplyr::bind_rows(dat1, dat2, dat3, dat4, dat5, dat6) %>%
         dplyr::mutate(ANALYSIS_STRATUM = STRAT)
 
     }
@@ -201,7 +204,10 @@ load_NCRMP_benthic_cover_data <- function(project = "NULL", region){
       dat5 <- USVI_2021_benthic_cover %>%
         dplyr::filter(REGION == "STX")
 
-      dat <- dplyr::bind_rows(dat2, dat3, dat4, dat5) %>%
+      dat6 <- USVI_2023_benthic_cover %>%
+        dplyr::filter(REGION == "STX")
+
+      dat <- dplyr::bind_rows(dat2, dat3, dat4, dat5, dat6) %>%
         dplyr::mutate(ANALYSIS_STRATUM = STRAT)
 
     }
@@ -222,7 +228,9 @@ load_NCRMP_benthic_cover_data <- function(project = "NULL", region){
 
       dat4 <- PRICO_2021_benthic_cover
 
-      dat <- dplyr::bind_rows(dat1, dat2, dat3, dat4) %>%
+      dat5 <- PRICO_2023_benthic_cover
+
+      dat <- dplyr::bind_rows(dat1, dat2, dat3, dat4, dat5) %>%
         dplyr::mutate(ANALYSIS_STRATUM = STRAT)
 
     }
@@ -237,11 +245,11 @@ load_NCRMP_benthic_cover_data <- function(project = "NULL", region){
         dplyr::mutate(MAPGRID_NR = as.factor(MAPGRID_NR))
 
       dat4 <- FGBNMS_2022_benthic_cover %>%
-        dplyr::mutate(MAPGRID_NR = as.factor(MAPGRID_NR))
+        dplyr::mutate(MAPGRID_NR = as.factor(MAPGRID_NR)) %>%
+        dplyr::mutate(MAPGRID_NR = paste("FGB", MAPGRID_NR, sep = ""))
 
       dat <- dplyr::bind_rows(dat1, dat2, dat3, dat4) %>%
         dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS")
-
 
     }
 
