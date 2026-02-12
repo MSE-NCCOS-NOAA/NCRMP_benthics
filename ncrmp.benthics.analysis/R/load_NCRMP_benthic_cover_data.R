@@ -39,7 +39,7 @@
 #'
 
 load_NCRMP_benthic_cover_data <- function(project = "NULL", region) {
-  
+
   ####Recode species####
   recode_and_clean_species <- function(data) {
     if ("COVER_CAT_NAME" %in% colnames(data)) {
@@ -65,10 +65,10 @@ load_NCRMP_benthic_cover_data <- function(project = "NULL", region) {
     return(data)
   }
 
-            
+
   #### Data Processing Mission Iconic Reef ####
   if (project == "MIR") {
-    
+
     dat <- MIR_FLK_2022_benthic_cover_DUMMY %>%
       dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
       dplyr::mutate(
@@ -79,14 +79,14 @@ load_NCRMP_benthic_cover_data <- function(project = "NULL", region) {
       ) %>%
       dplyr::filter(!is.na(MAPGRID_NR), !is.na(MIR_zone))
   } # end MIR
-  
-  
+
+
   #### Data Processing Southeast Florida NCRMP/Null Project ####
   if ((project == "NCRMP" || project == "NULL") && region == "SEFCRI") {
-    
+
     any(is.na(SEFCRI_2014_2stage_benthic_cover$PRIMARY_SAMPLE_UNIT))
     any(is.na(SEFCRI_2014_2stage_benthic_cover$STATION_NR))
-    
+
     datasets <- list(
       SEFCRI_2014_2stage_benthic_cover %>%
         # KICK OUT STATION NOT SAMPLED
@@ -104,12 +104,12 @@ load_NCRMP_benthic_cover_data <- function(project = "NULL", region) {
       SEFCRI_2022_benthic_cover,
       SEFCRI_2024_benthic_cover
     )
-    
+
     dat <- dplyr::bind_rows(datasets) %>%
       dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
       recode_and_clean_species()
   } # end SEFCRI
-  
+
   #### Data Processing Florida Keys NCRMP/Null Project ####
   if ((project == "NCRMP" || project == "NULL") && region == "FLK") {
 
@@ -129,11 +129,11 @@ load_NCRMP_benthic_cover_data <- function(project = "NULL", region) {
       dplyr::mutate(PROT = as.factor(0),
                     ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
   }
-  
-  
+
+
   #### Data Processing Tortugas NCRMP/Null Project ####
   if ((project == "NCRMP" || project == "NULL") && region == "Tortugas") {
-    
+
     datasets <- list(
       TortugasMarq_2014_benthic_cover,
       TortugasMarq_2016_benthic_cover,
@@ -149,8 +149,8 @@ load_NCRMP_benthic_cover_data <- function(project = "NULL", region) {
       Tortugas_2022_benthic_cover,
       Tortugas_2024_benthic_cover
     )
-    
-  
+
+
     dat <- dplyr::bind_rows(datasets) %>%
       dplyr::filter(
         SUB_REGION_NAME != "Marquesas",
@@ -159,59 +159,62 @@ load_NCRMP_benthic_cover_data <- function(project = "NULL", region) {
       dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " ")) %>%
       recode_and_clean_species()
   }
-  
+
   #### Data Processing St Thomas St John ####
   if (region == "STTSTJ") {
-    
+
     datasets <- list(
       USVI_2013_benthic_cover,
       USVI_2015_benthic_cover,
       USVI_2017_benthic_cover,
       USVI_2019_benthic_cover,
       USVI_2021_benthic_cover,
-      USVI_2023_benthic_cover
+      USVI_2023_benthic_cover,
+      USVI_2025_benthic_cover
     )
-    
+
     dat <- dplyr::bind_rows(datasets) %>%
       dplyr::filter(REGION == "STTSTJ") %>%
       dplyr::mutate(ANALYSIS_STRATUM = STRAT)
   } # end STTSTJ
-  
+
   #### Data Processing St Croix ####
   if (region == "STX") {
-    
+
     datasets <- list(
       USVI_2015_benthic_cover,
       USVI_2017_benthic_cover,
       USVI_2019_benthic_cover,
       USVI_2021_benthic_cover,
-      USVI_2023_benthic_cover
+      USVI_2023_benthic_cover,
+      USVI_2025_benthic_cover
     )
-    
+
     dat <- dplyr::bind_rows(datasets) %>%
       dplyr::filter(REGION == "STX") %>%
       dplyr::mutate(ANALYSIS_STRATUM = STRAT)
   } # end STX
-  
+
   #### Data Processing Puerto Rico ####
   if (region == "PRICO") {
-    
+
     datasets <- list(
       PRICO_2014_benthic_cover %>%
         recode_and_clean_species(),
       PRICO_2016_benthic_cover %>% dplyr::mutate(YEAR = 2016),
       PRICO_2019_benthic_cover,
       PRICO_2021_benthic_cover,
-      PRICO_2023_benthic_cover
+      PRICO_2023_benthic_cover,
+      PRICO_2025_benthic_cover
     )
-    
+
     dat <- dplyr::bind_rows(datasets) %>%
       dplyr::mutate(ANALYSIS_STRATUM = STRAT)
   } # end PRICO
-  
+
   #### Data Processing Flower Gardens ####
   if (region == "FGB") {
-    
+
     datasets <- list(
       FGBNMS_2013_benthic_cover,
       FGBNMS_2015_benthic_cover,
@@ -223,11 +226,11 @@ load_NCRMP_benthic_cover_data <- function(project = "NULL", region) {
         dplyr::mutate(MAPGRID_NR = as.factor(MAPGRID_NR)) %>%
         dplyr::mutate(MAPGRID_NR = paste("FGB", MAPGRID_NR, sep = ""))
     )
-    
+
     dat <- dplyr::bind_rows(datasets) %>%
       dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS")
   } # end FGB
-  
+
   #### Export ####
   return(dat)
 }

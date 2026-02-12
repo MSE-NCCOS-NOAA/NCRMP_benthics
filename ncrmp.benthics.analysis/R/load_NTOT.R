@@ -372,7 +372,11 @@ load_NTOT <- function(region, inputdata, project){
       dplyr::filter(REGION == "STTSTJ") %>%
       process_USVI_NTOT(year = 2023)
 
-    ntot <- dplyr::bind_rows(ntot13, ntot15, ntot17, ntot19, ntot21, ntot23)
+    ntot25 <- USVI_2025_NTOT %>%
+      dplyr::filter(REGION == "STTSTJ") %>%
+      process_USVI_NTOT(year = 2025)
+
+    ntot <- dplyr::bind_rows(ntot13, ntot15, ntot17, ntot19, ntot21, ntot23, ntot25)
 
   }
   #### STX ####
@@ -402,7 +406,11 @@ load_NTOT <- function(region, inputdata, project){
       dplyr::filter(REGION == "STX") %>%
       process_USVI_NTOT(year = 2023)
 
-    ntot <- dplyr::bind_rows(ntot15, ntot17, ntot19, ntot21, ntot23)
+    ntot25 <- USVI_2025_NTOT %>%
+      dplyr::filter(REGION == "STX") %>%
+      process_USVI_NTOT(year = 2025)
+
+    ntot <- dplyr::bind_rows(ntot15, ntot17, ntot19, ntot21, ntot23, ntot25)
 
   }
 
@@ -410,7 +418,7 @@ load_NTOT <- function(region, inputdata, project){
   PRICO_data_clean <- function(data, year){
 
     #if 2023, filter out HARD habitat code
-    if (year == 2023) {data <- dplyr::filter(data, HABITAT_CD != "HARD")}
+    if (year == 2023 | year == 2025) {data <- dplyr::filter(data, HABITAT_CD != "HARD")}
 
     data <- data %>%
       dplyr::group_by(REGION, YEAR, STRAT, HABITAT_CD, DEPTH_STRAT) %>%
@@ -431,7 +439,10 @@ load_NTOT <- function(region, inputdata, project){
       PRICO_data_clean(year = 2014)
 
     #list of all other years besides 2014
-    years <- c(2014,2019,2021, 2023)
+    #when you update this for years after 2021, make sure to remove hard from above
+    ##clean PRICO function. I don't think this will be relevant in 2027 becuase of full
+    #hab changes, but just flagging
+    years <- c(2016,2019,2021, 2023, 2025)
 
     other_years <- map_dfr(years, ~PRICO_data_clean(PRICO_2023_NTOT, .x))
 
@@ -454,7 +465,7 @@ load_NTOT <- function(region, inputdata, project){
 
     years <- c(2013, 2015, 2018, 2022, 2024)
 
-    ntot <- map_dfr(years, ~FGB_data_clean(FGBNMS_2024_NTOT, .x))
+    ntot <- purrr::map_dfr(years, ~FGB_data_clean(FGBNMS_2024_NTOT, .x))
   }
 
 
@@ -463,6 +474,6 @@ load_NTOT <- function(region, inputdata, project){
     dplyr::mutate(PROT = as.factor(PROT))
   ####Export####
   return(ntot)
-  
+
 }
 

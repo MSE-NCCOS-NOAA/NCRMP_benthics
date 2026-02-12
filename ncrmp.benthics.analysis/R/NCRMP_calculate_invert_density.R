@@ -93,7 +93,7 @@ NCRMP_calculate_invert_density <- function(region, project = "NULL") {
                       TortugasMarq_2016_inverts_ESAcorals,
                       Tortugas_2020_inverts_ESAcorals %>% dplyr::mutate(YEAR = 2020) %>%
                         dplyr::mutate(STRAT = dplyr::case_when(STRAT == "T08" & PROT == 2 ~ 'T09', TRUE ~ as.character(STRAT))),
-                      Tortugas_2022_inverts_ESAcorals, 
+                      Tortugas_2022_inverts_ESAcorals,
                       Tortugas_2024_inverts_ESAcorals)
 
     dat_2stage <- Tortugas_2018_inverts_ESAcorals
@@ -109,7 +109,8 @@ NCRMP_calculate_invert_density <- function(region, project = "NULL") {
                      USVI_2017_inverts_ESAcorals%>% filter(REGION == "STTSTJ"),
                      USVI_2019_inverts_ESAcorals%>% filter(REGION == "STTSTJ"),
                      USVI_2021_inverts_ESAcorals%>% filter(REGION == "STTSTJ"),
-                     USVI_2023_inverts_ESAcorals%>% filter(REGION == "STTSTJ"))
+                     USVI_2023_inverts_ESAcorals%>% filter(REGION == "STTSTJ"),
+                     USVI_2025_inverts_ESAcorals%>% filter(REGION == "STTSTJ"))
 
     #Combine 1 stage or 2 stage data
     dat_1stage <-dplyr::bind_rows(datasets) %>%
@@ -124,7 +125,8 @@ NCRMP_calculate_invert_density <- function(region, project = "NULL") {
       USVI_2017_inverts_ESAcorals %>% filter(REGION == "STX"),
       USVI_2019_inverts_ESAcorals %>% filter(REGION == "STX"),
       USVI_2021_inverts_ESAcorals %>% filter(REGION == "STX"),
-      USVI_2023_inverts_ESAcorals %>% filter(REGION == "STX")
+      USVI_2023_inverts_ESAcorals %>% filter(REGION == "STX"),
+      USVI_2025_inverts_ESAcorals%>% filter(REGION == "STX")
     )
     dat_1stage <-dplyr::bind_rows(datasets)
   } #end stx
@@ -136,7 +138,8 @@ NCRMP_calculate_invert_density <- function(region, project = "NULL") {
                      PRICO_2016_inverts_ESAcorals %>% dplyr::mutate(YEAR = 2016),
                      PRICO_2019_inverts_ESAcorals,
                      PRICO_2021_inverts_ESAcorals,
-                     PRICO_2023_inverts_ESAcorals)
+                     PRICO_2023_inverts_ESAcorals,
+                     PRICO_2025_inverts_ESAcorals)
 
     #Combine data
     dat_1stage <- dplyr::bind_rows(datasets) %>%
@@ -145,7 +148,7 @@ NCRMP_calculate_invert_density <- function(region, project = "NULL") {
 
   #### Clean up   FGB ####
   if(region == "FGB"){
-    
+
     #helper function for cleaning up FGB data
     mutate_FGB <- function(data){
       data %>%dplyr::mutate(SURVEY = "NCRMP",
@@ -153,7 +156,7 @@ NCRMP_calculate_invert_density <- function(region, project = "NULL") {
                             STRAT = "FGBNMS",
                             REGION = "FGB",
                             MAPGRID_NR = as.factor(MAPGRID_NR))
-      
+
     }
      #list the data sets only including flower gardens
     #this calls the  helper function that cleans and mutates the datasets
@@ -220,7 +223,7 @@ NCRMP_calculate_invert_density <- function(region, project = "NULL") {
                        CONCH_NUM = mean(CONCH_NUM, na.rm=T),
                        DIADEMA_NUM = mean(DIADEMA_NUM, na.rm=T),
                        Diadema_dens = mean(Diadema_dens, na.rm=T))
-    
+
     diadema_density_site <- dplyr::bind_rows(dat1_1stage, dat1_2stage)
 
     #### Non Florida Regions ####
@@ -234,13 +237,13 @@ NCRMP_calculate_invert_density <- function(region, project = "NULL") {
       # drop columns
       dplyr::select(YEAR, MONTH, DAY, REGION, SUB_REGION_NAME, PRIMARY_SAMPLE_UNIT, LAT_DEGREES, LON_DEGREES,
                       MIN_DEPTH, MAX_DEPTH, STRAT, PROT, LOBSTER_NUM, CONCH_NUM, DIADEMA_NUM, Diadema_dens)
-    
+
   }
 
-  #### call function for weighting   #### 
+  #### call function for weighting   ####
   tmp <- NCRMP_make_weighted_invert_density_data(inputdata = diadema_density_site, region, project)
   list2env(tmp, envir = .GlobalEnv)
-  
+
   ####Export####
   output <- list(
     "diadema_density_site" = diadema_density_site,

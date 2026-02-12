@@ -47,13 +47,13 @@
 
 
 NCRMP_calculate_ESA_corals_PresAbs <- function() {
-  
+
   ####Change analysis strat Helper Function####
   change_analysis_strat <- function(data){
     data %>% dplyr::mutate(ANALYSIS_STRATUM = paste(STRAT, "/ PROT =", PROT, sep = " "))
   }
-  
-  ####   SEFCRI   ####  
+
+  ####   SEFCRI   ####
   sefcri_datasets <- list(
     change_analysis_strat(SEFCRI_2014_2stage_inverts_ESAcorals),
     change_analysis_strat(SEFCRI_2016_inverts_ESAcorals),
@@ -63,20 +63,20 @@ NCRMP_calculate_ESA_corals_PresAbs <- function() {
     change_analysis_strat(SEFCRI_2024_inverts_ESAcorals)
   )
 
-  ####  FLK   ####  
+  ####  FLK   ####
   FLK_datasets <-list(
     FLK_2014_2stage_inverts_ESAcorals %>%  dplyr::mutate(YEAR = 2014, PROT = 0) %>% change_analysis_strat(),
     FLK_2016_inverts_ESAcorals %>% dplyr::mutate(PROT = 0) %>% change_analysis_strat(),
     FLK_2018_inverts_ESAcorals %>%  dplyr::mutate(PROT = 0) %>%  change_analysis_strat() %>% dplyr::select(-RUGOSITY_CD),
     FLK_2020_inverts_ESAcorals %>% dplyr::mutate(PROT = 0)%>% change_analysis_strat(),
     update_protection_status(
-      (change_analysis_strat(FLK_2022_inverts_ESAcorals)), FLK_2020_sample_frame@data) %>% 
+      (change_analysis_strat(FLK_2022_inverts_ESAcorals)), FLK_2020_sample_frame@data) %>%
                                dplyr::mutate(PROT = 0) ,
     FLK_2024_inverts_ESAcorals %>% dplyr::mutate(PROT = 0)%>% change_analysis_strat()
   )
-  
 
-  ####  Tortugas   ####  
+
+  ####  Tortugas   ####
   Tort_datasets <- list(
     change_analysis_strat(TortugasMarq_2014_inverts_ESAcorals) %>%
       dplyr::filter(SUB_REGION_NAME != "Marquesas",
@@ -94,15 +94,15 @@ NCRMP_calculate_ESA_corals_PresAbs <- function() {
   FL <- dplyr::bind_rows(sefcri_datasets,FLK_datasets, Tort_datasets )  %>%
     # Change to factor - there are letters in the FGBNMS MAPGRID NRs
     dplyr::mutate(MAPGRID_NR = as.factor(MAPGRID_NR))
-  
-  
+
+
   #####Mutate Analysis Strat####
   fix_strat <- function(data){
     data %>%dplyr::mutate(ANALYSIS_STRATUM = STRAT) %>%
       dplyr::mutate(MAPGRID_NR = as.factor(MAPGRID_NR))
   }
 
-  
+
     ####Carib / fgb####
     # St. Thomas, St. John, & St. Croix
     usvi_datasets <- list(
@@ -110,7 +110,9 @@ NCRMP_calculate_ESA_corals_PresAbs <- function() {
       fix_strat(USVI_2015_inverts_ESAcorals),
       fix_strat(USVI_2017_inverts_ESAcorals),
       fix_strat(USVI_2019_inverts_ESAcorals),
-      fix_strat(USVI_2021_inverts_ESAcorals)
+      fix_strat(USVI_2021_inverts_ESAcorals),
+      fix_strat(USVI_2023_inverts_ESAcorals),
+      fix_strat(USVI_2025_inverts_ESAcorals)
     )
 
     #Puerto Rico
@@ -118,7 +120,9 @@ NCRMP_calculate_ESA_corals_PresAbs <- function() {
       fix_strat(PRICO_2014_inverts_ESAcorals),
       fix_strat(PRICO_2016_inverts_ESAcorals)%>%dplyr::mutate(YEAR = 2016),
       fix_strat(PRICO_2019_inverts_ESAcorals),
-      fix_strat(PRICO_2021_inverts_ESAcorals)
+      fix_strat(PRICO_2021_inverts_ESAcorals),
+      fix_strat(PRICO_2023_inverts_ESAcorals),
+      fix_strat(PRICO_2025_inverts_ESAcorals)
     )
 
     ## Flower Garden Banks National Marine Sanctuary (fgb)
@@ -134,20 +138,20 @@ NCRMP_calculate_ESA_corals_PresAbs <- function() {
       FGBNMS_2024_inverts_ESAcorals %>%
         dplyr::mutate(ANALYSIS_STRATUM = "FGBNMS",MAPGRID_NR = as.factor(MAPGRID_NR))
     )
-  
-  
+
+
   #Combine Carib and FGB
     Carib_FGB <- dplyr::bind_rows(usvi_datasets, prico_datasets, fgb_datasets) %>%
     # Remove METERS_COMPLETED as it is missing from the FL data
     dplyr::select(-METERS_COMPLETED) %>%
     # Combine and change to factor - there are letters in the FGBNMS MAPGRID NRs
     dplyr::mutate(MAPGRID_NR = as.factor(MAPGRID_NR))
-  
-  
+
+
   ####Combine FL, Carib, and FGB####
-  
+
   dat <- dplyr::bind_rows(FL, Carib_FGB)
-  
+
   ####Mutate Species Function###
   mutate_species <- function(data){
     data %>%dplyr::mutate(A_PALMATA = dplyr::case_when(A_PALMATA == 0 ~ 0, A_PALMATA > 0 ~ 1, TRUE ~ NA_real_),

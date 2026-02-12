@@ -47,7 +47,7 @@
 #'
 
 load_NCRMP_DRM_demo_data <- function(project = "NULL", region, species_filter = "NULL"){
-  
+
   #### clean data function ####
   clean_data <- function(data, survey){
     data<- data %>%
@@ -106,7 +106,7 @@ load_NCRMP_DRM_demo_data <- function(project = "NULL", region, species_filter = 
       clean_data(SEFCRI_2016_coral_demographics, "NCRMP"),
       clean_data(SEFCRI_2018_coral_demographics, "NCRMP"),
       clean_data(SEFCRI_2020_coral_demographics, "NCRMP") %>% dplyr::mutate(YEAR = 2020),
-      clean_data(SEFCRI_2022_coral_demographics, "NCRMP"), 
+      clean_data(SEFCRI_2022_coral_demographics, "NCRMP"),
       clean_data(SEFCRI_2024_coral_demographics, "NCRMP")
     )
     # Load and clean two stage datasets
@@ -218,7 +218,7 @@ load_NCRMP_DRM_demo_data <- function(project = "NULL", region, species_filter = 
       clean_data(Tortugas_2022_coral_demographics, "NCRMP"),
       clean_data(Tortugas_2024_coral_demographics, "NCRMP")
     )
-    
+
 
     two_stage_data <- list(
       clean_data(Tortugas_2018_coral_demographics, "NCRMP"),
@@ -330,7 +330,8 @@ load_NCRMP_DRM_demo_data <- function(project = "NULL", region, species_filter = 
       USVI_2017_coral_demographics,
       USVI_2019_coral_demographics,
       USVI_2021_coral_demographics,
-      USVI_2023_coral_demographics
+      USVI_2023_coral_demographics,
+      USVI_2025_coral_demographics
     )
 
     dat_1stage <- dplyr::bind_rows(STTSTJ_datasets) %>%
@@ -352,7 +353,8 @@ load_NCRMP_DRM_demo_data <- function(project = "NULL", region, species_filter = 
       USVI_2017_coral_demographics,
       USVI_2019_coral_demographics,
       USVI_2021_coral_demographics,
-      USVI_2023_coral_demographics
+      USVI_2023_coral_demographics,
+      USVI_2025_coral_demographics
     )
 
     dat_1stage <- dplyr::bind_rows(STX_datasets) %>%
@@ -373,7 +375,8 @@ load_NCRMP_DRM_demo_data <- function(project = "NULL", region, species_filter = 
       PRICO_2016_coral_demographics %>% dplyr::mutate(YEAR = 2016, PROT = NA),
       PRICO_2019_coral_demographics,
       PRICO_2021_coral_demographics,
-      PRICO_2023_coral_demographics
+      PRICO_2023_coral_demographics,
+      PRICO_2025_coral_demographics
     )
 
     dat_1stage <- dplyr::bind_rows(datasets) %>% dplyr::mutate(SURVEY = "NCRMP")

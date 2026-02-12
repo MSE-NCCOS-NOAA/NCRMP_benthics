@@ -59,27 +59,27 @@ NCRMP_DRM_colony_density_CV_and_occurrence <- function(region, ptitle, year, fil
   #### Call Function to get Species ####
   #this is located in the .R folder of the package and might require updating if species we want change
   coral_species_by_region <- species_for_CV_and_occurrence(region)
-  
+
   ####Helper Function that gets the Dataset ####
   #this doesn't require constant updating of the datasets
   get_dataset <- function(region, year, project) {
-    
+
     #tort and fgb both have different "region names"  in the datasets so mutate here
     if (region == "Tortugas"){ region = "Tort"}
     if (region == "FGB") { region = "FGBNMS"}
-    
-    #get the last 2 num of the year 
+
+    #get the last 2 num of the year
     year_short <- year %% 100
-      
-    string_version <- paste(project,  region, "2014", year_short, "density_species", sep = "_")
+
+    string_version <- paste(project,  region, start_year, year_short, "density_species", sep = "_")
     get(string_version, envir = .GlobalEnv)
   }
-  
-  #if the project isn't actually entered default to ncrmp 
+
+  #if the project isn't actually entered default to ncrmp
   if (project == "NULL"){ project = "NCRMP"}
   #call the helper function to get the dataset~
   sppdens <- get_dataset(region = region, project = project, year = year)
-  
+
   #### Call NCRMP_make_weighted_density_CV_data function to get region means ####
   region_means <- NCRMP_make_weighted_density_CV_data(region = region, sppdens = sppdens, project = project)
 
@@ -90,19 +90,19 @@ NCRMP_DRM_colony_density_CV_and_occurrence <- function(region, ptitle, year, fil
 
   #### Make the plot ####
   plot_cv_occ <- function(region_means, set_occurrence, year, ptitle) {
-    
-    # list the esa species before the plot to make it easier to read the code 
+
+    # list the esa species before the plot to make it easier to read the code
     esa_species <- c("Acropora cervicornis", "Acropora palmata",
                      "Dendrogyra cylindrus", "Orbicella annularis",
                      "Orbicella faveolata", "Orbicella franksi",   "Mycetophyllia ferox")
-    
+
     #reduce the number of filtering
     year <- as.numeric(year)
-    
+
     region_means <- region_means %>%
       filter(YEAR == year) %>%
       filter(!is.na(CV), CV < 1)
-    
+
       g.mid <- region_means %>%
         dplyr::filter(occurrence > set_occurrence) %>%
         ggplot(aes(x = 1, y = reorder(SPECIES_CD, occurrence))) +
@@ -126,7 +126,8 @@ NCRMP_DRM_colony_density_CV_and_occurrence <- function(region, ptitle, year, fil
 
     g1 <-  region_means %>%
       # exclude occurrences of 0
-      dplyr::filter(occurrence > 0.01) %>%
+      #dplyr::filter(occurrence > 0.01) %>%
+      dplyr::filter(occurrence > set_occurrence) %>%
       ggplot(., aes(x = reorder(SPECIES_CD, occurrence),
                  y = occurrence,
                  fill = 'even')) +
@@ -167,20 +168,20 @@ NCRMP_DRM_colony_density_CV_and_occurrence <- function(region, ptitle, year, fil
             plot.title = element_text(hjust = 0.5, size = 10,  face = "bold")) +
       coord_flip() +
       guides(fill = "none") +
-      geom_hline(yintercept=20, linetype="dashed", color = "black") 
-    
+      geom_hline(yintercept=20, linetype="dashed", color = "black")
+
 
     return(list(g.mid = g.mid, g1 = g1, g2 = g2))
   }
-  
- 
-   #### Create the plot, but inputs to the function debend on region ####
+
+
+   #### Create the plot, but inputs to the function depend on region ####
     if (region == "STX" || region == "STTSTJ" || region == "PRICO" || region == "FGB") {
       resulting_plot_parts <- plot_cv_occ(region_means = region_means, set_occurrence = 0.01, year = year, ptitle = ptitle)
     } else {
       resulting_plot_parts <- plot_cv_occ(region_means, set_occurrence = 0.02, year = year,  ptitle = ptitle)
     }
-  
+
   ####use cowplot to plot grid parts ####
   final_plot <- cowplot::plot_grid(
     resulting_plot_parts$g1,
@@ -188,7 +189,7 @@ NCRMP_DRM_colony_density_CV_and_occurrence <- function(region, ptitle, year, fil
     resulting_plot_parts$g2,
     ncol = 3, rel_widths = c(3.5 / 9, 2 / 9, 3.5 / 9)
   )
-  
+
   filename <- paste0(file_path, "/", region_means$REGION[1], "_Occ_v_CV.jpeg")
 
     #### use ggsave to save plots ####
@@ -197,16 +198,16 @@ NCRMP_DRM_colony_density_CV_and_occurrence <- function(region, ptitle, year, fil
             width = 9.8, height = 6.5,  dpi = 300, units = "in",
              device = "jpg"
     )
-    
+
   #### Make dataset only if CV < .2 ####
   region_means_cv20 <- region_means %>%
     dplyr::filter(CV <= .20)
- 
+
   #### Export ####
   output <- list(
     "region_means" = region_means,
     "region_means_cv20" = region_means_cv20)
-  
+
   return(output)
 }
 

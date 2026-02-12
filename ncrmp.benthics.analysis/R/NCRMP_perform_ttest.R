@@ -56,6 +56,8 @@ NCRMP_perform_ttest <- function(dataframe, metric1, metric2, alpha, n_years, ret
     d <- dataframe %>% dplyr::filter(cover_group == "HARD CORALS")
   } else if (metric1 == "macroalgae_cover") {
     d <- dataframe %>% dplyr::filter(cover_group == "MACROALGAE")
+  } else if (metric1 == "gorgonian_cover"){
+    d <- dataframe %>% dplyr::filter(cover_group == "SOFT CORALS")
   } else {
     d <- dataframe
   }

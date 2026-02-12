@@ -77,7 +77,7 @@ NCRMP_DRM_calculate_dis_ble_prevalence_species_domain <- function(project, regio
                 "PRICO" = NCRMP_PRICO_2014_23_dis_ble_prev_species,
                 "STTSTJ" = NCRMP_STTSTJ_2013_23_dis_ble_prev_species,
                 "STX" = NCRMP_STX_2015_23_dis_ble_prev_species,
-                "FGB" = NCRMP_FGBNMS_2013_22_dis_ble_prev_species,
+                "FGB" = NCRMP_FGBNMS_2013_24_dis_ble_prev_species,
                 stop("Unknown region")
   )
 
