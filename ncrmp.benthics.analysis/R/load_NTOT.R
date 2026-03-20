@@ -106,7 +106,8 @@ load_NTOT <- function(region, inputdata, project){
         SEFL_2018_NTOT %>% SEFCRI_16_18_process() %>% process_ntot(),
         SEFL_2020_NTOT %>% filter_SEFCRI_strats(),
         SEFL_2022_NTOT %>% filter_SEFCRI_strats(),
-        SEFL_2024_NTOT %>% filter_SEFCRI_strats()
+        SEFL_2024_NTOT %>% filter(STRAT != "CSSE07") %>% #not sampled
+          filter_SEFCRI_strats()
       )
     }
 
@@ -290,6 +291,9 @@ load_NTOT <- function(region, inputdata, project){
 
       ntot24 <- Tort_2024_NTOT %>%
         make_analysis_stratum() %>%
+        dplyr::filter(STRAT != "DT09",
+                      STRAT != "DT06",
+                      STRAT != "DT03") %>% #unknown rugosity, used in allocation but not analysis
         dplyr::mutate(ngrtot = sum(NTOT))
 
       ntot <- dplyr::bind_rows(ntot14, ntot16, ntot18, ntot20, ntot22, ntot24)
